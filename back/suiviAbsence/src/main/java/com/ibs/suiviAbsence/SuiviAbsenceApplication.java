@@ -1,0 +1,13 @@
+package com.ibs.suiviAbsence;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SuiviAbsenceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SuiviAbsenceApplication.class, args);
+	}
+
+}
