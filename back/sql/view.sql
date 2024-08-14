@@ -29,3 +29,7 @@ WHERE
     AND EXTRACT(WEEK FROM e.date) = EXTRACT(WEEK FROM CURRENT_DATE)
 ORDER BY
     e.date, e.debut;
+
+
+CREATE VIEW v_absence AS
+SELECT

@@ -84,7 +84,7 @@ CREATE TABLE salle(
     nom VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE et(
+CREATE TABLE edt(
     id SERIAL PRIMARY KEY,
     date DATE NOT NULL,
     debut TIME NOT NULL,
@@ -93,4 +93,18 @@ CREATE TABLE et(
     idMatiere INTEGER REFERENCES matiere(idMatiere),
     idSalle INTEGER REFERENCES salle(idSalle),
     estAnnule BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE presence(
+    id SERIAL PRIMARY KEY,
+    idEdt INTEGER REFERENCES edt(idEdt),
+    id_classe_etudiant INTEGER REFERENCES classe_etudiant(idClasse_etudiant),
+    temps_arriver TIME
+);
+
+CREATE TABLE malus(
+    id SERIAL PRIMARY KEY,
+    id_classe_etudiant INTEGER REFERENCES classe_etudiant(idClasse_etudiant),
+    point DOUBLE PRECISION,
+    id_matiere INTEGER REFERENCES matiere(idMatiere)
 );
