@@ -58,3 +58,14 @@ $bluetheme: mat.define-light-theme(
 .bg-primary {
   background: mat.get-color-from-palette($theme-primary, 500) !important;
 }
+
+
+@import '~@angular/material/theming';
+
+$primary: mat.define-palette(mat.$mat-blue);
+$accent: mat.define-palette(mat.$mat-pink, A200, A100, A400);
+$warn: mat.define-palette(mat.$mat-red);
+
+$theme: mat.define-light-theme($primary, $accent, $warn);
+
+@include mat.all-component-themes($theme);
