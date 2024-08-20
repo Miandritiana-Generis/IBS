@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,49 +10,44 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 export interface productsData {
   id: number;
   imagePath: string;
-  uname: string;
-  position: string;
-  hourRate: number;
-  classes: number;
-  priority: string;
+  nom: string;
+  prenom: string;
+  hourRate: Date;
+  status: string;
 }
 
 const ELEMENT_DATA: productsData[] = [
   {
     id: 1,
     imagePath: 'assets/images/profile/user-1.jpg',
-    uname: 'Mark J. Freeman',
-    position: 'English',
-    hourRate: 150,
-    classes: 53,
-    priority: 'Available',
+    nom: 'Mark J. ',
+    prenom: 'Freeman',
+    hourRate: new Date('2024-01-01T07:00:00'),
+    status: 'Present',
   },
   {
     id: 2,
     imagePath: 'assets/images/profile/user-2.jpg',
-    uname: 'Andrew McDownland',
-    position: 'Project Manager',
-    hourRate: 150,
-    classes: 68,
-    priority: 'In Class',
+    nom: 'Andrew ',
+    prenom: 'McDownland Koto',
+    hourRate: new Date('2024-01-01T07:05:00'),
+    status: 'Absent',
   },
   {
     id: 3,
     imagePath: 'assets/images/profile/user-3.jpg',
-    uname: 'Christopher Jamil',
-    position: 'Project Manager',
-    hourRate: 150,
-    classes: 94,
-    priority: 'Absent',
+    nom: 'Christopher ',
+    prenom: 'Jamil Rakoto',
+    hourRate: new Date('2024-01-01T07:10:00'),
+    status: 'Absent',
   },
   {
     id: 4,
     imagePath: 'assets/images/profile/user-4.jpg',
-    uname: 'Nirav Joshi',
-    position: 'Frontend Engineer',
-    hourRate: 150,
-    classes: 27,
-    priority: 'On Leave',
+    nom: 'Nirav Joshi',
+    prenom: 'Rakotomana',
+    hourRate: new Date('2024-01-01T07:11:00'),
+    status: 'Present',
   },
 ];
 
@@ -71,8 +66,8 @@ const ELEMENT_DATA: productsData[] = [
   templateUrl: './fiche-presence.component.html'
 })
 export class AppFichePresenceComponent {
-  
-  displayedColumns: string[] = ['profile', 'hrate', 'exclasses', 'status'];
+
+  displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource = ELEMENT_DATA;
 
 }

@@ -1,19 +1,19 @@
 <div class="container">
     <div class="row">
 
-    <mat-card class="cardWithShadow">
-        <mat-card-content class="p-24">
+    <mat-card class="cardWithShadow w-100">
+        <mat-card-content class="p-32">
             <mat-card-title>Fiche de presence</mat-card-title>
             <div class="table-responsive m-t-16">
                 <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
-                  <!-- Position Column -->
-                  <ng-container matColumnDef="profile">
+                  <!-- NOm Column -->
+                  <ng-container matColumnDef="nom">
                     <th
                       mat-header-cell
                       *matHeaderCellDef
                       class="f-w-600 mat-subtitle-1 f-s-14"
                     >
-                      Profile
+                      Nom
                     </th>
                     <td mat-cell *matCellDef="let element">
                       <div class="d-flex align-items-center">
@@ -25,45 +25,30 @@
                         />
                         <div class="m-l-16">
                           <h6 class="mat-subtitle-1 f-s-14 f-w-700">
-                            {{ element.uname }}
+                            {{ element.nom }}
                           </h6>
-                          <span class="mat-body-1 f-s-14">
-                            Prof. {{ element.position }}
-                          </span>
                         </div>
                       </div>
                     </td>
                   </ng-container>
-      
-                  <!-- Name Column -->
-                  <ng-container matColumnDef="hrate">
+
+                  <!-- Prenom Column -->
+                  <ng-container matColumnDef="prenom">
                     <th
                       mat-header-cell
                       *matHeaderCellDef
                       class="f-w-600 mat-subtitle-1 f-s-14"
                     >
-                      Hour Rate
+                      Prénom
                     </th>
-                    <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
-                      ${{ element.hourRate }}/hour
-                    </td>
-                  </ng-container>
-      
-                  <!-- Weight Column -->
-                  <ng-container matColumnDef="exclasses">
-                    <th
-                      mat-header-cell
-                      *matHeaderCellDef
-                      class="f-w-600 mat-subtitle-1 f-s-14"
-                    >
-                      Extra classes
-                    </th>
-                    <td
-                      mat-cell
-                      *matCellDef="let element"
-                      class="mat-body-1 text-success"
-                    >
-                      + {{ element.classes }}
+                    <td mat-cell *matCellDef="let element">
+                      <div class="d-flex align-items-center">
+                        <div class="m-l-16">
+                          <span class="mat-body-1 f-s-14">
+                            {{ element.prenom }}
+                          </span>
+                        </div>
+                      </div>
                     </td>
                   </ng-container>
       
@@ -77,34 +62,48 @@
                       Status
                     </th>
                     <td mat-cell *matCellDef="let element">
-                      <ng-template [ngIf]="element.priority == 'Available'">
+                      <ng-template [ngIf]="element.status == 'Present'">
                         <span
                           class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14"
                         >
-                          {{ element.priority | titlecase }}
+                          {{ element.status | titlecase }}
                         </span>
                       </ng-template>
-                      <ng-template [ngIf]="element.priority == 'In Class'">
+                      <ng-template [ngIf]="element.status == 'In Class'">
                         <span
                           class="bg-light-primary text-primary rounded f-w-600 p-y-6 p-x-16 f-s-14"
                         >
-                          {{ element.priority | titlecase }}
+                          {{ element.status | titlecase }}
                         </span>
                       </ng-template>
-                      <ng-template [ngIf]="element.priority == 'Absent'">
+                      <ng-template [ngIf]="element.status == 'Absent'">
                         <span
                           class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14"
                         >
-                          {{ element.priority | titlecase }}
+                          {{ element.status | titlecase }}
                         </span>
                       </ng-template>
-                      <ng-template [ngIf]="element.priority == 'On Leave'">
+                      <ng-template [ngIf]="element.status == 'On Leave'">
                         <span
                           class="bg-light-warning text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14"
                         >
-                          {{ element.priority | titlecase }}
+                          {{ element.status | titlecase }}
                         </span>
                       </ng-template>
+                    </td>
+                  </ng-container>
+
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="hArriver">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="f-w-600 mat-subtitle-1 f-s-14"
+                    >
+                      Heure d'arriver
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
+                      {{ element.hourRate.toTimeString().split(' ')[0] }}
                     </td>
                   </ng-container>
       
