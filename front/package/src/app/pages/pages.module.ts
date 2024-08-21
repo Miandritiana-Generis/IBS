@@ -9,6 +9,12 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import * as TablerIcons from 'angular-tabler-icons/icons';
 
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppProgrammeComponent } from './programme/programme.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +23,14 @@ import * as TablerIcons from 'angular-tabler-icons/icons';
     NgApexchartsModule,
     RouterModule.forChild(PagesRoutes),
     TablerIconsModule.pick(TablerIcons),
+    NgbModalModule,
+    FlatpickrModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
-  exports: [TablerIconsModule],
+  declarations: [AppProgrammeComponent],
+  exports: [TablerIconsModule, AppProgrammeComponent],
 })
 export class PagesModule {}
