@@ -22,6 +22,7 @@
               "apexcharts",
               "bezier-easing"
             ],
+            "aot": true,
             "outputPath": "dist/Spike",
             "index": "src/index.html",
             "main": "src/main.ts",
