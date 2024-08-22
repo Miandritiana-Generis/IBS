@@ -30,7 +30,7 @@ import { AppProgrammeComponent } from './programme/programme.component';
       useFactory: adapterFactory,
     }),
   ],
-  declarations: [AppProgrammeComponent],
-  exports: [TablerIconsModule, AppProgrammeComponent],
+  // declarations: [AppProgrammeComponent],
+  exports: [TablerIconsModule],
 })
 export class PagesModule {}

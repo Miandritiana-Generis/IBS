@@ -23,6 +23,12 @@ import {
   CalendarView,
 } from 'angular-calendar';
 import { EventColor } from 'calendar-utils';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { CalendarModule } from 'angular-calendar';
+
+import { FlatpickrModule } from 'angularx-flatpickr';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -40,7 +46,14 @@ const colors: Record<string, EventColor> = {
 };
 
 @Component({
-  selector: '',
+  selector: 'app-programme',
+  standalone: true,
+  imports: [
+    CommonModule, 
+    FormsModule,
+    CalendarModule,
+    FlatpickrModule
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
@@ -54,16 +67,10 @@ const colors: Record<string, EventColor> = {
       }
     `,
   ],
-  templateUrl: 'programme.component.html',
+  templateUrl: './programme.component.html',
+  styleUrls: ['../../../../node_modules/angular-calendar/css/angular-calendar.css']
 })
 
-@Component({
-  selector: 'app-programme',
-  standalone: true,
-  imports: [],
-  templateUrl: './programme.component.html',
-  styleUrls: ['../../../node_modules/angular-calendar/css/angular-calendar.css']
-})
 export class AppProgrammeComponent {
 
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any> | undefined;
