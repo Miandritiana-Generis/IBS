@@ -13,7 +13,6 @@ import { FlatpickrModule } from 'angularx-flatpickr';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-import { AppProgrammeComponent } from './programme/programme.component';
 
 @NgModule({
   imports: [
@@ -30,7 +29,6 @@ import { AppProgrammeComponent } from './programme/programme.component';
       useFactory: adapterFactory,
     }),
   ],
-  // declarations: [AppProgrammeComponent],
   exports: [TablerIconsModule],
 })
 export class PagesModule {}

@@ -68,7 +68,7 @@ const colors: Record<string, EventColor> = {
     `,
   ],
   templateUrl: './programme.component.html',
-  styleUrls: ['../../../../node_modules/angular-calendar/css/angular-calendar.css']
+  styleUrls: ['../../../../node_modules/angular-calendar/css/angular-calendar.css'],
 })
 
 export class AppProgrammeComponent {
