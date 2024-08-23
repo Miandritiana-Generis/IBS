@@ -13,6 +13,8 @@ import {
   isSameDay,
   isSameMonth,
   addHours,
+  differenceInHours,
+  isBefore
 } from 'date-fns';
 import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -75,7 +77,7 @@ export class AppProgrammeComponent {
 
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any> | undefined;
 
-  view: CalendarView = CalendarView.Month;
+  view: CalendarView = CalendarView.Week;
 
   CalendarView = CalendarView;
 
@@ -108,42 +110,212 @@ export class AppProgrammeComponent {
 
   events: CalendarEvent[] = [
     {
-      start: subDays(startOfDay(new Date()), 1),
-      end: addDays(new Date(), 1),
-      title: 'A 3 day event',
+      start: new Date(2024, 0, 1, 7, 0),  // Specific date and time: January 1, 2024, 07:00 AM
+      end: new Date(2024, 0, 1, 9, 0),    // Specific date and time: January 1, 2024, 09:00 AM
+      title: 'Tes matiere',
       color: { ...colors['red'] },
       actions: this.actions,
-      allDay: true,
+      allDay: false,  // Change to false if you want to specify the time
       resizable: {
-        beforeStart: true,
-        afterEnd: true,
+        beforeStart: false, // tsy afaka ovaina ny start anle programme
+        afterEnd: false,
       },
-      draggable: true,
+      draggable: false,
     },
     {
-      start: startOfDay(new Date()),
-      title: 'An event with no end date',
+      start: new Date(2024, 0, 1, 9, 0),  // Specific date and time: January 1, 2024, 09:00 AM
+      end: new Date(2024, 0, 1, 12, 0),    // Specific date and time: January 1, 2024, 12:00 PM
+      title: 'Tes matiere',
       color: { ...colors['yellow'] },
       actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
     },
     {
-      start: subDays(endOfMonth(new Date()), 3),
-      end: addDays(endOfMonth(new Date()), 3),
-      title: 'A long event that spans 2 months',
+      start: new Date(2024, 7, 23, 7, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 23, 9, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['red'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
       color: { ...colors['blue'] },
-      allDay: true,
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
     },
     {
-      start: addHours(startOfDay(new Date()), 2),
-      end: addHours(new Date(), 2),
-      title: 'A draggable and resizable event',
+      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['blue'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['blue'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['blue'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['blue'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['blue'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['blue'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['red'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 23, 9, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 23, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
       color: { ...colors['yellow'] },
       actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
       resizable: {
-        beforeStart: true,
-        afterEnd: true,
+        beforeStart: false,
+        afterEnd: false,
       },
-      draggable: true,
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 23, 9, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 23, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['yellow'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 25, 9, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 25, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['yellow'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 26, 13, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 26, 15, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['yellow'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
+    },
+    {
+      start: new Date(2024, 7, 22, 13, 0),  // Specific date and time: August 22, 2024, 09:00 AM
+      end: new Date(2024, 7, 22, 15, 0),    // Specific date and time: August 24, 2024, 05:00 PM
+      title: 'Tes matiere',
+      color: { ...colors['red'] },
+      actions: this.actions,
+      allDay: false,  // Change to false if you want to specify the time
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      draggable: false,
     },
   ];
 
@@ -184,26 +356,50 @@ EventColor: any;
     this.handleEvent('Dropped or resized', event);
   }
 
-  handleEvent(action: string, event: CalendarEvent): void {
+  handleEvent(action: string, event?: CalendarEvent): void {
+    if (!event) {
+      console.warn('Event is undefined, cannot handle the event.');
+      return;
+    }
+  
     this.modalData = { event, action };
     this.modal.open(this.modalContent, { size: 'lg' });
-  }
+  }  
 
-  addEvent(): void {
-    this.events = [
-      ...this.events,
-      {
-        title: 'New event',
-        start: startOfDay(new Date()),
-        end: endOfDay(new Date()),
-        color: colors['red'],
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-      },
-    ];
+  // addEvent(): void {
+  //   this.events = [
+  //     ...this.events,
+  //     {
+  //       title: 'New event',
+  //       start: startOfDay(new Date()),
+  //       end: endOfDay(new Date()),
+  //       color: colors['red'],
+  //       draggable: true,
+  //       resizable: {
+  //         beforeStart: true,
+  //         afterEnd: true,
+  //       },
+  //     },
+  //   ];
+  // }
+
+  estCoursDans48heures(event: CalendarEvent | undefined): boolean {
+    if (!event) {
+      return false; // Event is undefined, so return false
+    }
+  
+    const currentTime = new Date();
+  
+    // Check if the event date is in the past
+    if (isBefore(event.start, currentTime) && !isSameDay(event.start, currentTime)) {
+      return true;
+    }
+  
+    // Calculate the difference in hours between the event start time and the current time
+    const hoursDifference = differenceInHours(event.start, currentTime);
+  
+    // Return true if the event is within the next 48 hours
+    return hoursDifference <= 48;
   }
 
   deleteEvent(eventToDelete: CalendarEvent) {

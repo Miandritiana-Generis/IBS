@@ -1,10 +1,10 @@
 
-<div class="container align-items-center justify-content-center">
+<div class="container align-items-center justify-content-center mt-5">
   <div class="row justify-content-center m-t-30 m-0">
     <div class="col-3"></div>
     <div class="col-6">
       <mat-card class="b-1 shadow-none">
-        <mat-card-header>
+        <mat-card-header class="mb-2">
           <mat-card-title>Choisir une salle</mat-card-title>
         </mat-card-header>
         <mat-card-content class="b-t-1">
@@ -14,7 +14,7 @@
             </mat-list-option>
           </mat-selection-list>
 
-          <p class="mat-subtitle-2 f-w-600 p-16 bg-light-primary rounded">
+          <p class="mat-subtitle-2 f-w-600 p-16 bg-light-primary rounded mb-4">
             Salle choisit:
             {{
               shoes2.selectedOptions.hasValue()
@@ -23,6 +23,17 @@
             }}
           </p>
         </mat-card-content>
+        <mat-card-footer class="d-flex justify-content-center m-4 mt-0">
+          <button
+            type="submit"
+            mat-flat-button
+            color="primary"
+            matTooltip="Sauvgarder ce salle"
+            class="w-100"
+          >
+            Enregistrer
+          </button>
+        </mat-card-footer>
       </mat-card>
     </div>
     <div class="col-3"></div>
