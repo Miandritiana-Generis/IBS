@@ -9,8 +9,8 @@
         </mat-card-header>
         <mat-card-content class="b-t-1">
           <mat-selection-list #shoes2 [multiple]="false">
-            <mat-list-option *ngFor="let shoe of typesOfShoes" [value]="shoe">
-              {{ shoe }}
+            <mat-list-option *ngFor="let shoe of listeSalle" [value]="shoe">
+              {{ shoe.nom }}
             </mat-list-option>
           </mat-selection-list>
 
