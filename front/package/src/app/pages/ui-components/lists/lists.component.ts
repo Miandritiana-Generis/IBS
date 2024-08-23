@@ -29,4 +29,9 @@ export class AppListsComponent {
       }
     );
   }
+
+  takeSalle(salle: string) {
+    localStorage.setItem("salle" , salle);
+  }
+
 }
