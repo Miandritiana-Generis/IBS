@@ -13,6 +13,7 @@ export class EdtService {
   constructor(private http: HttpClient) { }
 
   getListEdt(idPersonne :number) : Observable<any> {
+    localStorage.setItem("idPersonne", "1");
     return this.http.get<{
       id: string;
       idMatiere: string;

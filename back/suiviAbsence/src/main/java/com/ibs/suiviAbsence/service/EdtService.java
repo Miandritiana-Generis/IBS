@@ -20,7 +20,11 @@ public class EdtService {
     @Autowired
     private PersonneRepository personneRepo;
     
-
+    /**
+     * cette methode permet d'afficher la liste des emplois du temps
+     * @param id_personne
+     * @return
+     */
     public List<Edt> getEdt(int idPersonne) {
         List<Edt> edt = new ArrayList<>();
         List<Personne> pat = personneRepo.estPAT(idPersonne);
@@ -37,6 +41,5 @@ public class EdtService {
         }
         return edt;
     }
-
 
 }
