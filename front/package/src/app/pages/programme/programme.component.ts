@@ -49,7 +49,7 @@ const colors: Record<string, EventColor> = {
   selector: 'app-programme',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
     CalendarModule,
     FlatpickrModule
@@ -217,4 +217,5 @@ EventColor: any;
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
   }
+
 }
