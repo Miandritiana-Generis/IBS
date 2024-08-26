@@ -95,16 +95,24 @@ CREATE TABLE edt(
     estAnnule BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE presence(
-    id SERIAL PRIMARY KEY,
-    idEdt INTEGER REFERENCES edt(idEdt),
-    id_classe_etudiant INTEGER REFERENCES classe_etudiant(idClasse_etudiant),
-    temps_arriver TIME
-);
+--------- efa niova table presence plus presence detail
+-- CREATE TABLE presence(
+--     id SERIAL PRIMARY KEY,
+--     idEdt INTEGER REFERENCES edt(idEdt),
+--     id_classe_etudiant INTEGER REFERENCES classe_etudiant(idClasse_etudiant),
+--     temps_arriver TIME
+-- );
 
 CREATE TABLE malus(
     id SERIAL PRIMARY KEY,
     id_classe_etudiant INTEGER REFERENCES classe_etudiant(idClasse_etudiant),
     point DOUBLE PRECISION,
     id_matiere INTEGER REFERENCES matiere(idMatiere)
+);
+
+CREATE TABLE justification_absence(
+    id SERIAL PRIMARY KEY,
+    id_classe_etudiant INTEGER REFERENCES classe_etudiant(id_classe_etudiant),
+    id_presence INTEGER REFERENCES presence(id)
+    description text not null
 );
