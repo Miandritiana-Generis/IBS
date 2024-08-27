@@ -24,12 +24,12 @@ public class ViewEdtService {
     
     public ViewEdt findEdtCourant(int idSalle,Date datedonner,Time time) {
         ViewEdt ViewEdt=null;
-        System.out.println("date---------------------------------"+datedonner);
+        // System.out.println("date---------------------------------"+datedonner);
 
-        List<ViewEdt> listes = ViewEdtRepo.findByIdSalle(idSalle);
-        if(!listes.isEmpty()){
-            ViewEdt=listes.get(0);
-        }
+        // List<ViewEdt> listes = ViewEdtRepo.findByIdSalle(idSalle);
+        // if(!listes.isEmpty()){
+        //     ViewEdt=listes.get(0);
+        // }
         return ViewEdt;
     }
 
