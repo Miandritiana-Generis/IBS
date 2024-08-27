@@ -15,6 +15,13 @@ import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 public class PresenceService {
     @Autowired
     ViewEdtAllInfoRepository viewEdtAllInfoRepository;
+    /**
+     * Cette metier permet de recuperer l'employe du temps d'un salle a la date et heure courant si l'idt est 0
+     * sinon elle recuperer l'enploye du temps de ID
+     * @param idSalle
+     * @param idEdt
+     * @return
+     */
     public ViewEdtAllInfo getInfoEdt(int idSalle,int idEdt){
         ViewEdtAllInfo edt=null;
         if(idEdt!=0){
