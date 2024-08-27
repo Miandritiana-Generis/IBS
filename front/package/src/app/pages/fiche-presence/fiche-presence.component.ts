@@ -6,6 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { TablerIconsModule } from 'angular-tabler-icons';
+import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
 
 export interface productsData {
   id: number;
@@ -51,6 +54,10 @@ const ELEMENT_DATA: productsData[] = [
   },
 ];
 
+export interface Vegetable {
+  name: string;
+}
+
 @Component({
   selector: 'app-fiche-presence',
   standalone: true,
@@ -61,6 +68,7 @@ const ELEMENT_DATA: productsData[] = [
     TablerIconsModule,
     MatCardModule,
     MatTableModule,
+    MatChipsModule,
     CommonModule,
   ],
   templateUrl: './fiche-presence.component.html'
@@ -70,4 +78,20 @@ export class AppFichePresenceComponent {
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource = ELEMENT_DATA;
 
+  vegetables: Vegetable[] = [
+    { name: 'Classe' },
+    { name: 'Salle' },
+    { name: 'Mr Rakoto' },
+    { name: 'Marketing' },
+  ];
+
+  drop(event: Event) {
+    if (isDragDrop(event)) {
+      moveItemInArray(this.vegetables, event.previousIndex, event.currentIndex);
+    }
+  }
+
+}
+function isDragDrop(object: any): object is CdkDragDrop<string[]> {
+  return 'previousIndex' in object;
 }
