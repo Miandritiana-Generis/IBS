@@ -8,12 +8,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ibs.suiviAbsence.modele.ViewEdt;
 import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.Personne;
-import com.ibs.suiviAbsence.repository.ViewEdtRepository;
+import com.ibs.suiviAbsence.modele.V_InfoFichePresence;
+import com.ibs.suiviAbsence.modele.ViewEdt;
 import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.PersonneRepository;
+import com.ibs.suiviAbsence.repository.V_InfoFichePresenceRepository;
+import com.ibs.suiviAbsence.repository.ViewEdtRepository;
 
 @Service
 public class ViewEdtService {
@@ -25,6 +27,8 @@ public class ViewEdtService {
     private PersonneRepository personneRepo;
     @Autowired
     private EdtRepository edtRepository;
+    @Autowired
+    private V_InfoFichePresenceRepository v_iInfoFichePresenceRepository;
     
     public Edt findEdtCourant(int idSalle,Date datedonner,Time time) {
         Edt viewEdt=null;
@@ -56,6 +60,16 @@ public class ViewEdtService {
             ViewEdt = ViewEdtRepo.getEdtDelegue(idPersonne);
         }
         return ViewEdt;
+    }
+
+     public List<V_InfoFichePresence> getInfoFichePresence(int id_salle, String heure, String date) {
+        if (date == null || date.isEmpty()) {
+            date = null;
+        }
+        if (heure == null || heure.isEmpty()) {
+            heure = null;
+        }
+        return v_iInfoFichePresenceRepository.getInfoFichePresence(id_salle, heure, date);
     }
 
 }
