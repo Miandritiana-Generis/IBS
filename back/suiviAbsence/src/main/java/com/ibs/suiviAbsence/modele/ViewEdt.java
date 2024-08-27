@@ -16,7 +16,7 @@ import lombok.Setter;
 @Table(name="v_edt")
 @Entity
 @NoArgsConstructor
-public class Edt {
+public class ViewEdt {
     @Id
     private int id;
     @Column
@@ -29,7 +29,7 @@ public class Edt {
     int id_enseignant;
     @Column
     boolean est_annule;
-    @Column
+    @Column(name="date")
     Date date;
     @Column
     Time debut;

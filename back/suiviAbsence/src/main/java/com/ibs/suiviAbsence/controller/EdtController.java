@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.Salle;
-import com.ibs.suiviAbsence.repository.EdtRepository;
+import com.ibs.suiviAbsence.modele.ViewEdt;
 import com.ibs.suiviAbsence.repository.SalleRepository;
-import com.ibs.suiviAbsence.service.EdtService;
+import com.ibs.suiviAbsence.repository.ViewEdtRepository;
+import com.ibs.suiviAbsence.service.ViewEdtService;
 
 @RestController
 public class EdtController {
     @Autowired
-    EdtService edtService;
+    ViewEdtService edtService;
 
     @Autowired
-    EdtRepository edtRepo;
+    ViewEdtRepository edtRepo;
 
     @Autowired
     SalleRepository salleRepo;
@@ -34,15 +34,15 @@ public class EdtController {
      * @return
      */
     @GetMapping("/liste-edt")
-    public ResponseEntity<List<Edt>> getListeEdt(@RequestParam(value = "id_personne", required = true) int id_personne) {
-    List<Edt> edtList = edtService.getEdt(id_personne);
+    public ResponseEntity<List<ViewEdt>> getListeEdt(@RequestParam(value = "id_personne", required = true) int id_personne) {
+    List<ViewEdt> edtList = edtService.getEdt(id_personne);
     return ResponseEntity.ok(edtList);
 
    }
 
    @GetMapping("/detail-edt")
-   public ResponseEntity<Edt> getDetailEdt(@RequestParam(value = "id_edt", required = true) int id_edt) {
-       Optional<Edt> optionalEdt = edtRepo.findById(id_edt);  
+   public ResponseEntity<ViewEdt> getDetailEdt(@RequestParam(value = "id_edt", required = true) int id_edt) {
+       Optional<ViewEdt> optionalEdt = edtRepo.findById(id_edt);  
        if (optionalEdt.isPresent()) {
            return ResponseEntity.ok(optionalEdt.get());  
        } else {

@@ -6,15 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.ibs.suiviAbsence.modele.Edt;
+import com.ibs.suiviAbsence.modele.ViewEdt;
 
-public interface EdtRepository extends JpaRepository<Edt, Integer>{
+public interface ViewEdtRepository extends JpaRepository<ViewEdt, Integer>{
 
     @Query(value = "SELECT * from v_edt where id_enseignant = :id_enseignant", nativeQuery = true)
-    public List<Edt> getEdtEnseignant(@Param("id_enseignant") int id_enseignant);
+    public List<ViewEdt> getEdtEnseignant(@Param("id_enseignant") int id_enseignant);
 
     @Query(value = "SELECT * from v_edt where id_etudiant = :id_etudiant", nativeQuery = true)
-    public List<Edt> getEdtDelegue(@Param("id_etudiant") int id_etudiant);
+    public List<ViewEdt> getEdtDelegue(@Param("id_etudiant") int id_etudiant);
 
 
 }
