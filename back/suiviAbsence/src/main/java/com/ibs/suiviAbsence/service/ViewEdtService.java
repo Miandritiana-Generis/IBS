@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ibs.suiviAbsence.modele.ViewEdt;
+import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.Personne;
 import com.ibs.suiviAbsence.repository.ViewEdtRepository;
+import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.PersonneRepository;
 
 @Service
@@ -21,16 +23,17 @@ public class ViewEdtService {
 
     @Autowired
     private PersonneRepository personneRepo;
+    @Autowired
+    private EdtRepository edtRepository;
     
-    public ViewEdt findEdtCourant(int idSalle,Date datedonner,Time time) {
-        ViewEdt ViewEdt=null;
-        // System.out.println("date---------------------------------"+datedonner);
+    public Edt findEdtCourant(int idSalle,Date datedonner,Time time) {
+        Edt viewEdt=null;
 
-        // List<ViewEdt> listes = ViewEdtRepo.findByIdSalle(idSalle);
-        // if(!listes.isEmpty()){
-        //     ViewEdt=listes.get(0);
-        // }
-        return ViewEdt;
+        List<Edt> listes = edtRepository.findAllByIdSalle(idSalle);
+        if(!listes.isEmpty()){
+            viewEdt=listes.get(0);
+        }
+        return viewEdt;
     }
 
     /**
