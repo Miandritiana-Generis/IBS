@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.ibs.suiviAbsence.modele.Presence;
 
 public interface PresenceRepository extends JpaRepository<Presence, Integer>{
-
+    public Presence findAllByIdEdt(int edt);
 }

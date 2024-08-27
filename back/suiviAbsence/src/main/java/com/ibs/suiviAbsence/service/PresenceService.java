@@ -8,13 +8,27 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
+import com.ibs.suiviAbsence.repository.PresenceRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 
 @Service
 public class PresenceService {
     @Autowired
     ViewEdtAllInfoRepository viewEdtAllInfoRepository;
+    @Autowired
+    PresenceRepository presenceRepository;
+
+    public Presence recupererPresence(int idEdt){
+        Presence presence=presenceRepository.findAllByIdEdt(idEdt);
+        if(presence==null){
+            presence=new Presence();
+            presence.setIdEdt(idEdt);
+            presence=presenceRepository.save(presence);
+        }
+        return presence;
+    }
     /**
      * Cette metier permet de recuperer l'employe du temps d'un salle a la date et heure courant si l'idt est 0
      * sinon elle recuperer l'enploye du temps de ID
