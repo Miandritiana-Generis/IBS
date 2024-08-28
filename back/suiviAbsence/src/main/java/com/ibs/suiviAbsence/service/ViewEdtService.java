@@ -62,6 +62,8 @@ public class ViewEdtService {
         return ViewEdt;
     }
 
+    
+
      public List<V_InfoFichePresence> getInfoFichePresence(int id_salle, String heure, String date) {
         if (date == null || date.isEmpty()) {
             date = null;

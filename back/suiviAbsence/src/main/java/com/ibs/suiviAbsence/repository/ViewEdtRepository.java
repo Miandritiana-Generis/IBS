@@ -17,4 +17,9 @@ public interface ViewEdtRepository extends JpaRepository<ViewEdt, Integer>{
     public List<ViewEdt> getEdtDelegue(@Param("id_etudiant") int id_etudiant);
 
 
+
+
+
+
+
 }

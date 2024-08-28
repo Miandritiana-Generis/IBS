@@ -1,7 +1,7 @@
 package com.ibs.suiviAbsence.modele;
 
-import java.sql.Time;
 import java.sql.Date;
+import java.sql.Time;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,8 +45,6 @@ public class ViewEdt {
     String salle;
     @Column
     int id_personne;
-    @Column
-    int id_etudiant;
 
     
 
