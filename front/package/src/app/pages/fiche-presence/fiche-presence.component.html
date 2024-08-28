@@ -5,21 +5,45 @@
             <mat-card-header>
               <mat-card-title>Fiche de presence</mat-card-title>
 
-              <!-- <mat-chip-set
+              <mat-chip-set
                 class="example-chip"
                 cdkDropList
                 cdkDropListOrientation="horizontal"
-                (cdkDropListDropped)="drop($event)"
                 style="margin-left: 15%;"
               >
-                <mat-chip
-                  class="example-box f-s-14"
-                  cdkDrag
-                  *ngFor="let vegetable of vegetables"
-                >
-                  {{ vegetable.name }}
-                </mat-chip>
-              </mat-chip-set> -->
+
+              <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+
+            Salle : {{ listeFichePresence[0].salle }}
+          </mat-chip>
+          <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+
+            Classe : {{ listeFichePresence[0].classe }}
+          </mat-chip>
+          <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+
+             {{ listeFichePresence[0].enseignant }}
+          </mat-chip>
+          <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+           {{ listeFichePresence[0].matiere }}
+          </mat-chip>
+        </mat-chip-set>
 
               <div class="m-l-auto">
                 <a href="http://127.0.0.1:5000/">

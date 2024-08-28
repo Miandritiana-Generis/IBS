@@ -18,6 +18,10 @@ export interface ProductsData {
   prenom: string;
   hourRate: Date | null;
   status: string;
+  salle: string;
+  matiere : string;
+  enseignant : string;
+  classe : string;
 }
 
 @Component({
@@ -60,7 +64,11 @@ export class AppFichePresenceComponent {
           nom: item.nom,
           prenom: item.prenom,
           hourRate: item.heure_arrive ? new Date(item.heure_arrive) : null,
-          status: item.status ? (item.status === true ? 'Present' : 'Absent') : 'Absent'
+          status: item.status ? (item.status === true ? 'Present' : 'Absent') : 'Absent',
+          salle : item.salle,
+          matiere : item.matiere,
+          enseignant : item.enseignant,
+          classe : item.classe
         }));
 
         // Set the data source for the table
