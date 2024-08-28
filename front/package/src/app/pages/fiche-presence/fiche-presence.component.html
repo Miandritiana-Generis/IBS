@@ -1,33 +1,50 @@
 <div class="container">
   <div class="row">
     <mat-card class="cardWithShadow w-100">
-      <mat-card-content class="p-32">
-        <mat-card-header>
-          <mat-card-title>Fiche de présence</mat-card-title>
-          <div class="m-l-auto">
-            <a href="http://127.0.0.1:5000/">
-              <div class="bg-light-error text-error shadow-none icon-96">
-                <div class="icon-demo">
-                  <div class="icon-demo-icon">
-                    <span class="icon-tada icon-demo-size-32 icon-demo-stroke-150">
-                      <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-face-id">
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
-                          <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-                          <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-                          <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
-                          <path d="M9 10l.01 0" />
-                          <path d="M15 10l.01 0" />
-                          <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
-                        </svg>
-                      </span>
-                    </span>
+        <mat-card-content class="p-32">
+            <mat-card-header>
+              <mat-card-title>Fiche de presence</mat-card-title>
+
+              <!-- <mat-chip-set
+                class="example-chip"
+                cdkDropList
+                cdkDropListOrientation="horizontal"
+                (cdkDropListDropped)="drop($event)"
+                style="margin-left: 15%;"
+              >
+                <mat-chip
+                  class="example-box f-s-14"
+                  cdkDrag
+                  *ngFor="let vegetable of vegetables"
+                >
+                  {{ vegetable.name }}
+                </mat-chip>
+              </mat-chip-set> -->
+
+              <div class="m-l-auto">
+                <a href="http://127.0.0.1:5000/">
+                  <div class="bg-light-error text-error shadow-none icon-96">
+                    <div class="icon-demo">
+                      <div class="icon-demo-icon">
+                        <span class="icon-tada icon-demo-size-32 icon-demo-stroke-150">
+                          <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-face-id">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                              <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                              <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                              <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                              <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                              <path d="M9 10l.01 0" />
+                              <path d="M15 10l.01 0" />
+                              <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+                            </svg>
+                          </span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </a>
               </div>
-            </a>
-          </div>
         </mat-card-header>
         <div class="table-responsive m-t-16">
           <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
@@ -97,12 +114,31 @@
     </mat-card>
   </div>
 
-  <div class="row">
-    <div class="col-6">
-      <button class="btn btn-warning btn-lg w-100">Valider Enseignant</button>
+    <div class="row">
+      <div class="col-6">
+        <a
+          mat-flat-button
+          color="primary"
+          href="#"
+          target="_blank"
+          class="d-flex justify-content-center w-100"
+        >
+        Valider Enseignant
+        </a>
+        <!-- <button class="btn btn-warning btn-lg w-100">Valider Enseignant</button> -->
+      </div>
+      <div class="col-6">
+        <a
+          mat-flat-button
+          color="warn"
+          href="#"
+          target="_blank"
+          class="d-flex justify-content-center w-100"
+        >
+        Valider Délégué de classe
+        </a>
+        <!-- <button class="btn btn-primary btn-lg w-100">Valider Délégué de classe</button> -->
+      </div>
     </div>
-    <div class="col-6">
-      <button class="btn btn-primary btn-lg w-100">Valider Délégué de classe</button>
-    </div>
-  </div>
+
 </div>

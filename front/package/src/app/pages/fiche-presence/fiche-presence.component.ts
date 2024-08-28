@@ -7,6 +7,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { EdtService } from 'src/app/services/edt.service';
+import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
 
 export interface ProductsData {
   id: number;
@@ -27,6 +30,7 @@ export interface ProductsData {
     TablerIconsModule,
     MatCardModule,
     MatTableModule,
+    MatChipsModule,
     CommonModule,
   ],
   templateUrl: './fiche-presence.component.html'
