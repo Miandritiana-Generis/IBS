@@ -46,7 +46,7 @@
         </mat-chip-set>
 
               <div class="m-l-auto">
-                <a href="http://127.0.0.1:5000/">
+                <a (click)="getListFichePresence(id_salle, heure, date)">
                   <div class="bg-light-error text-error shadow-none icon-96">
                     <div class="icon-demo">
                       <div class="icon-demo-icon">
@@ -69,6 +69,7 @@
                   </div>
                 </a>
               </div>
+
         </mat-card-header>
         <div class="table-responsive m-t-16">
           <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">

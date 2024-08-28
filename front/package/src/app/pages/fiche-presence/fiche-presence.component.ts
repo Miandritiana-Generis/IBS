@@ -9,7 +9,7 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { EdtService } from 'src/app/services/edt.service';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-
+import { HttpClient } from '@angular/common/http';
 
 export interface ProductsData {
   id: number;
@@ -48,13 +48,19 @@ export class AppFichePresenceComponent {
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
 
-  constructor(private edtService: EdtService) {}
+  constructor(private edtService: EdtService, private http: HttpClient) {}
 
   ngOnInit() {
     this.getListFichePresence(this.id_salle, this.heure, this.date);
   }
 
   getListFichePresence(id_salle: number, heure: string, date: string): void {
+
+    const url = `http://127.0.0.1:5000/api/fiche-presence?id_salle=${id_salle}&heure=${heure}&date=${date}`;
+    this.http.get<any[]>(url).subscribe(data => {
+      this.listeFichePresence = data;
+    });
+    
     this.edtService.getInfoFichePresence(id_salle, heure, date).subscribe(
       (data: any[]) => {
         // Map data to include hourRate defaulting to null if not provided
