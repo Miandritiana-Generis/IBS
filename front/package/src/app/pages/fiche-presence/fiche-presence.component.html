@@ -1,13 +1,52 @@
 <div class="container">
-
-    <div class="row">
-
+  <div class="row">
     <mat-card class="cardWithShadow w-100">
         <mat-card-content class="p-32">
             <mat-card-header>
               <mat-card-title>Fiche de presence</mat-card-title>
+
+              <mat-chip-set
+                class="example-chip"
+                cdkDropList
+                cdkDropListOrientation="horizontal"
+                style="margin-left: 15%;"
+              >
+
+              <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+
+            Salle : {{ listeFichePresence[0].salle }}
+          </mat-chip>
+          <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+
+            Classe : {{ listeFichePresence[0].classe }}
+          </mat-chip>
+          <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+
+             {{ listeFichePresence[0].enseignant }}
+          </mat-chip>
+          <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+           {{ listeFichePresence[0].matiere }}
+          </mat-chip>
+        </mat-chip-set>
+
               <div class="m-l-auto">
-                <a href="http://127.0.0.1:5000/">
+                <a (click)="sendFichePresenceData()" style="cursor: pointer;">
                   <div class="bg-light-error text-error shadow-none icon-96">
                     <div class="icon-demo">
                       <div class="icon-demo-icon">
@@ -30,125 +69,99 @@
                   </div>
                 </a>
               </div>
-            </mat-card-header>
-            <div class="table-responsive m-t-16">
-                <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
-                  <!-- NOm Column -->
-                  <ng-container matColumnDef="nom">
-                    <th
-                      mat-header-cell
-                      *matHeaderCellDef
-                      class="f-w-600 mat-subtitle-1 f-s-14"
-                    >
-                      Nom
-                    </th>
-                    <td mat-cell *matCellDef="let element">
-                      <div class="d-flex align-items-center">
-                        <img
-                          [src]="element.imagePath"
-                          alt="users"
-                          width="50"
-                          class="rounded-circle"
-                        />
-                        <div class="m-l-16">
-                          <h6 class="mat-subtitle-1 f-s-14 f-w-700">
-                            {{ element.nom }}
-                          </h6>
-                        </div>
-                      </div>
-                    </td>
-                  </ng-container>
 
-                  <!-- Prenom Column -->
-                  <ng-container matColumnDef="prenom">
-                    <th
-                      mat-header-cell
-                      *matHeaderCellDef
-                      class="f-w-600 mat-subtitle-1 f-s-14"
-                    >
-                      Prénom
-                    </th>
-                    <td mat-cell *matCellDef="let element">
-                      <div class="d-flex align-items-center">
-                        <div class="m-l-16">
-                          <span class="mat-body-1 f-s-14">
-                            {{ element.prenom }}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                  </ng-container>
-      
-                  <!-- Symbol Column -->
-                  <ng-container matColumnDef="status">
-                    <th
-                      mat-header-cell
-                      *matHeaderCellDef
-                      class="f-w-600 mat-subtitle-1 f-s-14"
-                    >
-                      Status
-                    </th>
-                    <td mat-cell *matCellDef="let element">
-                      <ng-template [ngIf]="element.status == 'Present'">
-                        <span
-                          class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14"
-                        >
-                          {{ element.status | titlecase }}
-                        </span>
-                      </ng-template>
-                      <ng-template [ngIf]="element.status == 'In Class'">
-                        <span
-                          class="bg-light-primary text-primary rounded f-w-600 p-y-6 p-x-16 f-s-14"
-                        >
-                          {{ element.status | titlecase }}
-                        </span>
-                      </ng-template>
-                      <ng-template [ngIf]="element.status == 'Absent'">
-                        <span
-                          class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14"
-                        >
-                          {{ element.status | titlecase }}
-                        </span>
-                      </ng-template>
-                      <ng-template [ngIf]="element.status == 'On Leave'">
-                        <span
-                          class="bg-light-warning text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14"
-                        >
-                          {{ element.status | titlecase }}
-                        </span>
-                      </ng-template>
-                    </td>
-                  </ng-container>
+        </mat-card-header>
+        <div class="table-responsive m-t-16">
+          <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
+            <!-- Nom Column -->
+            <ng-container matColumnDef="nom">
+              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+                Nom
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <div class="d-flex align-items-center">
+                  <img [src]="element.imagePath" alt="users" width="50" class="rounded-circle" />
+                  <div class="m-l-16">
+                    <h6 class="mat-subtitle-1 f-s-14 f-w-700">{{ element.nom }}</h6>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
 
-                  <!-- Name Column -->
-                  <ng-container matColumnDef="hArriver">
-                    <th
-                      mat-header-cell
-                      *matHeaderCellDef
-                      class="f-w-600 mat-subtitle-1 f-s-14"
-                    >
-                      Heure d'arriver
-                    </th>
-                    <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
-                      {{ element.hourRate.toTimeString().split(' ')[0] }}
-                    </td>
-                  </ng-container>
-      
-                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-                </table>
-              </div>
-        </mat-card-content>
+            <!-- Prenom Column -->
+            <ng-container matColumnDef="prenom">
+              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+                Prénom
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <div class="d-flex align-items-center">
+                  <div class="m-l-16">
+                    <span class="mat-body-1 f-s-14">{{ element.prenom }}</span>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+                Status
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-template [ngIf]="element.status == 'Present'">
+                  <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                    {{ element.status | titlecase }}
+                  </span>
+                </ng-template>
+                <ng-template [ngIf]="element.status == 'Absent'">
+                  <span class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                    {{ element.status | titlecase }}
+                  </span>
+                </ng-template>
+              </td>
+            </ng-container>
+
+            <!-- Heure d'arriver Column -->
+            <ng-container matColumnDef="hArriver">
+              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+                Heure d'arriver
+              </th>
+              <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
+                {{ element.hourRate ? element.hourRate.toTimeString().split(' ')[0] : 'N/A' }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+      </mat-card-content>
     </mat-card>
-
-    </div>
+  </div>
 
     <div class="row">
       <div class="col-6">
-        <button class="btn btn-warning btn-lg w-100">Valider Enseignant</button>
+        <a
+          mat-flat-button
+          color="primary"
+          href="#"
+          target="_blank"
+          class="d-flex justify-content-center w-100"
+        >
+        Valider Enseignant
+        </a>
       </div>
       <div class="col-6">
-        <button class="btn btn-primary btn-lg w-100">Valider Délégué de classe</button>
+        <a
+          mat-flat-button
+          color="warn"
+          href="#"
+          target="_blank"
+          class="d-flex justify-content-center w-100"
+        >
+        Valider Délégué de classe
+        </a>
       </div>
     </div>
+
 </div>

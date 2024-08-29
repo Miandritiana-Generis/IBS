@@ -5,14 +5,8 @@ import {
   TemplateRef,
 } from '@angular/core';
 import {
-  startOfDay,
-  endOfDay,
-  subDays,
-  addDays,
-  endOfMonth,
   isSameDay,
   isSameMonth,
-  addHours,
   differenceInHours,
   isBefore
 } from 'date-fns';
@@ -34,16 +28,20 @@ import { FlatpickrModule } from 'angularx-flatpickr';
 
 const colors: Record<string, EventColor> = {
   red: {
-    primary: '#ad2121',
-    secondary: '#FAE3E3',
+    primary: '#fb977d',
+    secondary: '#ffede9',
   },
   blue: {
-    primary: '#1e90ff',
-    secondary: '#D1E8FF',
+    primary: '#0085db',
+    secondary: '#e5f3fb',
   },
   yellow: {
-    primary: '#e3bc08',
-    secondary: '#FDF1BA',
+    primary: '#f8c076',
+    secondary: '#fff6ea',
+  },
+  green: {
+    primary: '#4bd08b',
+    secondary: '#dffff3',
   },
 };
 
@@ -51,7 +49,7 @@ const colors: Record<string, EventColor> = {
   selector: 'app-programme',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
     CalendarModule,
     FlatpickrModule
@@ -64,7 +62,7 @@ const colors: Record<string, EventColor> = {
       }
 
       pre {
-        background-color: #f5f5f5;
+        // background-color: #f5f5f5;
         padding: 15px;
       }
     `,
@@ -413,4 +411,5 @@ EventColor: any;
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
   }
+
 }

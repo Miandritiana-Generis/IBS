@@ -8,14 +8,14 @@
           [(viewDate)]="viewDate"
           (viewDateChange)="closeOpenMonthViewDay()"
         >
-          Previous
+          Avant
         </div>
         <div
           class="btn btn-outline-secondary"
           mwlCalendarToday
           [(viewDate)]="viewDate"
         >
-          Today
+          Aujourd'hui
         </div>
         <div
           class="btn btn-primary"
@@ -24,7 +24,7 @@
           [(viewDate)]="viewDate"
           (viewDateChange)="closeOpenMonthViewDay()"
         >
-          Next
+          Après
         </div>
       </div>
     </div>
@@ -38,21 +38,21 @@
           (click)="setView(CalendarView.Month)"
           [class.active]="view === CalendarView.Month"
         >
-          Month
+          Mois
         </div>
         <div
           class="btn btn-primary"
           (click)="setView(CalendarView.Week)"
           [class.active]="view === CalendarView.Week"
         >
-          Week
+          Semaine
         </div>
         <div
           class="btn btn-primary"
           (click)="setView(CalendarView.Day)"
           [class.active]="view === CalendarView.Day"
         >
-          Day
+          Jour
         </div>
       </div>
     </div>
@@ -93,8 +93,6 @@
     </mwl-calendar-day-view>
   </div>
   
-  <!-- Everything you see below is just for the demo, you don't need to include it in your app -->
-  
   <br /><br /><br />
   
   <ng-template #modalContent let-close="close">
@@ -106,7 +104,6 @@
     </div>
     <div class="modal-body m-3 mt-2 mb-2">
       <div>
-        Info:
         <pre>Matière:</pre>
         <pre>Classe:</pre>
         <pre>Salle:</pre>
@@ -114,13 +111,14 @@
       </div>
     </div>
     <div class="modal-footer d-flex justify-content-center m-3 mb-0">
-      <button 
-        class="btn btn-lg btn-outline-warning me-3" 
-        [disabled]="estCoursDans48heures(modalData?.event)"
-      >
-        Annulé ce cours
-      </button>
-      <button class="btn btn-lg btn-primary">Fiche de présence</button>
-    </div>
+          <button 
+            class="btn btn-secondary" 
+            [disabled]="estCoursDans48heures(modalData?.event)"
+            style="background-color: #fa896b; color: white; border-color: #fa896b;"
+          >
+            Annulé ce cours
+          </button>
+          <button class="btn btn-primary" style="background-color: #0085db; border-color: #0085db;">Fiche de présence</button>
+        </div>
   </ng-template>
   

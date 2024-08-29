@@ -20,6 +20,7 @@ export interface Vegetable {
 @Component({
   selector: 'app-chips',
   templateUrl: './chips.component.html',
+  // templateUrl: '../../fiche-presence/fiche-presence.component.ts',
   styleUrls: ['./chips.component.scss'],
 })
 export class AppChipsComponent {
