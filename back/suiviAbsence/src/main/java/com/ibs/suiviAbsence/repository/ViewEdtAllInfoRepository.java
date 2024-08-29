@@ -14,5 +14,7 @@ public interface ViewEdtAllInfoRepository extends JpaRepository<ViewEdtAllInfo, 
     @Query("select e from ViewEdtAllInfo e where e.idSalle=:idSalle and e.date=:date and :time between e.debut and e.fin")
     public List<ViewEdtAllInfo> findAllByIdSalle(@Param("idSalle") int idSalle,@Param("date") Date date
     ,@Param("time") Time time );
+    
+    public List<ViewEdtAllInfo> findByIdEnseignant(int idEnseingant);
 
 }

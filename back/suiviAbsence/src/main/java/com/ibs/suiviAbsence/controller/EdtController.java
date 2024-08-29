@@ -1,5 +1,6 @@
 package com.ibs.suiviAbsence.controller;
 
+import com.ibs.suiviAbsence.modele.Edt;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,9 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ibs.suiviAbsence.modele.Salle;
 import com.ibs.suiviAbsence.modele.ViewEdt;
+import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.repository.SalleRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtRepository;
+import com.ibs.suiviAbsence.service.EdtService;
 import com.ibs.suiviAbsence.service.ViewEdtService;
+import com.ibs.suiviAbsence.utilitaire.FonctionUtil;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 public class EdtController {
@@ -26,7 +31,17 @@ public class EdtController {
 
     @Autowired
     SalleRepository salleRepo;
-
+    
+    @Autowired
+    EdtService edtService2;
+    
+    
+    @GetMapping("edt")
+    public ResponseEntity getAllEdt(@RequestHeader(value = "Authorization", required = true)String authorizationHeader){
+        String token= FonctionUtil.getBearerToken(authorizationHeader);
+        List<ViewEdtAllInfo>liste=this.edtService2.findEdt(token);
+        return ResponseEntity.ok(liste);
+    }
     
     /**
      * cette methode permet d'afficher la liste des emplois du temps
