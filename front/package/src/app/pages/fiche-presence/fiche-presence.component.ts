@@ -9,7 +9,7 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { EdtService } from 'src/app/services/edt.service';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 export interface ProductsData {
   id: number;
@@ -36,6 +36,7 @@ export interface ProductsData {
     MatTableModule,
     MatChipsModule,
     CommonModule,
+    // HttpClientModule,
   ],
   templateUrl: './fiche-presence.component.html'
 })
@@ -47,6 +48,7 @@ export class AppFichePresenceComponent {
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
+  apiUrl: any;
 
   constructor(private edtService: EdtService, private http: HttpClient) {}
 
@@ -56,11 +58,6 @@ export class AppFichePresenceComponent {
 
   getListFichePresence(id_salle: number, heure: string, date: string): void {
 
-    const url = `http://127.0.0.1:5000/api/fiche-presence?id_salle=${id_salle}&heure=${heure}&date=${date}`;
-    this.http.get<any[]>(url).subscribe(data => {
-      this.listeFichePresence = data;
-    });
-    
     this.edtService.getInfoFichePresence(id_salle, heure, date).subscribe(
       (data: any[]) => {
         // Map data to include hourRate defaulting to null if not provided
@@ -82,4 +79,21 @@ export class AppFichePresenceComponent {
       }
     );
   }
+
+
+  sendFichePresenceData(): void {
+    const dataToSend = this.listeFichePresence;  // Assuming listeFichePresence contains the data you want to send
+    this.edtService.sendFichePresenceDataService(dataToSend).subscribe(
+      (response: any) => {
+        console.log('Data sent successfully:', response);
+        window.location.href = 'http://127.0.0.1:5000/';
+      },
+      (error: any) => {
+        console.error('Error sending data:', error);
+      }
+    );
+  }
+    
+
+
 }
