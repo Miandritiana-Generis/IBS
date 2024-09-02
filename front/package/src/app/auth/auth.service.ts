@@ -19,14 +19,6 @@ export class AuthService {
   constructor(private router: Router, private http: HttpClient, 
     private personneService:PersonneService ) { }
 
-  // login(token: string): void {    
-  //       localStorage.setItem(this.tokenKey, token);
-  //       /*localStorage.setItem('id', `${data.id}`);
-  //       localStorage.setItem('nom',data.nom);
-  //       localStorage.setItem('prenom',data.prenom);
-  //       localStorage.setItem('mail',data.mail);
-  //       localStorage.setItem('contact',data.contact);*/
-  // }
 
   login(username: string, password: string,idApplication:string): Observable<boolean> {
     const headers = new HttpHeaders({
@@ -73,22 +65,20 @@ export class AuthService {
 
   
 
-  /*logout(): void {
-    this.loaderService.show();
+  logout(): void {
+    // this.loaderService.show();
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.getToken()}`
     });
     this.http.get(`${this.url}/logout`,{headers})
       .pipe(
         map(response => {
-          this.loaderService.hide();
+          // this.loaderService.hide();
           localStorage.clear()
-          this.loggedIn.next(false);
-          this.router.navigate(['/login']);
           return true; // Ajouté pour indiquer un succès
         }),
         catchError(error => {
-          this.loaderService.hide();
+          // this.loaderService.hide();
           localStorage.clear()
           return throwError(() => new Error(error.error.erreurs[0].messageErreur));
         })
@@ -98,7 +88,7 @@ export class AuthService {
           // Optionnel: traiter les actions supplémentaires après la réussite du logout
         }
       );
-  }*/
+  }
 
 
   isLoggedIn(): boolean {
@@ -110,9 +100,5 @@ export class AuthService {
     return localStorage.getItem(this.tokenKey);
   }
 
-  logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    this.router.navigate(['/authentication/login']);
-  }
 
 }
