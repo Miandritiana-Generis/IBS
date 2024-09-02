@@ -4,6 +4,7 @@ import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { AppDashboardComponent } from './pages/dashboard/dashboard.component';
 import { AppFichePresenceComponent } from './pages/fiche-presence/fiche-presence.component';
+import { AppListeAbsence } from './pages/liste-absence/liste-absence.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,10 @@ const routes: Routes = [
       {
         path: 'fiche-presence',
         component: AppFichePresenceComponent,
+      },
+      {
+        path: 'liste-absence',
+        component: AppListeAbsence,
       },
       {
         path: 'extra',

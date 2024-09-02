@@ -58,12 +58,15 @@ export class AppFichePresenceComponent {
 
   getListFichePresence(id_salle: number, heure: string, date: string): void {
 
+    const salle = localStorage.getItem("salle");
+    id_salle = parseInt(salle || "0", 10);
     this.edtService.getInfoFichePresence(id_salle, heure, date).subscribe(
       (data: any[]) => {
         // Map data to include hourRate defaulting to null if not provided
         this.listeFichePresence = data.map(item => ({
           id: item.id,
-          imagePath: item.photo ? `assets/images/profile/${item.photo}` : 'assets/images/profile/default.jpg',
+          // imagePath: item.photo ? `assets/images/profile/${item.photo}` : 'assets/images/profile/default-user.jpg',
+          imagePath: 'assets/images/profile/default-user.jpg',
           nom: item.nom,
           prenom: item.prenom,
           hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
@@ -91,6 +94,7 @@ export class AppFichePresenceComponent {
         window.location.href = 'http://127.0.0.1:5000/';
       },
       (error: any) => {
+        alert("Tsy mety lasa le data");
         console.error('Error sending data:', error);
       }
     );
