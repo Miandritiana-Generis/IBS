@@ -45,8 +45,6 @@ public class ViewEdt {
     String salle;
     @Column
     int id_personne;
-    @Column
-    int id_etudiant;
 
     
 

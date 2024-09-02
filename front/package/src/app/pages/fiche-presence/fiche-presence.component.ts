@@ -87,7 +87,7 @@ export class AppFichePresenceComponent {
     this.edtService.sendFichePresenceDataService(dataToSend).subscribe(
       (response: any) => {
         console.log('Data sent successfully:', response);
-        window.location.href = 'sendFichePresenceDataService';
+        window.location.href = 'http://127.0.0.1:5000/';
       },
       (error: any) => {
         alert("Tsy mety lasa le data");

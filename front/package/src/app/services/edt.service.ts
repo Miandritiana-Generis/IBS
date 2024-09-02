@@ -68,8 +68,8 @@ export class EdtService {
 
 
   sendFichePresenceDataService(data: any[]): Observable<any> {
-    return this.http.post<any>(`http://127.0.0.1:5000/api/fiche-presence`, data);
-  }
+    return this.http.post<any>('http://127.0.0.1:5000/api/fiche-presence', data);
+  }  
   
 
 }
