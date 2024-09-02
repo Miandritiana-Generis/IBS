@@ -46,16 +46,18 @@ public class PresenceController {
         @RequestParam(value = "date", required = false) String date,
         @RequestParam(value = "heure", required = false) String heure) {
 
-    if (date == null || date.isEmpty()) {
-        date = null;
-    }
-    if (heure == null || heure.isEmpty()) {
-        heure = null;
+        if (date == null || date.isEmpty()) {
+            date = null;
+        }
+        if (heure == null || heure.isEmpty()) {
+            heure = null;
+        }
+
+        List<V_InfoFichePresence> result = edtService.getInfoFichePresence(id_salle, heure, date);
+        return ResponseEntity.ok(result);
     }
 
-    List<V_InfoFichePresence> result = edtService.getInfoFichePresence(id_salle, heure, date);
-    return ResponseEntity.ok(result);
-    }
+    
 
     @GetMapping("today")
     public ResponseEntity<List<V_InfoFichePresence>> getInfoFichePresenceToday(

@@ -8,6 +8,12 @@ import { Time } from '@angular/common';
   providedIn: 'root'
 })
 export class EdtService {
+  apiUrl: string = Constants.BASE_URL + '/presences'; // or another appropriate URL
+
+  
+  sendFichePresenceData(data: any[]): Observable<any> {
+    return this.http.post<any>(this.apiUrl, data);
+  }
   private urlListEdt = Constants.BASE_URL+'/liste-edt';
   private urlTokenValue = 'localhost:8081/token';
   private urlFichePresence = Constants.BASE_URL+'/presences';
