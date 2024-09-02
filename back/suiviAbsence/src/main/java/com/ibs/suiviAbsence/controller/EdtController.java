@@ -1,6 +1,5 @@
 package com.ibs.suiviAbsence.controller;
 
-import com.ibs.suiviAbsence.modele.Edt;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +18,8 @@ import com.ibs.suiviAbsence.repository.ViewEdtRepository;
 import com.ibs.suiviAbsence.service.EdtService;
 import com.ibs.suiviAbsence.service.ViewEdtService;
 import com.ibs.suiviAbsence.utilitaire.FonctionUtil;
+import java.sql.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
@@ -37,9 +38,11 @@ public class EdtController {
     
     
     @GetMapping("edt")
-    public ResponseEntity getAllEdt(@RequestHeader(value = "Authorization", required = true)String authorizationHeader){
+    public ResponseEntity getAllEdt(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,
+            @RequestParam(name = "dateDebut")  Date dateDebut, 
+            @RequestParam(name = "dateFin")  Date datefin){
         String token= FonctionUtil.getBearerToken(authorizationHeader);
-        List<ViewEdtAllInfo>liste=this.edtService2.findEdt(token);
+        List<ViewEdtAllInfo>liste=this.edtService2.findEdt(token,dateDebut,datefin);
         return ResponseEntity.ok(liste);
     }
     

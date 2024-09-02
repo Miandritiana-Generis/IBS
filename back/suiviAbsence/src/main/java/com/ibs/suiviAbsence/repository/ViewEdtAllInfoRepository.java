@@ -19,5 +19,7 @@ public interface ViewEdtAllInfoRepository extends JpaRepository<ViewEdtAllInfo, 
     public List<ViewEdtAllInfo> findByIdEnseignantAndDateBetween(int idEnseingant,Date datedebut,Date datefin);
     
     public List<ViewEdtAllInfo> findAllByDateBetween(Date datedebut,Date datefin);
+    
+    public List<ViewEdtAllInfo> findAllByIdClasseAndDateBetween(int idClasse,Date datedebut,Date datefin);
 
 }

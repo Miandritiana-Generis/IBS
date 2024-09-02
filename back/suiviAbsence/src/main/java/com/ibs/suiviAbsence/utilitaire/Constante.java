@@ -10,4 +10,7 @@ package com.ibs.suiviAbsence.utilitaire;
  */
 public class Constante {
     public final static int idFonctionaliteEdt=1;
+    
+    public final static int OUI=1;
+    public final static int NON=0;
 }

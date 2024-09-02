@@ -18,30 +18,19 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Table(name="v_personne_statut")
+@Table(name="v_autorisation_pat_detail")
 @Entity
 @NoArgsConstructor
-public class ViewPersonneStatut {
+public class ViewAutorisationPatDetail {
     @Id
     private int id;
     @Column
-    String nom;
+    private int idDirection;
     @Column
-    String prenom;
+    private int idFonctionnalite;
     @Column
-    String genre;
+    private int toutPat;
     @Column
-    String mail;
-    @Column
-    String contact;
-    @Column
-    String login;
-    @Column
-    int idEtudiant;
-    @Column
-    int idPat;
-    @Column
-    int idEnseignant;
-    @Column
-    int idDirection;
+    private int idPat;
+    
 }

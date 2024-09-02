@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.sql.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,30 +19,20 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Table(name="v_personne_statut")
+@Table(name="v_classe_etudiant")
 @Entity
 @NoArgsConstructor
-public class ViewPersonneStatut {
+public class ViewClasseEtudiant {
     @Id
     private int id;
     @Column
-    String nom;
+    private int idClasse;
     @Column
-    String prenom;
+    private int idEtudiant;
+    @Column 
+    private int idAnneeScolaire;
     @Column
-    String genre;
+    private Date datedebut;
     @Column
-    String mail;
-    @Column
-    String contact;
-    @Column
-    String login;
-    @Column
-    int idEtudiant;
-    @Column
-    int idPat;
-    @Column
-    int idEnseignant;
-    @Column
-    int idDirection;
+    private Date datefin;
 }
