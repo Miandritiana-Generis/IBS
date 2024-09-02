@@ -64,7 +64,7 @@ public class ViewEdtService {
 
     
 
-     public List<V_InfoFichePresence> getInfoFichePresence(int id_salle, String heure, String date) {
+    public List<V_InfoFichePresence> getInfoFichePresence(int id_salle, String heure, String date) {
         if (date == null || date.isEmpty()) {
             date = null;
         }
@@ -72,6 +72,13 @@ public class ViewEdtService {
             heure = null;
         }
         return v_iInfoFichePresenceRepository.getInfoFichePresence(id_salle, heure, date);
+    }
+
+    public List<V_InfoFichePresence> getInfoFichePresenceToday(int id_salle, String date) {
+        if (date == null || date.isEmpty()) {
+            date = null;
+        }
+        return v_iInfoFichePresenceRepository.getInfoFichePresenceToday(id_salle, date);
     }
 
 }
