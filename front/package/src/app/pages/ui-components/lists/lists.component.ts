@@ -34,13 +34,19 @@ export class AppListsComponent {
     localStorage.setItem("salle" , salle);
   }
 
-  saveSalle(shoeId: number | undefined): void {
-    if (shoeId !== undefined) {
-      console.log('Selected Salle ID:', shoeId);
-      localStorage.setItem("salle" , shoeId.toString());
-    } else {
-      console.log('No Salle selected');
-    }
-  }
+  // saveSalle(shoeId: number | undefined): void {
+  //   if (shoeId !== undefined) {
+  //     console.log('Selected Salle ID:', shoeId);
+  //     localStorage.setItem("salle" , shoeId.toString());
+
+  //     this.http.post('/set_id_salle', { id_salle: shoeId })
+  //     .subscribe(response => {
+  //       console.log('Response from Flask:', response);
+  //     });
+      
+  //   } else {
+  //     console.log('No Salle selected');
+  //   }
+  // }
 
 }
