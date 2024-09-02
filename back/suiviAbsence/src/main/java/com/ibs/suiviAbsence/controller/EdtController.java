@@ -19,7 +19,6 @@ import com.ibs.suiviAbsence.service.EdtService;
 import com.ibs.suiviAbsence.service.ViewEdtService;
 import com.ibs.suiviAbsence.utilitaire.FonctionUtil;
 import java.sql.Date;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController

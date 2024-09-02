@@ -42,7 +42,7 @@ public class ViewEdtService {
 
     /**
      * cette methode permet d'afficher la liste des emplois du temps
-     * @param id_personne
+     * @param idPersonne
      * @return
      */
     public List<ViewEdt> getEdt(int idPersonne) {

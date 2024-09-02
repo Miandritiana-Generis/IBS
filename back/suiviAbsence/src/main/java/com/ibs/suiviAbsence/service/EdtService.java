@@ -12,6 +12,7 @@ import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 import com.ibs.suiviAbsence.repository.ViewPersonneStatutRepository;
 import com.ibs.suiviAbsence.utilitaire.Constante;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class EdtService {
     @Autowired
     private EtudiantService etudiantService;
     public List<ViewEdtAllInfo> findEdt(String token,Date datedebut ,Date datefin){
-        List<ViewEdtAllInfo> liste=null;
+        List<ViewEdtAllInfo> liste=new ArrayList<>();
         ViewPersonneStatut personne = viewPersonneStatutRepository.findPersonneByToken(token);
         if(personne==null){
             throw new PersonneException("Token invalide");
