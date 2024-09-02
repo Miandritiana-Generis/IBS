@@ -42,7 +42,7 @@ export interface ProductsData {
 })
 export class AppFichePresenceComponent {
   listeFichePresence: ProductsData[] = [];
-  id_salle = 40;
+  id_salle = 30;
   heure = "";
   date = "";
 
@@ -58,21 +58,26 @@ export class AppFichePresenceComponent {
 
   getListFichePresence(id_salle: number, heure: string, date: string): void {
 
+    const salle = localStorage.getItem("salle");
+    id_salle = parseInt(salle || "0", 10);
     this.edtService.getInfoFichePresence(id_salle, heure, date).subscribe(
       (data: any[]) => {
         // Map data to include hourRate defaulting to null if not provided
         this.listeFichePresence = data.map(item => ({
           id: item.id,
-          imagePath: item.photo ? `assets/images/profile/${item.photo}` : 'assets/images/profile/default.jpg',
+          // imagePath: item.photo ? `assets/images/profile/${item.photo}` : 'assets/images/profile/default-user.jpg',
+          imagePath: 'assets/images/profile/default-user.jpg',
           nom: item.nom,
           prenom: item.prenom,
-          hourRate: item.heure_arrive ? new Date(item.heure_arrive) : null,
+          hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
           status: item.status ? (item.status === true ? 'Present' : 'Absent') : 'Absent',
-          salle : item.salle,
-          matiere : item.matiere,
-          enseignant : item.enseignant,
-          classe : item.classe
+          salle: item.salle,
+          matiere: item.matiere,
+          enseignant: item.enseignant,
+          classe: item.classe
         }));
+        
+        
 
         // Set the data source for the table
         this.dataSource = this.listeFichePresence;
@@ -89,6 +94,7 @@ export class AppFichePresenceComponent {
         window.location.href = 'http://127.0.0.1:5000/';
       },
       (error: any) => {
+        alert("Tsy mety lasa le data");
         console.error('Error sending data:', error);
       }
     );
