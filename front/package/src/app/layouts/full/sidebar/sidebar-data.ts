@@ -22,4 +22,9 @@ export const navItems: NavItem[] = [
     iconName: 'layout-dashboard',
     route: '/dashboard',
   },
+  {
+    displayName: 'Liste Absence',
+    iconName: 'user-x',
+    route: '/liste-absence',
+  },
 ];

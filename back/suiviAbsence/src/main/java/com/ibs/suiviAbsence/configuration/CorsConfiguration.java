@@ -19,7 +19,7 @@ package com.ibs.suiviAbsence.configuration;
      @Override
      public void addCorsMappings(CorsRegistry registry) {
          registry.addMapping("/**")
-                 .allowedOrigins("http://localhost:4200") // Remplacez avec votre URL Angular
+                 .allowedOrigins("http://localhost:4400", "http://127.0.0.1:5000/") // Remplacez avec votre URL Angular
                  .allowedMethods("GET", "POST", "PUT", "DELETE")
                  .allowedHeaders("*")
                  .allowCredentials(true)

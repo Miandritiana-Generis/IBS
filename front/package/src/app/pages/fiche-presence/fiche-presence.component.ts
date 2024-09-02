@@ -55,12 +55,16 @@ export class AppFichePresenceComponent {
   }
 
   getListFichePresence(id_salle: number, heure: string, date: string): void {
+
+    const salle = localStorage.getItem("salle");
+    id_salle = parseInt(salle || "0", 10);
     this.edtService.getInfoFichePresence(id_salle, heure, date).subscribe(
       (data: any[]) => {
         // Map data to include hourRate defaulting to null if not provided
         this.listeFichePresence = data.map(item => ({
           id: item.id,
-          imagePath: item.photo ? `assets/images/profile/${item.photo}` : 'assets/images/profile/default.jpg',
+          // imagePath: item.photo ? `assets/images/profile/${item.photo}` : 'assets/images/profile/default-user.jpg',
+          imagePath: 'assets/images/profile/default-user.jpg',
           nom: item.nom,
           prenom: item.prenom,
           hourRate: item.heure_arrive ? new Date(item.heure_arrive) : null,
@@ -76,4 +80,22 @@ export class AppFichePresenceComponent {
       }
     );
   }
+
+
+  sendFichePresenceData(): void {
+    const dataToSend = this.listeFichePresence;  // Assuming listeFichePresence contains the data you want to send
+    this.edtService.sendFichePresenceDataService(dataToSend).subscribe(
+      (response: any) => {
+        console.log('Data sent successfully:', response);
+        window.location.href = 'sendFichePresenceDataService';
+      },
+      (error: any) => {
+        alert("Tsy mety lasa le data");
+        console.error('Error sending data:', error);
+      }
+    );
+  }
+    
+
+
 }
