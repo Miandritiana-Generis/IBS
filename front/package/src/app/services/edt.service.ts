@@ -70,6 +70,11 @@ export class EdtService {
   sendFichePresenceDataService(data: any[]): Observable<any> {
     return this.http.post<any>('http://127.0.0.1:5000/api/fiche-presence', data);
   }  
+
+  //send id salle
+  sendIdSalle(id_salle: number): Observable<any> {
+    return this.http.post<any>('http://127.0.0.1:5000/api/set_id_salle', id_salle);
+  }
   
 
 }
