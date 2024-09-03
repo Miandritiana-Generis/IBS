@@ -165,6 +165,20 @@ export class AppDashboardComponent {
     { value: 'june', viewValue: 'June 2023' },
   ];
 
+  classeItems = [
+    { label: 'L2MD1' },
+    { label: 'L2MD2' },
+    { label: 'L1A1' },
+    { label: 'L1A2' }
+  ];
+
+  niveauItems = [
+    { label: 'L1'},
+    { label: 'L2'},
+    { label: 'Master 1' },
+    { label: 'Master 2' },
+  ];
+
   // recent transaction
   stats: stats[] = [
     {
