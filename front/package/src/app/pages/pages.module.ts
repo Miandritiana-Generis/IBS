@@ -14,6 +14,17 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { AppListeAbsence } from './liste-absence/liste-absence.component';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+import { ComponentType } from '@angular/cdk/portal';
+import { ReactiveFormsModule } from '@angular/forms';
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -28,7 +39,16 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
       provide: DateAdapter,
       useFactory: adapterFactory,
     }),
+    MatCardModule,
+    MatTableModule,
+    TablerIconsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
   ],
   exports: [TablerIconsModule],
+  declarations: [
+    AppListeAbsence
+  ],
 })
 export class PagesModule {}

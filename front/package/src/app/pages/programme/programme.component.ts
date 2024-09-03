@@ -108,8 +108,8 @@ export class AppProgrammeComponent {
 
   events: CalendarEvent[] = [
     {
-      start: new Date(2024, 0, 1, 7, 0),  // Specific date and time: January 1, 2024, 07:00 AM
-      end: new Date(2024, 0, 1, 9, 0),    // Specific date and time: January 1, 2024, 09:00 AM
+      start: new Date(2024, 8, 3, 7, 0),  // Specific date and time: Septembre 3, 2024, 07:00 AM
+      end: new Date(2024, 8, 3, 9, 0),    // Specific date and time: Septembre 3, 2024, 09:00 AM
       title: 'Tes matiere',
       color: { ...colors['red'] },
       actions: this.actions,
