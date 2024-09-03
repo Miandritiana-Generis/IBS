@@ -32,6 +32,7 @@ import { CalendarModule } from 'angular-calendar';
 
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { EdtService } from 'src/app/services/edt.service';
+import { CustomCalendarEvent } from 'src/app/modeles/CustomCalendarEvent ';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -92,9 +93,9 @@ export class AppProgrammeComponent {
   maxDate = endOfWeek(this.viewDate);
   modalData: {
     action: string;
-    event: CalendarEvent;
+    event: CustomCalendarEvent;
   } | undefined;
-
+  
   actions: CalendarEventAction[] = [
     {
       label: '<i class="fas fa-fw fa-pencil-alt"></i>',
@@ -115,7 +116,7 @@ export class AppProgrammeComponent {
 
   refresh = new Subject<void>();
 
-  events: CalendarEvent[] = [];
+  events: CustomCalendarEvent[] = [];
 
   activeDayIsOpen: boolean = true;
 EventColor: any;
@@ -161,27 +162,13 @@ EventColor: any;
       console.warn('Event is undefined, cannot handle the event.');
       return;
     }
+
+    console.log(event);
   
     this.modalData = { event, action };
     this.modal.open(this.modalContent, { size: 'lg' });
   }  
 
-  // addEvent(): void {
-  //   this.events = [
-  //     ...this.events,
-  //     {
-  //       title: 'New event',
-  //       start: startOfDay(new Date()),
-  //       end: endOfDay(new Date()),
-  //       color: colors['red'],
-  //       draggable: true,
-  //       resizable: {
-  //         beforeStart: true,
-  //         afterEnd: true,
-  //       },
-  //     },
-  //   ];
-  // }
 
   estCoursDans48heures(event: CalendarEvent | undefined): boolean {
     if (!event) {
@@ -249,6 +236,12 @@ EventColor: any;
               afterEnd: false,
             },
             draggable: false,
+              detail:{
+                "matiere":item.matiere,
+                "enseignant":item.enseignant,
+                "salle":item.salle,
+                "classe":item.classe
+            }
           }
         );
         this.refresh.next();
