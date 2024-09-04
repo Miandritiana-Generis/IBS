@@ -68,7 +68,12 @@
                         {% for ficheP in listeFichePresence %}
                         <tr>
                             <td class="d-flex align-items-center">
-                                <img src="{{ url_for('static', filename='assets/img/avatars/default-user.jpg') }}" alt="Avatar" class="rounded-circle" width="10%"/>
+                                <img 
+                                    src="{{ ficheP.photo if ficheP.photo else url_for('static', filename='assets/img/avatars/default-user.jpg') }}" 
+                                    alt="Avatar" 
+                                    class="rounded-circle" 
+                                    width="10%"
+                                />
                                 <p class="mb-0 ml-2">{{ ficheP.nom }}</p>
                             </td>
                             <td>{{ ficheP.prenom }}</td>

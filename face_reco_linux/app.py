@@ -9,6 +9,8 @@ import base64
 from PIL import Image, UnidentifiedImageError
 import os
 from flask_cors import CORS
+import redis
+import requests
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -44,8 +46,7 @@ def handle_frame(base64_image):
 
     # Check if 'id_salle' exists in the session
     if 'id_salle' not in session:
-        # If not, redirect to the specified URL with a flash message
-        return jsonify({'redirect': True, 'message': 'Salle non designe'}), 403
+        session['id_salle'] = data_store[0].salle
     
     # Decode the base64 image
     image_data = base64.b64decode(base64_image.split(',')[1])
@@ -96,10 +97,16 @@ def handle_frame(base64_image):
 
 @app.route('/api/fiche-presence', methods=['POST'])
 def fiche_presence():
+
     global data_store
     data = request.get_json()  # Get the JSON data sent from Angular
     print(data)  # For debugging, print the received data
     data_store = data
+
+    # Check if 'id_salle' exists in the session
+    if 'id_salle' not in session:
+        session['id_salle'] = data_store[0]['salle']
+
     return jsonify({"message": "Data received successfully"}), 200
 
 
@@ -125,12 +132,36 @@ def index():
 
     # Check if 'id_salle' exists in the session
     if 'id_salle' not in session:
-        # If not, redirect to the specified URL with a flash message
-        return jsonify({'redirect': True, 'message': 'Salle non designe'}), 403
-        return redirect('http://localhost:4400/programme')
+        session['id_salle'] = data_store[0]['salle']
+        print(session.get('id_salle', 'Tsy mbola misy'))
+        # return jsonify({'redirect': True, 'message': 'Salle non designe'}), 403
+        # return redirect('http://localhost:4400/programme')
     
-    global data_store
     return render_template('index.html', listeFichePresence=data_store)
+
+
+def addOnRedis(data_store):
+    r = redis.Redis(host='localhost', port=6379, db=0)
+
+    for item in data_store:
+        id_classe_etudiant = item['id_classe_etudiant']
+        image_path = item['imagePath']  # Example: \\192.168.1.8\bevazaha$\Photo9353.jpg
+
+        # Convert network path for Windows
+        network_path = image_path.replace('/', '\\')
+
+        if os.path.exists(network_path):
+            # Read the image file in binary mode
+            with open(network_path, 'rb') as image_file:
+                image_data = image_file.read()
+
+            # Store image content in Redis
+            r.set(id_classe_etudiant, image_data)
+        else:
+            print(f"Tsy hita le sary: {network_path}")
+
+# def present(idEdt, idClasseEtudiant, tempsArriver)
+    
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)
