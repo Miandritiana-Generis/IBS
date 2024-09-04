@@ -1,5 +1,6 @@
 import { SalleService } from './../../../services/salle.service';
 import { Component } from '@angular/core';
+import { EdtService } from 'src/app/services/edt.service';
 
 export interface Section {
   name: string;
@@ -15,7 +16,7 @@ export class AppListsComponent {
   typesOfShoes: string[] = ['Salle1', 'Salle2', 'Salle24', 'Salle31'];
 
 
-  constructor(private salleService: SalleService) {}
+  constructor(private salleService: SalleService, private edtService: EdtService) {}
 
   ngOnInit() {
     this.getListeSalle();
@@ -38,6 +39,17 @@ export class AppListsComponent {
     if (shoeId !== undefined) {
       console.log('Selected Salle ID:', shoeId);
       localStorage.setItem("salle" , shoeId.toString());
+
+      this.edtService.sendIdSalle(shoeId).subscribe(
+        (response: any) => {
+          console.log('Data sent successfully:', response);
+        },
+        (error: any) => {
+          alert("Tsy mety lasa le id salle");
+          console.error('Error sending data:', error);
+        }
+      );
+      
     } else {
       console.log('No Salle selected');
     }
