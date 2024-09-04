@@ -36,6 +36,22 @@ public class GestionnaireErreur {
         res.getErreurs().add(new ErreurBean("E002", ex.getMessage()));
         return ResponseEntity.badRequest().body(res);
     }
+    
+    /**
+     * Cette méthode gère les exception dans la table presence
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(PresenceException.class)
+    public ResponseEntity<ReponseErreurBean> handlePresenceException(PresenceException ex) {
+        ReponseErreurBean res = new ReponseErreurBean();
+        res.setTimestamp(new Date().getTime());
+        res.setErreurs(new ArrayList<>());
+        res.getErreurs().add(new ErreurBean("E003", ex.getMessage()));
+        return ResponseEntity.badRequest().body(res);
+    }
 
+    
+    
    
 }

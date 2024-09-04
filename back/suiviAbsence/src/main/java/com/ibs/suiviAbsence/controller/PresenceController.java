@@ -32,6 +32,8 @@ public class PresenceController {
     public ResponseEntity insert(@RequestBody PresenceInsertDTO presenceInsertDTO){
         //recupererPresence
         Presence presence= presenceService.recupererPresence(presenceInsertDTO.getIdEdt());
+        //Controlle de valeur,
+        presenceService.controlleInsertPrensence(presence.getId(), presenceInsertDTO.getIdClasseEtudiant());
         //insertPrensenceDetail
         DetailPresence detailPresence= new DetailPresence(presence.getId(),presenceInsertDTO.getIdClasseEtudiant(),presenceInsertDTO.getTempsArriver());
         detailPresence=detailPresenceRepository.save(detailPresence);
