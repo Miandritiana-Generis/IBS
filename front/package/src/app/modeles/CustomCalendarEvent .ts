@@ -6,6 +6,8 @@ export interface  CustomCalendarEvent extends CalendarEvent {
         "matiere":string,
         "enseignant":string,
         "salle":string,
-        "classe":string
+        "classe":string,
+        "idSalle":number,
+        "id":number
     };
 }
