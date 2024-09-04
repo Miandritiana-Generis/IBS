@@ -240,7 +240,8 @@ EventColor: any;
                 "matiere":item.matiere,
                 "enseignant":item.enseignant,
                 "salle":item.salle,
-                "classe":item.classe
+                "classe":item.classe,
+                "idSalle":item.idSalle
             }
           }
         );
@@ -253,6 +254,10 @@ EventColor: any;
         // this.loader.hide();
       }
     );
+  }
+
+  verifierSalle(idSalle:number){
+    return parseInt(localStorage.getItem("salle")||"0")==idSalle;
   }
 
 
