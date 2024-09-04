@@ -19,6 +19,7 @@ import com.ibs.suiviAbsence.service.EdtService;
 import com.ibs.suiviAbsence.service.ViewEdtService;
 import com.ibs.suiviAbsence.utilitaire.FonctionUtil;
 import java.sql.Date;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
@@ -35,6 +36,11 @@ public class EdtController {
     @Autowired
     EdtService edtService2;
     
+    @GetMapping("edt/annuler/cours")
+    public ResponseEntity annuler(@RequestParam(value = "id_edt", required = true) int id_edt){
+        this.edtService2.annulerCours(id_edt);
+        return ResponseEntity.ok(null);
+    }
     
     @GetMapping("edt")
     public ResponseEntity getAllEdt(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,

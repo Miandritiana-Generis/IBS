@@ -4,18 +4,23 @@
  */
 package com.ibs.suiviAbsence.service;
 
+import com.ibs.suiviAbsence.exception.EdtException;
 import com.ibs.suiviAbsence.exception.PersonneException;
+import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.ViewClasseEtudiant;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.modele.ViewPersonneStatut;
+import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 import com.ibs.suiviAbsence.repository.ViewPersonneStatutRepository;
 import com.ibs.suiviAbsence.utilitaire.Constante;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -31,6 +36,10 @@ public class EdtService {
     private AutorisationPatService autorisationPatService;
     @Autowired
     private EtudiantService etudiantService;
+    @Autowired
+    private EdtRepository edtRepository;
+    @Autowired
+    private NotificationService notificationService;
     public List<ViewEdtAllInfo> findEdt(String token,Date datedebut ,Date datefin){
         List<ViewEdtAllInfo> liste=new ArrayList<>();
         ViewPersonneStatut personne = viewPersonneStatutRepository.findPersonneByToken(token);
@@ -52,6 +61,27 @@ public class EdtService {
             }
         }
         return liste;
+    }
+    
+    @Transactional(rollbackFor = Exception.class)
+    public void annulerCours(int idEdt){
+        Optional<Edt> optional=this.edtRepository.findById(idEdt) ;
+        if(optional.isEmpty()){
+            throw new EdtException("L'employe du temps n'existe pas ");
+        }
+        Edt edt= optional.get();
+        long difference =new Date(System.currentTimeMillis()).getTime()-edt.getDate().getTime();
+        
+        int endHeure= (int) (difference/3600000);
+        
+        if(endHeure<48){
+            throw new EdtException("Ce cours ne peut plus etre annulé");
+        }
+        edt.setEstAnnule(true);
+       // this.edtRepository.save(edt);
+        this.notificationService.genererNotification();
+        
+        
     }
     
 }
