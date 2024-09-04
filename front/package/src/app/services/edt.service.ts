@@ -108,30 +108,9 @@ export class EdtService {
     return this.http.post<any>('http://127.0.0.1:5000/api/fiche-presence', data);
   }  
 
-  getEdt(datedebut : Date,datefin :Date): Observable<Edt[]> {
-    const token=this.auth.getToken();
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-    return this.http.get<Edt[]>(`${this.urlEdt}?dateDebut=${EdtService.formatDate(datedebut)}&dateFin=${EdtService.formatDate(datefin)}`, { headers })
-      .pipe(
-        catchError(this.handleError<Edt[]>('getEdt'))
-      );
-  }
-
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(`${operation} failed: ${error.message}`);
-      return of(result as T);
-    };
-  }
-
-  static formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
-    const day = String(date.getDate()).padStart(2, '0');
-  
-    return `${year}-${month}-${day}`;
+  //send id salle
+  sendIdSalle(id_salle: number): Observable<any> {
+    return this.http.post<any>('http://127.0.0.1:5000/api/set_id_salle', id_salle);
   }
   
 
