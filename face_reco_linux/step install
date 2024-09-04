@@ -1,0 +1,36 @@
+# install python
+sudo apt-get update
+
+# cree environement named myenv
+python3 -m venv myenv
+source myenv/bin/activate
+deactivate #desactiver venv
+
+# before face_recognition
+sudo apt-get update
+sudo apt-get install build-essential cmake
+sudo apt-get install libgtk-3-dev libboost-all-dev
+sudo apt-get install libatlas-base-dev
+
+pip install dlib
+
+pip install face_recognition opencv-python
+
+pip install Flask
+
+pip install setuptools
+
+# run it
+python app.py
+
+#error in run mila face reco models
+sudo apt-get update
+sudo apt-get install git
+
+# zvt efa mi existe mila clone-na
+pip install git+https://github.com/ageitgey/face_recognition_models
+
+# mila sovket adefasana le base64
+pip install flask-socketio
+
+
