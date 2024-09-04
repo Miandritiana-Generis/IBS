@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { Constants } from '../util/constants';
@@ -49,32 +49,40 @@ export class EdtService {
     return this.http.get(`${this.urlTokenValue}`);
   }
 
-  getInfoFichePresence(id_salle : number, heure : string, date : string) : Observable<any> {
-    // let id_salle_temp = localStorage.getItem("salle");
-    // if (id_salle_temp !== null) {
-    //     id_salle = parseInt(id_salle_temp, 10);
-    // } else {
-    //     console.warn("La salle n'a pas été trouvée dans le localStorage. Utilisation de l'ID par défaut.");
-    //     id_salle = 0;
-    // }
+  getInfoFichePresence(id_salle?: number, id_edt?: string, heure?: string, date?: string): Observable<any> {
+    let params = new HttpParams();
+    
+    if (id_salle !== undefined) {
+        params = params.append('id_salle', id_salle.toString());
+    }
+    if (id_edt !== undefined) {
+        params = params.append('id_edt', id_edt);
+    }
+    if (heure) {
+        params = params.append('heure', heure);
+    }
+    if (date) {
+        params = params.append('date', date);
+    }
+
     return this.http.get<{
-      id: string;
-      id_edt : string;
-      id_classe_etudiant: string;
-      nom: string;
-      prenom: string;
-      photo: string;
-      heure_arrive: Time;
-      status: boolean;
-      salle: string;
-      matiere: string,
-      enseignant : string,
-      classe : string,
-      date : Date,
-      debut : Time,
-      fin : Time
-    }>(`${this.urlFichePresence}?id_salle=${id_salle}`);
-  }
+        id: string;
+        id_edt: string;
+        id_classe_etudiant: string;
+        nom: string;
+        prenom: string;
+        photo: string;
+        heure_arrive: Time;
+        status: boolean;
+        salle: string;
+        matiere: string;
+        enseignant: string;
+        classe: string;
+        date: Date;
+        debut: Time;
+        fin: Time;
+    }>(this.urlFichePresence, { params });
+}
 
   getInfoFichePresenceToday(id_salle : number, date : string) : Observable<any> {
     // let id_salle_temp = localStorage.getItem("salle");

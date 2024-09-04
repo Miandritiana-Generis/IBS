@@ -45,6 +45,7 @@ export class AppFichePresenceComponent {
   id_salle = 30;
   heure = "";
   date = "";
+  id_edt = "";
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
@@ -53,14 +54,14 @@ export class AppFichePresenceComponent {
   constructor(private edtService: EdtService, private http: HttpClient) {}
 
   ngOnInit() {
-    this.getListFichePresence(this.id_salle, this.heure, this.date);
+    this.getListFichePresence(this.id_salle,this.id_edt ,this.heure, this.date);
   }
 
-  getListFichePresence(id_salle: number, heure: string, date: string): void {
+  getListFichePresence(id_salle: number, idEdt : string,heure: string, date: string): void {
 
     const salle = localStorage.getItem("salle");
     id_salle = parseInt(salle || "0", 10);
-    this.edtService.getInfoFichePresence(id_salle, heure, date).subscribe(
+    this.edtService.getInfoFichePresence(id_salle,idEdt ,heure, date).subscribe(
       (data: any[]) => {
         // Map data to include hourRate defaulting to null if not provided
         this.listeFichePresence = data.map(item => ({
