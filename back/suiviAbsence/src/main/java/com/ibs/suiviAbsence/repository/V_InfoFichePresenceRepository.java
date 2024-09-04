@@ -14,6 +14,9 @@ public interface V_InfoFichePresenceRepository  extends JpaRepository<V_InfoFich
     @Query(value = "SELECT * FROM v_infoFichePresence WHERE CAST(v_infoFichePresence.date AS DATE) = COALESCE(CAST(:date AS DATE), current_date) AND COALESCE(CAST(:heure AS TIME), current_time) BETWEEN v_infoFichePresence.debut AND v_infoFichePresence.fin AND id_salle = :id_salle", nativeQuery = true)
     public List<V_InfoFichePresence> getInfoFichePresence(@Param("id_salle") int id_salle, @Param("heure") String heure, @Param("date") String date);
 
+    @Query(value = "SELECT * FROM v_infoFichePresence WHERE id_edt =:id_edt", nativeQuery = true)
+    public List<V_InfoFichePresence> getInfoFichePresenceWithEdt(@Param("id_edt") int id_edt);
+
     @Query(value = "SELECT * FROM v_infoFichePresence WHERE CAST(v_infoFichePresence.date AS DATE) = COALESCE(CAST(:date AS DATE), current_date) AND id_salle = :id_salle", nativeQuery = true)
     public List<V_InfoFichePresence> getInfoFichePresenceToday(@Param("id_salle") int id_salle, @Param("date") String date);
     

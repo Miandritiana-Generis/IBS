@@ -20,6 +20,7 @@ import com.ibs.suiviAbsence.modele.V_InfoFichePresence;
 import com.ibs.suiviAbsence.service.ViewEdtService;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.repository.DetailPresenceRepository;
+import com.ibs.suiviAbsence.repository.V_InfoFichePresenceRepository;
 import com.ibs.suiviAbsence.service.PresenceService;
 
 
@@ -30,6 +31,8 @@ public class PresenceController {
     PresenceService presenceService;
     @Autowired
     DetailPresenceRepository detailPresenceRepository;
+    @Autowired
+    V_InfoFichePresenceRepository v_InfoFichePresence;
     
     @PostMapping
     public ResponseEntity insert(@RequestBody PresenceInsertDTO presenceInsertDTO){
@@ -47,20 +50,29 @@ public class PresenceController {
 
     @GetMapping
     public ResponseEntity<List<V_InfoFichePresence>> getInfoFichePresence(
-        @RequestParam("id_salle") int id_salle,
-        @RequestParam(value = "date", required = false) String date,
-        @RequestParam(value = "heure", required = false) String heure) {
+    @RequestParam(value = "id_salle", required = false) Integer idSalle,
+    @RequestParam(value = "date", required = false) String date,
+    @RequestParam(value = "heure", required = false) String heure,
+    @RequestParam(value = "id_edt", required = false) Integer idEdt) {
 
+    List<V_InfoFichePresence> result;
+
+    if (idEdt != null) {
+        result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
+    } else if (idSalle != null) {
         if (date == null || date.isEmpty()) {
             date = null;
         }
         if (heure == null || heure.isEmpty()) {
             heure = null;
         }
-
-        List<V_InfoFichePresence> result = edtService.getInfoFichePresence(id_salle, heure, date);
-        return ResponseEntity.ok(result);
+        result = edtService.getInfoFichePresence(idSalle, heure, date);
+    } else {
+        return ResponseEntity.badRequest().body(null); // Si ni id_salle ni id_edt n'est fourni
     }
+
+    return ResponseEntity.ok(result);
+}
 
     
 
