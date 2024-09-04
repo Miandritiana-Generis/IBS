@@ -1,6 +1,8 @@
 import { SalleService } from './../../../services/salle.service';
 import { Component } from '@angular/core';
 import { EdtService } from 'src/app/services/edt.service';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 export interface Section {
   name: string;
@@ -16,10 +18,11 @@ export class AppListsComponent {
   typesOfShoes: string[] = ['Salle1', 'Salle2', 'Salle24', 'Salle31'];
 
 
-  constructor(private salleService: SalleService, private edtService: EdtService) {}
+  constructor(private salleService: SalleService, private edtService: EdtService, private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     this.getListeSalle();
+    this.checkSession();
   }
 
 
@@ -53,6 +56,22 @@ export class AppListsComponent {
     } else {
       console.log('No Salle selected');
     }
+  }
+
+  checkSession(): void {
+    const flaskUrl = 'http://127.0.0.1:5000/';
+    this.http.get(flaskUrl).subscribe(
+      response => {
+        // If the session exists, you can proceed as normal
+        console.log('Session is valid');
+      },
+      error => {
+        if (error.status === 403 && error.error.redirect) {
+          alert(error.error.message);  // Display the alert message
+          this.router.navigate(['/salle/lists']);  // Redirect to the desired page
+        }
+      }
+    );
   }
 
 }

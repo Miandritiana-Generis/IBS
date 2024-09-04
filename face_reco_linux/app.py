@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, jsonify, render_template, request, session
+from flask import Flask, jsonify, render_template, request, session, redirect, flash
 from flask_socketio import SocketIO, emit
 import face_recognition
 import cv2
@@ -41,6 +41,12 @@ known_faces, known_names = load_known_faces("static/images")
 
 @socketio.on('frame')
 def handle_frame(base64_image):
+
+    # Check if 'id_salle' exists in the session
+    if 'id_salle' not in session:
+        # If not, redirect to the specified URL with a flash message
+        return jsonify({'redirect': True, 'message': 'Salle non designe'}), 403
+    
     # Decode the base64 image
     image_data = base64.b64decode(base64_image.split(',')[1])
     try:
@@ -116,6 +122,13 @@ def get_session():
 
 @app.route('/')
 def index():
+
+    # Check if 'id_salle' exists in the session
+    if 'id_salle' not in session:
+        # If not, redirect to the specified URL with a flash message
+        return jsonify({'redirect': True, 'message': 'Salle non designe'}), 403
+        return redirect('http://localhost:4400/programme')
+    
     global data_store
     return render_template('index.html', listeFichePresence=data_store)
 
