@@ -33,6 +33,7 @@ import { CalendarModule } from 'angular-calendar';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { EdtService } from 'src/app/services/edt.service';
 import { CustomCalendarEvent } from 'src/app/modeles/CustomCalendarEvent ';
+import { Router } from '@angular/router';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -121,7 +122,7 @@ export class AppProgrammeComponent {
   activeDayIsOpen: boolean = true;
 EventColor: any;
 
-  constructor(private modal: NgbModal ,private edtService: EdtService) {
+  constructor(private modal: NgbModal ,private edtService: EdtService , private router:Router) {
     this.setEmployeDuTemps();
   }
 
@@ -241,7 +242,8 @@ EventColor: any;
                 "enseignant":item.enseignant,
                 "salle":item.salle,
                 "classe":item.classe,
-                "idSalle":item.idSalle
+                "idSalle":item.idSalle,
+                "id": item.id
             }
           }
         );
@@ -260,7 +262,9 @@ EventColor: any;
     return parseInt(localStorage.getItem("salle")||"0")==idSalle;
   }
 
-
+  redirectToFichePresence(idEdt:number) {
+    this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
+  }
 
 
 }
