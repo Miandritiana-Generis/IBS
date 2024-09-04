@@ -9,7 +9,8 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { EdtService } from 'src/app/services/edt.service';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { FichePresenceService } from 'src/app/services/fiche-presence.service';
 
 export interface ProductsData {
   id: number;
@@ -22,6 +23,7 @@ export interface ProductsData {
   matiere : string;
   enseignant : string;
   classe : string;
+  id_edt : string
 }
 
 @Component({
@@ -42,7 +44,7 @@ export interface ProductsData {
 })
 export class AppFichePresenceComponent {
   listeFichePresence: ProductsData[] = [];
-  id_salle = 30;
+  id_salle = 25;
   heure = "";
   date = "";
   id_edt = "";
@@ -51,17 +53,17 @@ export class AppFichePresenceComponent {
   dataSource: ProductsData[] = [];
   apiUrl: any;
 
-  constructor(private edtService: EdtService, private http: HttpClient) {}
+  constructor(private edtService: EdtService,private fichePresenceService : FichePresenceService, private http: HttpClient) {}
 
   ngOnInit() {
-    this.getListFichePresence(this.id_salle,this.id_edt ,this.heure, this.date);
+    this.getListFichePresence(this.id_salle ,this.heure, this.date, this.id_edt);
   }
 
-  getListFichePresence(id_salle: number, idEdt : string,heure: string, date: string): void {
+  getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string,): void {
 
     const salle = localStorage.getItem("salle");
     id_salle = parseInt(salle || "0", 10);
-    this.edtService.getInfoFichePresence(id_salle,idEdt ,heure, date).subscribe(
+    this.edtService.getInfoFichePresence(id_salle ,heure, date, idEdt).subscribe(
       (data: any[]) => {
         // Map data to include hourRate defaulting to null if not provided
         this.listeFichePresence = data.map(item => ({
@@ -75,13 +77,15 @@ export class AppFichePresenceComponent {
           salle: item.salle,
           matiere: item.matiere,
           enseignant: item.enseignant,
-          classe: item.classe
+          classe: item.classe,
+          id_edt : item.id_edt,
         }));
         
         
 
         // Set the data source for the table
         this.dataSource = this.listeFichePresence;
+        console.log("data:",this.listeFichePresence);
       }
     );
   }
@@ -100,6 +104,39 @@ export class AppFichePresenceComponent {
       }
     );
   }
+
+
+  validerProf(idEdt: string): void {
+    this.fichePresenceService.validerProf(idEdt)
+        .subscribe({
+            next: (response) => {
+                alert(response.message);
+            },
+            error: (error: HttpErrorResponse) => {
+                if (error.error && error.error.erreurs && error.error.erreurs.length > 0) {
+                    const backendError = error.error.erreurs[0];
+                    alert(`Erreur ${backendError.codeErreur}: ${backendError.messageErreur}`);
+                } else {
+                    alert(`Une erreur est survenue: ${error.message}`);
+                }
+            }
+        });
+}
+
+
+  validerDelegue(idEdt : string) : void {
+    if (confirm("Voulez-vous vraiment valider ?")) {
+      this.fichePresenceService.validerDelegue(idEdt).subscribe({
+          next: () => {
+              alert('Validation réussie.');
+          },
+          error: (err) => {
+              alert(err.message);  
+          }
+      });
+  }
+  }
+
     
 
 

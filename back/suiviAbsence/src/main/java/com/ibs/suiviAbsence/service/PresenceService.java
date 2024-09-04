@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ibs.suiviAbsence.exception.PresenceException;
 import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
@@ -75,35 +76,35 @@ public class PresenceService {
     }
 
     /**
-     * Cette metier permet de valider le fiche de presence en tant que prof mais ne fiche ne doit être
+     * Ce metier permet de valider le fiche de presence en tant que prof mais ne fiche ne doit être
      * validable que 30 min après le cours
      * @param idSalle
      * @param idEdt
      * @return
      */
     public void validerProf(Integer idEdt) {
-        Optional<Edt> edt = edtRepository.findById(idEdt);        
+        Optional<Edt> edt = edtRepository.findById(idEdt);      
+        if(idEdt == null) {
+            throw new PresenceException("l'emploi du temps n'existe pas");
+        }  
         if (edt.isPresent()) {
             Time heureDebut = edt.get().getDebut();
             Time heureFin = edt.get().getFin();
             LocalTime currentTime = LocalTime.now();
-
-            
             LocalTime debutLocalTime = heureDebut.toLocalTime();
-            LocalTime finLocalTime = heureFin.toLocalTime();
-
-            
+            LocalTime finLocalTime = heureFin.toLocalTime();            
             LocalTime debutPlus30Min = debutLocalTime.plusMinutes(30);
 
             
             if (currentTime.isAfter(debutPlus30Min) && currentTime.isBefore(finLocalTime)) {
                 presenceRepository.validerFichePresence(idEdt);
-                System.out.println("L'heure actuelle est entre l'heure de début ajustée et l'heure de fin.");
+                
             } else {
-                System.out.println("L'heure actuelle n'est pas entre l'heure de début ajustée et l'heure de fin.");
+                throw new PresenceException("L'heure actuelle n'est pas entre l'heure de début ajustée et l'heure de fin.");
             }
         } else {
             System.out.println("Aucune entrée trouvée pour l'ID fourni.");
+            throw new PresenceException("Aucune entrée trouvée pour l'ID fourni.");
         }
     }
 

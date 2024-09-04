@@ -49,7 +49,7 @@ export class EdtService {
     return this.http.get(`${this.urlTokenValue}`);
   }
 
-  getInfoFichePresence(id_salle?: number, id_edt?: string, heure?: string, date?: string): Observable<any> {
+  getInfoFichePresence(id_salle?: number,  heure?: string, date?: string, id_edt?: string): Observable<any> {
     let params = new HttpParams();
     
     if (id_salle !== undefined) {
