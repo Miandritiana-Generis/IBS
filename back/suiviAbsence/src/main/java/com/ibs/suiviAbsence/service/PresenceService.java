@@ -1,5 +1,7 @@
 package com.ibs.suiviAbsence.service;
 
+import com.ibs.suiviAbsence.exception.PresenceException;
+import com.ibs.suiviAbsence.modele.DetailPresence;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
@@ -13,6 +15,7 @@ import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.repository.EdtRepository;
+import com.ibs.suiviAbsence.repository.DetailPresenceRepository;
 import com.ibs.suiviAbsence.repository.PresenceRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 
@@ -25,6 +28,8 @@ public class PresenceService {
     @Autowired
     EdtRepository edtRepository;
 
+    DetailPresenceRepository detailPresenceRepository;
+    
     public Presence recupererPresence(int idEdt){
         Presence presence=presenceRepository.findAllByIdEdt(idEdt);
         if(presence==null){
@@ -34,6 +39,12 @@ public class PresenceService {
         }
         return presence;
     }
+    
+    public void controlleInsertPrensence(int idPresence,int idClasseEtudiant){
+        List<DetailPresence> detailPresence=detailPresenceRepository.findByIdPresenceAndIdClasseEtudiant(idPresence, idClasseEtudiant);
+        if(!detailPresence.isEmpty()) throw new PresenceException("Pointage deja effectuer pour cette etudiant");
+    }
+    
     /**
      * Cette metier permet de recuperer l'employe du temps d'un salle a la date et heure courant si l'idt est 0
      * sinon elle recuperer l'enploye du temps de ID

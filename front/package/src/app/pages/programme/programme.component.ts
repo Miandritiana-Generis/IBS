@@ -8,7 +8,13 @@ import {
   isSameDay,
   isSameMonth,
   differenceInHours,
-  isBefore
+  isBefore,
+  startOfWeek,
+  endOfWeek,
+  startOfDay,
+  endOfDay,
+  startOfMonth,
+  endOfMonth
 } from 'date-fns';
 import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -25,6 +31,8 @@ import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'angular-calendar';
 
 import { FlatpickrModule } from 'angularx-flatpickr';
+import { EdtService } from 'src/app/services/edt.service';
+import { CustomCalendarEvent } from 'src/app/modeles/CustomCalendarEvent ';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -80,12 +88,14 @@ export class AppProgrammeComponent {
   CalendarView = CalendarView;
 
   viewDate: Date = new Date();
-
+  
+  minDate = startOfWeek(this.viewDate);
+  maxDate = endOfWeek(this.viewDate);
   modalData: {
     action: string;
-    event: CalendarEvent;
+    event: CustomCalendarEvent;
   } | undefined;
-
+  
   actions: CalendarEventAction[] = [
     {
       label: '<i class="fas fa-fw fa-pencil-alt"></i>',
@@ -106,221 +116,14 @@ export class AppProgrammeComponent {
 
   refresh = new Subject<void>();
 
-  events: CalendarEvent[] = [
-    {
-      start: new Date(2024, 0, 1, 7, 0),  // Specific date and time: January 1, 2024, 07:00 AM
-      end: new Date(2024, 0, 1, 9, 0),    // Specific date and time: January 1, 2024, 09:00 AM
-      title: 'Tes matiere',
-      color: { ...colors['red'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false, // tsy afaka ovaina ny start anle programme
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 0, 1, 9, 0),  // Specific date and time: January 1, 2024, 09:00 AM
-      end: new Date(2024, 0, 1, 12, 0),    // Specific date and time: January 1, 2024, 12:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 23, 7, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 23, 9, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['red'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['blue'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['blue'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['blue'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['blue'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['blue'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['blue'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['blue'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 24, 10, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 24, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['red'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 23, 9, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 23, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 23, 9, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 23, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 25, 9, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 25, 12, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 26, 13, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 26, 15, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-    {
-      start: new Date(2024, 7, 22, 13, 0),  // Specific date and time: August 22, 2024, 09:00 AM
-      end: new Date(2024, 7, 22, 15, 0),    // Specific date and time: August 24, 2024, 05:00 PM
-      title: 'Tes matiere',
-      color: { ...colors['red'] },
-      actions: this.actions,
-      allDay: false,  // Change to false if you want to specify the time
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      draggable: false,
-    },
-  ];
+  events: CustomCalendarEvent[] = [];
 
   activeDayIsOpen: boolean = true;
 EventColor: any;
 
-  constructor(private modal: NgbModal) {}
+  constructor(private modal: NgbModal ,private edtService: EdtService) {
+    this.setEmployeDuTemps();
+  }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -359,27 +162,13 @@ EventColor: any;
       console.warn('Event is undefined, cannot handle the event.');
       return;
     }
+
+    console.log(event);
   
     this.modalData = { event, action };
     this.modal.open(this.modalContent, { size: 'lg' });
   }  
 
-  // addEvent(): void {
-  //   this.events = [
-  //     ...this.events,
-  //     {
-  //       title: 'New event',
-  //       start: startOfDay(new Date()),
-  //       end: endOfDay(new Date()),
-  //       color: colors['red'],
-  //       draggable: true,
-  //       resizable: {
-  //         beforeStart: true,
-  //         afterEnd: true,
-  //       },
-  //     },
-  //   ];
-  // }
 
   estCoursDans48heures(event: CalendarEvent | undefined): boolean {
     if (!event) {
@@ -406,10 +195,67 @@ EventColor: any;
 
   setView(view: CalendarView) {
     this.view = view;
+    this.setDateMinDateMax();
   }
 
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
+    this.setDateMinDateMax();
   }
+  setDateMinDateMax(){
+    if (this.view === CalendarView.Day) {
+      this.minDate = startOfDay(this.viewDate);
+      this.maxDate = endOfDay(this.viewDate);
+    } else if (this.view === CalendarView.Week) {
+      this.minDate = startOfWeek(this.viewDate);
+      this.maxDate = endOfWeek(this.viewDate);
+    } else if (this.view === CalendarView.Month) {
+      this.minDate = startOfMonth(this.viewDate);
+      this.maxDate = endOfMonth(this.viewDate);
+    }
+    this.setEmployeDuTemps();
+  }
+
+
+  private setEmployeDuTemps(){
+    // this.loader.show();
+    this.edtService.getEdt(this.minDate,this.maxDate).subscribe(
+      (      data: any)=> {
+       this.events =[];
+       for(let item of data){
+        this.events.push(
+          {
+            start:new Date(`${item.date}T${item.debut}`),  // Specific date and time: January 1, 2024, 07:00 AM
+            end:new Date(`${item.date}T${item.fin}`),    // Specific date and time: January 1, 2024, 09:00 AM
+            title: `${item.salle} - ${item.matiere}` ,
+            color: { ...colors['red'] },
+            actions: this.actions,
+            allDay: false,  // Change to false if you want to specify the time
+            resizable: {
+              beforeStart: false, // tsy afaka ovaina ny start anle programme
+              afterEnd: false,
+            },
+            draggable: false,
+              detail:{
+                "matiere":item.matiere,
+                "enseignant":item.enseignant,
+                "salle":item.salle,
+                "classe":item.classe
+            }
+          }
+        );
+        this.refresh.next();
+       }
+      //  this.loader.hide();
+      },
+      (      error: any) => {
+        console.log(error);
+        // this.loader.hide();
+      }
+    );
+  }
+
+
+
 
 }

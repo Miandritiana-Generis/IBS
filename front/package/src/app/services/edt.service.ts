@@ -1,8 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { Constants } from '../util/constants';
 import { Time } from '@angular/common';
+import { Edt } from '../modeles/Edt';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +20,9 @@ export class EdtService {
   private urlTokenValue = 'localhost:8081/token';
   private urlFichePresence = Constants.BASE_URL+'/presences';
   private urlFichePresenceToday = Constants.BASE_URL+'/presences/today';
+  private urlEdt = Constants.BASE_URL+'/edt';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   getListEdt(idPersonne :number) : Observable<any> {
     localStorage.setItem("idPersonne", "1");
@@ -104,6 +107,32 @@ export class EdtService {
   sendFichePresenceDataService(data: any[]): Observable<any> {
     return this.http.post<any>('http://127.0.0.1:5000/api/fiche-presence', data);
   }  
+
+  getEdt(datedebut : Date,datefin :Date): Observable<Edt[]> {
+    const token=this.auth.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<Edt[]>(`${this.urlEdt}?dateDebut=${EdtService.formatDate(datedebut)}&dateFin=${EdtService.formatDate(datefin)}`, { headers })
+      .pipe(
+        catchError(this.handleError<Edt[]>('getEdt'))
+      );
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} failed: ${error.message}`);
+      return of(result as T);
+    };
+  }
+
+  static formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
+    const day = String(date.getDate()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }
   
 
 }
