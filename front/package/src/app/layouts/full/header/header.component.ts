@@ -23,10 +23,12 @@ export class HeaderComponent {
   @Output() toggleCollapsed = new EventEmitter<void>();
 
   showFiller = false;
-
+  nom="My profil"
   constructor(public dialog: MatDialog,private authService:AuthService ,
     private router:Router
-  ) {}
+  ) {
+    this.nom=localStorage.getItem("nom")|| "My Profil";
+  }
 
   logout(){
     this.authService.logout();
