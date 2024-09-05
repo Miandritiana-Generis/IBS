@@ -12,6 +12,7 @@ from flask_cors import CORS
 import redis
 import requests
 import os
+from redis.exceptions import ConnectionError
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -19,7 +20,17 @@ socketio = SocketIO(app)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:4400"}}, methods=['GET', 'POST', 'OPTIONS'])
 
 data_store = {}
+consecutive_matches = 0
 
+def check_redis_connection():
+    try:
+        r = redis.Redis(host='localhost', port=6379, db=0)
+        # Attempt to ping Redis to check connectivity
+        r.ping()
+        return True
+    except ConnectionError:
+        return False
+    
 # Load known faces
 def load_known_faces(folder_path):
     known_faces = []
@@ -44,31 +55,40 @@ known_faces, known_names = load_known_faces("static/images")
 
 
 def load_known_faces_from_redis():
-    r = redis.Redis(host='localhost', port=5555, db=0)
-    known_faces = []
-    known_ids = []
+    if not check_redis_connection():
+        print("Redis tsy mety made.")
+        return [], []
+    
+    try:
+        r = redis.Redis(host='localhost', port=6379, db=0)
+        known_faces = []
+        known_ids = []
 
-    # Get all keys from Redis
-    keys = r.keys()
+        # Get all keys from Redis
+        keys = r.keys()
 
-    for key in keys:
-        # Fetch image data from Redis
-        image_data = r.get(key)
+        for key in keys:
+            # Fetch image data from Redis
+            image_data = r.get(key)
 
-        # Convert binary image data to a format that face_recognition can process
-        image = Image.open(io.BytesIO(image_data))
-        image_np = np.array(image)
+            # Convert binary image data to a format that face_recognition can process
+            image = Image.open(io.BytesIO(image_data))
+            image_np = np.array(image)
 
-        # Get face encodings
-        encodings = face_recognition.face_encodings(image_np)
-        
-        if encodings:
-            known_faces.append(encodings[0])
-            known_ids.append(key.decode('utf-8'))  # Store id_classe_etudiant as a string
-        else:
-            print(f"No face found in image for ID: {key.decode('utf-8')}")
+            # Get face encodings
+            encodings = face_recognition.face_encodings(image_np)
+            
+            if encodings:
+                known_faces.append(encodings[0])
+                known_ids.append(key.decode('utf-8'))  # Store id_classe_etudiant as a string
+            else:
+                print(f"No face found in image for ID: {key.decode('utf-8')}")
 
-    return known_faces, known_ids
+        return known_faces, known_ids
+    
+    except ConnectionError as e:
+        print(f"Tsy afaka ni connecte @ Redis: {e}")
+        return [], []
 
 # Load known faces and corresponding IDs
 known_faces, known_ids = load_known_faces_from_redis()
@@ -76,9 +96,11 @@ known_faces, known_ids = load_known_faces_from_redis()
 @socketio.on('frame')
 def handle_frame(base64_image):
 
-    # Check if 'id_salle' exists in the session
-    if 'id_salle' not in session:
+    # Check if both 'id_salle' and 'id_edt' exist in the session
+    if 'id_salle' not in session or 'id_edt' not in session:
+        # If either doesn't exist, initialize both from data_store
         session['id_salle'] = data_store[0]['salle']
+        session['id_edt'] = data_store[0]['id_edt']
     
     # Decode the base64 image
     image_data = base64.b64decode(base64_image.split(',')[1])
@@ -101,26 +123,30 @@ def handle_frame(base64_image):
         matches = face_recognition.compare_faces(known_faces, face_encoding)
         name = "Inconnue"
 
-        # Check if there is a match
-        if True in matches:
+        # Process matches for only the first detected face (or a specific face)
+        if matches and True in matches:
             first_match_index = matches.index(True)
-
-            # Get the corresponding id_classe_etudiant from Redis
             id_classe_etudiant = known_ids[first_match_index]
 
-            # Fetch prenom using the Spring Boot API
-            prenom = fetch_prenom_from_api(id_classe_etudiant)
+            # Update consecutive_matches
+            consecutive_matches += 1
 
-            # If prenom is found, set it as the name, otherwise use id_classe_etudiant
-            if prenom:
-                name = prenom
-            else:
-                name = id_classe_etudiant
+            # Check if we have reached 5 consecutive matches
+            if consecutive_matches >= 5:
+                # Fetch prenom using the Spring Boot API
+                prenom = fetch_prenom_from_api(id_classe_etudiant)
+                name = prenom if prenom else id_classe_etudiant
 
-            print(f"Match found: {prenom} for ID: {id_classe_etudiant}")
+                print(f"Match found: {prenom} for ID: {id_classe_etudiant}")
 
-        # Get the current time when the face is detected
-        detection_time = datetime.datetime.now().strftime("%H:%M:%S")
+                # Get the current time when the face is detected
+                detection_time = datetime.datetime.now().strftime("%H:%M:%S")
+
+                # Call the present function here
+                present(session['id_edt'], id_classe_etudiant, detection_time)
+
+                # Reset counter after calling present function
+                consecutive_matches = 0
 
         detected_names.append(name)
 
@@ -149,9 +175,12 @@ def fiche_presence():
     print(data)  # For debugging, print the received data
     data_store = data
 
-    # Check if 'id_salle' exists in the session
-    if 'id_salle' not in session:
+    # Check if both 'id_salle' and 'id_edt' exist in the session
+    if 'id_salle' not in session or 'id_edt' not in session:
+        # If either doesn't exist, initialize both from data_store
         session['id_salle'] = data_store[0]['salle']
+        session['id_edt'] = data_store[0]['id_edt']
+
 
     addOnRedis(data_store)
 
@@ -196,16 +225,19 @@ def get_session():
 @app.route('/')
 def index():
 
-    # Check if 'id_salle' exists in the session
-    if 'id_salle' not in session:
+    # Check if both 'id_salle' and 'id_edt' exist in the session
+    if 'id_salle' not in session or 'id_edt' not in session:
+        # If either doesn't exist, initialize both from data_store
         session['id_salle'] = data_store[0]['salle']
-        print(session.get('id_salle', 'Tsy mbola misy'))
+        session['id_edt'] = data_store[0]['id_edt']
+
+        print(session.get('id_salle', 'Tsy mbola misy id salle'))
+        print(session.get('id_edt', 'Tsy mbola misy id edt'))
         # return jsonify({'redirect': True, 'message': 'Salle non designe'}), 403
         # return redirect('http://localhost:4400/programme')
     
     return render_template('index.html', listeFichePresence=data_store)
-
-
+    
 def addOnRedis(data_store):
     try:
         # Connect to Redis
@@ -242,7 +274,31 @@ def addOnRedis(data_store):
         print(f"Redis tsy mety: {e}")
 
 
-# def present(idEdt, idClasseEtudiant, tempsArriver)    
+def present(idEdt, idClasseEtudiant, tempsArriver):
+    api_url = "http://localhost:8082/presences"
+    
+    # Data to be sent in the POST request
+    payload = {
+        "idEdt": idEdt,
+        "idClasseEtudiant": idClasseEtudiant,
+        "tempsArriver": tempsArriver
+    }
+
+    try:
+        # Send the POST request with the JSON data
+        response = requests.post(api_url, json=payload)
+        
+        if response.status_code == 200:
+            return response.json()  # Return the response data if needed
+        else:
+            print(f"Error: Received status code {response.status_code}")
+            return None
+
+    except requests.RequestException as e:
+        print(f"An error occurred: {e}")
+        return None
+
+
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)
