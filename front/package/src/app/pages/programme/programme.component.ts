@@ -89,7 +89,7 @@
     CalendarView = CalendarView;
 
     viewDate: Date = new Date();
-    
+    message="";
     minDate = startOfWeek(this.viewDate);
     maxDate = endOfWeek(this.viewDate);
       modalData: {
@@ -172,6 +172,7 @@
 
 
     estCoursDans48heures(event: CalendarEvent | undefined): boolean {
+      
       if (!event) {
         return false; // Event is undefined, so return false
       }
@@ -219,7 +220,7 @@
 
 
     private setEmployeDuTemps(){
-      // this.loader.show();
+      this.message="";
       this.edtService.getEdt(this.minDate,this.maxDate).subscribe(
         (      data: any)=> {
         this.events =[];
@@ -243,7 +244,8 @@
                   "salle":item.salle,
                   "classe":item.classe,
                   "idSalle":item.idSalle,
-                  "id": item.id
+                  "id": item.id,
+                  "estAnnule":item.estAnnule
               }
             }
           );
@@ -265,6 +267,25 @@
     redirectToFichePresence(idEdt:number) {
       
       this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
+    }
 
+    annulerCours(event:CustomCalendarEvent){
+      const confirmed = confirm("Voulez-vous annulé ce cours?");
+      if (confirmed) {
+        var idEdt=event.detail?.id!
+        this.edtService.annulerEdt(idEdt).subscribe(
+          success=>{
+              const index = this.events.findIndex(objet => objet.detail?.id === idEdt);
+
+              if (index !== -1) {
+                const eventDetail = this.events[index].detail;
+                if (eventDetail) {
+                  eventDetail.estAnnule = true;  // Affecte la valeur si detail est non nul
+                }
+              }
+            },error => {
+              this.message=error.error.erreurs[0].messageErreur
+          });
+      }
     }
   }

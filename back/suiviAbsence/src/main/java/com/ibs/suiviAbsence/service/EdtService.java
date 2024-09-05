@@ -64,25 +64,35 @@ public class EdtService {
     }
     
     @Transactional(rollbackFor = Exception.class)
-    public void annulerCours(int idEdt){
-        Optional<Edt> optional=this.edtRepository.findById(idEdt) ;
-        if(optional.isEmpty()){
-            throw new EdtException("L'employe du temps n'existe pas ");
+    public void annulerCours(String token ,int idEdt){
+        List<ViewEdtAllInfo> liste=new ArrayList<>();
+        ViewPersonneStatut personne = viewPersonneStatutRepository.findPersonneByToken(token);
+        if(personne==null){
+            throw new PersonneException("Token invalide");
         }
-        Edt edt= optional.get();
-        if(edt.isEstAnnule()){
-            throw new EdtException("Ce cours est déjà annulé");
+        else if(personne.getIdEnseignant()>0){
+            Optional<Edt> optional=this.edtRepository.findById(idEdt) ;
+            if(optional.isEmpty()){
+                throw new EdtException("L'employe du temps n'existe pas ");
+            }
+            Edt edt= optional.get();
+            if(edt.isEstAnnule()){
+                throw new EdtException("Ce cours est déjà annulé");
+            }
+            long difference =edt.getDate().getTime()-new Date(System.currentTimeMillis()).getTime();
+
+            long endHeure= (difference/3600000);
+
+            if(endHeure<48){
+                throw new EdtException("Ce cours ne peut plus etre annulé");
+            }
+            edt.setEstAnnule(true);
+            this.edtRepository.save(edt);
+            this.notificationService.genererNotification(edt.getId(),"Cours annulé");
         }
-        long difference =edt.getDate().getTime()-new Date(System.currentTimeMillis()).getTime();
-        
-        long endHeure= (difference/3600000);
-        
-        if(endHeure<48){
-            throw new EdtException("Ce cours ne peut plus etre annulé");
+        else{
+            throw new EdtException("Vous n'avez par le droit d'annulé un cours");
         }
-        edt.setEstAnnule(true);
-        this.edtRepository.save(edt);
-        this.notificationService.genererNotification(edt.getId(),"Cours annulé");
     }
     
 }
