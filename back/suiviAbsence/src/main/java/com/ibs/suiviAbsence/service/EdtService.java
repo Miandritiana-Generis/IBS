@@ -4,7 +4,9 @@
  */
 package com.ibs.suiviAbsence.service;
 
+import com.ibs.suiviAbsence.exception.EdtException;
 import com.ibs.suiviAbsence.exception.PersonneException;
+import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.ViewClasseEtudiant;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.modele.ViewPersonneStatut;
@@ -14,8 +16,10 @@ import com.ibs.suiviAbsence.utilitaire.Constante;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
