@@ -141,7 +141,7 @@ def index():
 
 
 def addOnRedis(data_store):
-    r = redis.Redis(host='localhost', port=6379, db=0)
+    r = redis.Redis(host='localhost', port=5555, db=0)
 
     for item in data_store:
         id_classe_etudiant = item['id_classe_etudiant']
@@ -159,7 +159,7 @@ def addOnRedis(data_store):
             # Store image content in Redis
             r.set(id_classe_etudiant, image_data, prenom)
         else:
-            print(f"Tsy hita le sary: {network_path}")
+            print(f"Tsy hita le sary atao anaty redis: {network_path}")
 
 # def present(idEdt, idClasseEtudiant, tempsArriver)
     

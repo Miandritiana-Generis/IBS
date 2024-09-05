@@ -72,23 +72,23 @@ export class EdtService {
         nom: string;
         prenom: string;
         photo: string;
-        heure_arrive: Time;
+        heure_arrive: string;
         status: boolean;
         salle: string;
         matiere: string;
         enseignant: string;
         classe: string;
-        date: Date;
-        debut: Time;
-        fin: Time;
-    }>(this.urlFichePresence, { params }).pipe(
+        date: string;
+        debut: string;
+        fin: string;
+    }[]>(this.urlFichePresence, { params }).pipe(
         map(response => {
-            // Nettoyer les chemins de fichiers dans la réponse
-            if (response && response.photo) {
-                // response.photo = response.photo.replace(/\\\\/g, '\\');
-                response.photo = response.photo.replace(/\\\\/g, '/').replace(/\\/g, '/');
-            }
-            return response;
+            return response.map(item => {
+                if (item.photo) {
+                  item.photo = item.photo.replace(/\\\\/g, '\\').replace(/\\(?=[\\])/g, '\\');
+                }
+                return item;
+            });
         })
     );
   }
