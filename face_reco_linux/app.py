@@ -11,6 +11,7 @@ import os
 from flask_cors import CORS
 import redis
 import requests
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -33,7 +34,7 @@ def load_known_faces(folder_path):
                 known_faces.append(encodings[0])
                 known_names.append(os.path.splitext(file_name)[0])
             else:
-                print(f"No face found in {file_name}")
+                print(f"Tsy misy tarehy : {file_name}")
 
 
     return known_faces, known_names
@@ -41,19 +42,50 @@ def load_known_faces(folder_path):
 # Load known faces
 known_faces, known_names = load_known_faces("static/images")
 
+
+def load_known_faces_from_redis():
+    r = redis.Redis(host='localhost', port=5555, db=0)
+    known_faces = []
+    known_ids = []
+
+    # Get all keys from Redis
+    keys = r.keys()
+
+    for key in keys:
+        # Fetch image data from Redis
+        image_data = r.get(key)
+
+        # Convert binary image data to a format that face_recognition can process
+        image = Image.open(io.BytesIO(image_data))
+        image_np = np.array(image)
+
+        # Get face encodings
+        encodings = face_recognition.face_encodings(image_np)
+        
+        if encodings:
+            known_faces.append(encodings[0])
+            known_ids.append(key.decode('utf-8'))  # Store id_classe_etudiant as a string
+        else:
+            print(f"No face found in image for ID: {key.decode('utf-8')}")
+
+    return known_faces, known_ids
+
+# Load known faces and corresponding IDs
+known_faces, known_ids = load_known_faces_from_redis()
+
 @socketio.on('frame')
 def handle_frame(base64_image):
 
     # Check if 'id_salle' exists in the session
     if 'id_salle' not in session:
-        session['id_salle'] = data_store[0].salle
+        session['id_salle'] = data_store[0]['salle']
     
     # Decode the base64 image
     image_data = base64.b64decode(base64_image.split(',')[1])
     try:
         image = Image.open(io.BytesIO(image_data))
     except UnidentifiedImageError:
-        print("Misy error le image, corrupted na invalide.")
+        print("Misy error le image, corrupted na invalide @ face reco.")
         return
 
     open_cv_image = np.array(image)
@@ -72,8 +104,21 @@ def handle_frame(base64_image):
         # Check if there is a match
         if True in matches:
             first_match_index = matches.index(True)
-            name = known_names[first_match_index]
-            
+
+            # Get the corresponding id_classe_etudiant from Redis
+            id_classe_etudiant = known_ids[first_match_index]
+
+            # Fetch prenom using the Spring Boot API
+            prenom = fetch_prenom_from_api(id_classe_etudiant)
+
+            # If prenom is found, set it as the name, otherwise use id_classe_etudiant
+            if prenom:
+                name = prenom
+            else:
+                name = id_classe_etudiant
+
+            print(f"Match found: {prenom} for ID: {id_classe_etudiant}")
+
         # Get the current time when the face is detected
         detection_time = datetime.datetime.now().strftime("%H:%M:%S")
 
@@ -95,6 +140,7 @@ def handle_frame(base64_image):
 
     emit('update', response)
 
+
 @app.route('/api/fiche-presence', methods=['POST'])
 def fiche_presence():
 
@@ -106,6 +152,8 @@ def fiche_presence():
     # Check if 'id_salle' exists in the session
     if 'id_salle' not in session:
         session['id_salle'] = data_store[0]['salle']
+
+    addOnRedis(data_store)
 
     return jsonify({"message": "Data received successfully"}), 200
 
@@ -119,6 +167,24 @@ def set_id_salle():
         return {'message': 'Session variable set!', 'id_salle': id_salle}, 200
     else:
         return {'message': 'No id_salle provided'}, 400
+
+
+def fetch_prenom_from_api(id_classe_etudiant):
+    api_url = f"http://localhost:8082/etudiants/prenom?idClasseEtudiant={id_classe_etudiant}"
+    
+    try:
+        response = requests.get(api_url, timeout=5)  # Timeout to avoid hanging
+        response.raise_for_status()  # Raise an error for 4xx/5xx responses
+        
+        # Parse the JSON response
+        data = response.json()
+        
+        # Return the 'prenom' if it exists, otherwise return 'Inconnue'
+        return data.get('prenom', 'Inconnue')
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching prenom for id_classe_etudiant {id_classe_etudiant}: {e}")
+        return 'Inconnue'
 
 
 @app.route('/get_id_salle')
@@ -141,28 +207,42 @@ def index():
 
 
 def addOnRedis(data_store):
-    r = redis.Redis(host='localhost', port=5555, db=0)
+    try:
+        # Connect to Redis
+        r = redis.Redis(host='localhost', port=6379, db=0)  # Ensure the port matches your Redis configuration
 
-    for item in data_store:
-        id_classe_etudiant = item['id_classe_etudiant']
-        image_path = item['imagePath']  # Example: \\192.168.1.8\bevazaha$\Photo9353.jpg
-        prenom = item['prenom']
+        for item in data_store:
+            id_classe_etudiant = item.get('id_classe_etudiant')
+            image_path = item.get('imagePath')  # Example: \\192.168.1.8\bevazaha$\Photo9353.jpg
 
-        # Convert network path for Windows
-        network_path = image_path.replace('/', '\\')
+            if not id_classe_etudiant or not image_path:
+                print("Missing 'id_classe_etudiant' or 'imagePath' in data_store item.")
+                continue
 
-        if os.path.exists(network_path):
-            # Read the image file in binary mode
-            with open(network_path, 'rb') as image_file:
-                image_data = image_file.read()
+            # Convert network path for Windows
+            network_path = image_path.replace('/', '\\')
 
-            # Store image content in Redis
-            r.set(id_classe_etudiant, image_data, prenom)
-        else:
-            print(f"Tsy hita le sary atao anaty redis: {network_path}")
+            if os.path.exists(network_path):
+                try:
+                    # Read the image file in binary mode
+                    with open(network_path, 'rb') as image_file:
+                        image_data = image_file.read()
 
-# def present(idEdt, idClasseEtudiant, tempsArriver)
-    
+                    # Store image content in Redis
+                    r.set(id_classe_etudiant, image_data)
+                    print(f"Stored image data for ID: {id_classe_etudiant}")
+                except IOError as e:
+                    print(f"Tsy voavaky le sary file {network_path}: {e}")
+            else:
+                print(f"FTsy hita le sary file: {network_path}")
+
+        print(f"NETY TSARA NY REDIS")
+
+    except redis.RedisError as e:
+        print(f"Redis tsy mety: {e}")
+
+
+# def present(idEdt, idClasseEtudiant, tempsArriver)    
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)
