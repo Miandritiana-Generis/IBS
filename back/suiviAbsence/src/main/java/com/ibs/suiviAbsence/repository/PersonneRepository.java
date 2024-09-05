@@ -19,4 +19,7 @@ public interface PersonneRepository extends JpaRepository<Personne, Integer> {
     @Query(value = "SELECT * from personne where id in (select id_personne from etudiant where id_personne = :id_personne)", nativeQuery = true)
     public List<Personne> estEtudiant(@Param("id_personne") int id_personne);
 
+    // public List<Personne> findByToken(String tokenString);
+
+
 }

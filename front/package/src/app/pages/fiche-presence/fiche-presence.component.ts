@@ -48,6 +48,7 @@ export class AppFichePresenceComponent {
   heure = "";
   date = "";
   id_edt = "";
+  message: string = ''; 
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
@@ -90,6 +91,8 @@ export class AppFichePresenceComponent {
     );
   }
 
+  
+
 
   sendFichePresenceData(): void {
     const dataToSend = this.listeFichePresence;  // Assuming listeFichePresence contains the data you want to send
@@ -107,35 +110,44 @@ export class AppFichePresenceComponent {
 
 
   validerProf(idEdt: string): void {
-    this.fichePresenceService.validerProf(idEdt)
-        .subscribe({
-            next: (response) => {
-                alert(response.message);
-            },
-            error: (error: HttpErrorResponse) => {
-                if (error.error && error.error.erreurs && error.error.erreurs.length > 0) {
-                    const backendError = error.error.erreurs[0];
-                    alert(`Erreur ${backendError.codeErreur}: ${backendError.messageErreur}`);
-                } else {
-                    alert(`Une erreur est survenue: ${error.message}`);
-                }
-            }
-        });
-}
-
-
-  validerDelegue(idEdt : string) : void {
-    if (confirm("Voulez-vous vraiment valider ?")) {
-      this.fichePresenceService.validerDelegue(idEdt).subscribe({
-          next: () => {
-              alert('Validation réussie.');
-          },
-          error: (err) => {
-              alert(err.message);  
+    // const confirmed = confirm("Voulez-vous vraiment valider ce professeur ?");
+    // if (confirmed) {
+      this.fichePresenceService.validerProf(idEdt).subscribe(
+        success => {
+          console.log("OKOK SUCCES");
+          alert('Validation réussie.');
+        },
+        error => {
+          console.log("OUPSIII");
+          if (error.erreurs && error.erreurs && error.erreurs.length > 0) {
+            this.message = error.erreurs[0].messageErreur;
+          } else {
+            alert(`Une erreur est survenue: ${error.message}`);
           }
-      });
+        }
+      );
+    // }
   }
+  
+
+
+
+
+validerDelegue(idEdt: string): void {
+  const tokenValue = localStorage.getItem('token'); 
+  if (tokenValue && confirm("Voulez-vous vraiment valider ?")) {
+    this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
+      next: () => {
+        alert('Validation réussie.');
+      },
+      error: (err) => {
+        alert(err.message);
+      }
+    });
+  } else {
+    alert('Token manquant ou action annulée.');
   }
+}
 
     
 

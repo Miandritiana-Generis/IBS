@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,8 +72,35 @@ public class ViewEdtService {
         if (heure == null || heure.isEmpty()) {
             heure = null;
         }
-        return v_iInfoFichePresenceRepository.getInfoFichePresence(id_salle, heure, date);
+        
+        
+        List<V_InfoFichePresence> liste = v_iInfoFichePresenceRepository.getInfoFichePresence(id_salle, heure, date);
+        
+        
+        if (liste.isEmpty()) {
+            throw new IllegalArgumentException("Aucune donnée trouvée pour les critères donnés.");
+        }
+    
+        
+        Time heureDebut = liste.get(0).getDebut();
+        Time heureFin = liste.get(0).getFin();
+        
+        
+        LocalTime currentTime = LocalTime.now();
+        LocalTime debutLocalTime = heureDebut.toLocalTime();
+        LocalTime finLocalTime = heureFin.toLocalTime();
+        
+        
+        LocalTime debutMoins10Min = debutLocalTime.minusMinutes(10);
+        
+        
+        if (currentTime.isAfter(debutMoins10Min) && currentTime.isBefore(finLocalTime)) {
+            return liste;
+        } else {
+            throw new IllegalArgumentException("L'heure actuelle n'est pas dans la plage requise.");
+        }
     }
+    
 
     public List<V_InfoFichePresence> getInfoFichePresenceToday(int id_salle, String date) {
         if (date == null || date.isEmpty()) {

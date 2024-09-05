@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { Constants } from '../util/constants';
 import { Time } from '@angular/common';
 import { Edt } from '../modeles/Edt';
@@ -49,7 +49,7 @@ export class EdtService {
     return this.http.get(`${this.urlTokenValue}`);
   }
 
-  getInfoFichePresence(id_salle?: number,  heure?: string, date?: string, id_edt?: string): Observable<any> {
+  getInfoFichePresence(id_salle?: number, heure?: string, date?: string, id_edt?: string): Observable<any> {
     let params = new HttpParams();
     
     if (id_salle !== undefined) {
@@ -72,17 +72,27 @@ export class EdtService {
         nom: string;
         prenom: string;
         photo: string;
-        heure_arrive: Time;
+        heure_arrive: string;
         status: boolean;
         salle: string;
         matiere: string;
         enseignant: string;
         classe: string;
-        date: Date;
-        debut: Time;
-        fin: Time;
-    }>(this.urlFichePresence, { params });
+        date: string;
+        debut: string;
+        fin: string;
+    }[]>(this.urlFichePresence, { params }).pipe(
+        map(response => {
+            return response.map(item => {
+                if (item.photo) {
+                    item.photo = item.photo.replace(/\\\\/g, '\\');
+                }
+                return item;
+            });
+        })
+    );
 }
+
 
   getInfoFichePresenceToday(id_salle : number, date : string) : Observable<any> {
     // let id_salle_temp = localStorage.getItem("salle");
