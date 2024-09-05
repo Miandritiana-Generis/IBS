@@ -21,7 +21,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Table(name="Fonctionnalite")
+@Table(name="notificationedt")
 @Entity
 @NoArgsConstructor
 public class NotificationEdt {
@@ -34,4 +34,12 @@ public class NotificationEdt {
     private Timestamp dateheure;
     @Column
     private int idEdt;
+
+    public NotificationEdt(String contenue, Timestamp dateheure, int idEdt) {
+        this.contenue = contenue;
+        this.dateheure = dateheure;
+        this.idEdt = idEdt;
+    }
+    
+    
 }

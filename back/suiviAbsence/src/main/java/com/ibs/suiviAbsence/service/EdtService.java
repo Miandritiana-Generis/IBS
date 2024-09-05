@@ -82,9 +82,7 @@ public class EdtService {
         }
         edt.setEstAnnule(true);
         this.edtRepository.save(edt);
-        this.notificationService.genererNotification();
-        
-        
+        this.notificationService.genererNotification(edt.getId(),"Cours annulé");
     }
     
 }

@@ -4,7 +4,12 @@
  */
 package com.ibs.suiviAbsence.service;
 
+import com.ibs.suiviAbsence.modele.NotificationEdt;
+import com.ibs.suiviAbsence.repository.NotificationEdtRepository;
+import java.sql.Timestamp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -12,7 +17,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class NotificationService {
-    public void genererNotification(){
-        
+    @Autowired
+    NotificationEdtRepository notificationEdtRepository;
+    
+    @Transactional(rollbackFor = Exception.class)
+    public void genererNotification(int idEdt,String contenu){
+        NotificationEdt notificationEdt= new NotificationEdt(contenu, new Timestamp(System.currentTimeMillis()), idEdt);
+        this.notificationEdtRepository.save(notificationEdt);
     }
 }
