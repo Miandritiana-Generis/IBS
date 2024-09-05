@@ -9,8 +9,8 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { EdtService } from 'src/app/services/edt.service';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClientModule, HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FichePresenceService } from 'src/app/services/fiche-presence.service';
 
 export interface ProductsData {

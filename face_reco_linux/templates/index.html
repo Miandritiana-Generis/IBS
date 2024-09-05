@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
+
+    <title>Face Recognition</title>
+
+    <style>
+        #video{
+            transform: scaleX(-1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h1 class="card-title mb-3">Reconnaissance faciale</h1>
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <video id="video" class="w-100 rounded" autoplay></video>
+                        <h2 id="detected-names" class="mt-3">Face détécté: None</h2>
+                    </div>
+                    <div class="col-md-6">
+                        <img id="processed-image" class="w-100 rounded" alt="Processed Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h1 class="card-title mb-3">Liste étudiant</h1>
+                <div class="table-responsive text-nowrap">
+                    <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Nom</th>
+                          <th>Prénom</th>
+                          <th>Heure d'arrivée</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for ficheP in listeFichePresence %}
+                        <tr>
+                            <td class="d-flex align-items-center">
+                                <img src="{{ url_for('static', filename='assets/img/avatars/default-user.jpg') }}" alt="Avatar" class="rounded-circle" width="10%"/>
+                                <p class="mb-0 ml-2">{{ ficheP.nom }}</p>
+                            </td>
+                            <td>{{ ficheP.prenom }}</td>
+                            <td>{{ ficheP.heure_arrive }}</td>
+                            <td>{{ ficheP.status }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="text-center mb-5">
+            <a href="http://localhost:4400/fiche-presence"><button class="btn btn-primary">Return fiche de présence</button></a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        // Connect to WebSocket server using Socket.IO
+        const socket = io('http://127.0.0.1:5000/');
+
+        socket.on('connect', () => {
+            console.log('Connected to WebSocket server');
+        });
+
+        socket.on('update', (data) => {
+            console.log('Response from server:', data.names);
+
+            if (data.image) {
+                // Display the processed image with bounding boxes and names
+                document.getElementById('processed-image').src = data.image;
+            }
+
+            if (data.names) {
+                let namesString = data.names.join(', ');
+                document.getElementById('detected-names').innerText = `Face détécté: ${namesString}`;
+            } else {
+                document.getElementById('detected-names').innerText = 'No faces détécté.';
+            }
+        });
+
+        function sendFrameToServer(base64Image) {
+            socket.emit('frame', base64Image);
+        }
+
+        // Access the user's camera
+        const video = document.getElementById('video');
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            }).catch(function(error) {
+                console.error('Error accessing the camera:', error);
+            });
+        }
+
+        // Capture frames and send them to the server
+        function captureFrame() {
+            let canvas = document.createElement('canvas');
+            let context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            let base64Image = canvas.toDataURL('image/jpeg');
+            sendFrameToServer(base64Image);
+        }
+
+        // Capture a frame every 1000ms (1 second) and send it to the server
+        setInterval(captureFrame, 500);
+    </script>
+
+
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{{ url_for('static', filename='assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/vendor/js/menu.js') }}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{{ url_for('static', filename='assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+
+    <!-- Main JS -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+    <!-- Page JS -->
+    <script src="{{ url_for('static', filename='assets/js/dashboards-analytics.js') }}"></script>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    
+</body>
+</html>
