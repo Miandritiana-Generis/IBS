@@ -70,15 +70,18 @@ public class EdtService {
             throw new EdtException("L'employe du temps n'existe pas ");
         }
         Edt edt= optional.get();
-        long difference =new Date(System.currentTimeMillis()).getTime()-edt.getDate().getTime();
+        if(edt.isEstAnnule()){
+            throw new EdtException("Ce cours est déjà annulé");
+        }
+        long difference =edt.getDate().getTime()-new Date(System.currentTimeMillis()).getTime();
         
-        int endHeure= (int) (difference/3600000);
+        long endHeure= (difference/3600000);
         
         if(endHeure<48){
             throw new EdtException("Ce cours ne peut plus etre annulé");
         }
         edt.setEstAnnule(true);
-       // this.edtRepository.save(edt);
+        this.edtRepository.save(edt);
         this.notificationService.genererNotification();
         
         
