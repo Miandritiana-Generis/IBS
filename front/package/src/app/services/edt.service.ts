@@ -85,7 +85,7 @@ export class EdtService {
         map(response => {
             return response.map(item => {
                 if (item.photo) {
-                    item.photo = item.photo.replace(/\\\\/g, '\\');
+                  item.photo = item.photo.replace(/\\\\/g, '\\').replace(/\\(?=[\\])/g, '\\');
                 }
                 return item;
             });

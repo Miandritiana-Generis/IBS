@@ -24,7 +24,8 @@ export interface ProductsData {
   matiere : string;
   enseignant : string;
   classe : string;
-  id_edt : string
+  id_edt : string;
+  id_classe_etudiant : string
 }
 
 @Component({
@@ -78,8 +79,8 @@ export class AppFichePresenceComponent {
         // Map data to include hourRate defaulting to null if not provided
         this.listeFichePresence = data.map(item => ({
           id: item.id,
-          // imagePath: item.photo ? `assets/images/profile/${item.photo}` : 'assets/images/profile/default-user.jpg',
-          imagePath: 'assets/images/profile/default-user.jpg',
+          imagePath: item.photo ? `${item.photo}` : 'assets/images/profile/default-user.jpg',
+          // imagePath: 'assets/images/profile/default-user.jpg',
           nom: item.nom,
           prenom: item.prenom,
           hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
@@ -89,9 +90,8 @@ export class AppFichePresenceComponent {
           enseignant: item.enseignant,
           classe: item.classe,
           id_edt : item.id_edt,
+          id_classe_etudiant : item.id_classe_etudiant
         }));
-        
-        
 
         // Set the data source for the table
         this.dataSource = this.listeFichePresence;
