@@ -11,6 +11,7 @@ import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { FichePresenceService } from 'src/app/services/fiche-presence.service';
 
 export interface ProductsData {
   id: number;
@@ -23,6 +24,7 @@ export interface ProductsData {
   matiere : string;
   enseignant : string;
   classe : string;
+  id_edt : string
 }
 
 @Component({
@@ -43,16 +45,17 @@ export interface ProductsData {
 })
 export class AppFichePresenceComponent {
   listeFichePresence: ProductsData[] = [];
-  id_salle = 30;
+  id_salle = 25;
   heure = "";
   date = "";
   id_edt :string= "0";
+  message : string = "";
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
   apiUrl: any;
 
-  constructor(private edtService: EdtService, private http: HttpClient ,private route:ActivatedRoute) {
+  constructor(private edtService: EdtService, private http: HttpClient ,private route:ActivatedRoute, private fichePresenceService : FichePresenceService) {
    this.route.queryParamMap.subscribe(params => {
       console.log(params.get("id_edt"));
       this.id_edt = params.get('id_edt')!;
@@ -66,11 +69,11 @@ export class AppFichePresenceComponent {
    
   }
 
-  getListFichePresence(id_salle: number, idEdt : string,heure: string, date: string): void {
+  getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string,): void {
 
     const salle = localStorage.getItem("salle");
     id_salle = parseInt(salle || "0", 10);
-    this.edtService.getInfoFichePresence(id_salle,heure, date,idEdt ).subscribe(
+    this.edtService.getInfoFichePresence(id_salle ,heure, date, idEdt).subscribe(
       (data: any[]) => {
         // Map data to include hourRate defaulting to null if not provided
         this.listeFichePresence = data.map(item => ({
@@ -84,16 +87,20 @@ export class AppFichePresenceComponent {
           salle: item.salle,
           matiere: item.matiere,
           enseignant: item.enseignant,
-          classe: item.classe
+          classe: item.classe,
+          id_edt : item.id_edt,
         }));
         
         
 
         // Set the data source for the table
         this.dataSource = this.listeFichePresence;
+        console.log("data:",this.listeFichePresence);
       }
     );
   }
+
+  
 
 
   sendFichePresenceData(): void {
@@ -109,6 +116,48 @@ export class AppFichePresenceComponent {
       }
     );
   }
+
+
+  validerProf(idEdt: string): void {
+    // const confirmed = confirm("Voulez-vous vraiment valider ce professeur ?");
+    // if (confirmed) {
+      this.fichePresenceService.validerProf(idEdt).subscribe(
+        success => {
+          console.log("OKOK SUCCES");
+          alert('Validation réussie.');
+        },
+        error => {
+          console.log("OUPSIII");
+          if (error.erreurs && error.erreurs && error.erreurs.length > 0) {
+            this.message = error.erreurs[0].messageErreur;
+          } else {
+            alert(`Une erreur est survenue: ${error.message}`);
+          }
+        }
+      );
+    // }
+  }
+  
+
+
+
+
+validerDelegue(idEdt: string): void {
+  const tokenValue = localStorage.getItem('token'); 
+  if (tokenValue && confirm("Voulez-vous vraiment valider ?")) {
+    this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
+      next: () => {
+        alert('Validation réussie.');
+      },
+      error: (err) => {
+        alert(err.message);
+      }
+    });
+  } else {
+    alert('Token manquant ou action annulée.');
+  }
+}
+
     
 
 
