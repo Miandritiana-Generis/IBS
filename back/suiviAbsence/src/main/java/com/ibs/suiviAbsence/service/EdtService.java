@@ -10,6 +10,7 @@ import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.ViewClasseEtudiant;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.modele.ViewPersonneStatut;
+import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 import com.ibs.suiviAbsence.repository.ViewPersonneStatutRepository;
 import com.ibs.suiviAbsence.utilitaire.Constante;
@@ -35,6 +36,8 @@ public class EdtService {
     private AutorisationPatService autorisationPatService;
     @Autowired
     private EtudiantService etudiantService;
+    @Autowired
+    private EdtRepository edtRepository;
     public List<ViewEdtAllInfo> findEdt(String token,Date datedebut ,Date datefin){
         List<ViewEdtAllInfo> liste=new ArrayList<>();
         ViewPersonneStatut personne = viewPersonneStatutRepository.findPersonneByToken(token);
