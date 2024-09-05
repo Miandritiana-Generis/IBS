@@ -38,6 +38,8 @@ public class EdtService {
     private EtudiantService etudiantService;
     @Autowired
     private EdtRepository edtRepository;
+    @Autowired 
+    private NotificationService notificationService;
     public List<ViewEdtAllInfo> findEdt(String token,Date datedebut ,Date datefin){
         List<ViewEdtAllInfo> liste=new ArrayList<>();
         ViewPersonneStatut personne = viewPersonneStatutRepository.findPersonneByToken(token);

@@ -19,7 +19,6 @@ import lombok.Setter;
  *
  * @author abc
  */
-public class NotificationEdt {
 @Getter
 @Setter
 @Table(name="notificationedt")
