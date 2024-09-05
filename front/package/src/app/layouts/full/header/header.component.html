@@ -9,9 +9,21 @@
   <!-- Notification Dropdown -->
   <!-- --------------------------------------------------------------- -->
 
-  <button mat-icon-button aria-label="Notifications">
-    <i-tabler class="d-flex" name="bell" matBadge="114" matBadgeColor="primary"></i-tabler>
-  </button>
+  
+  <div class="btn-group">
+    <button mat-icon-button aria-label="Notifications"
+      type="button"
+      class="dropdown-toggle" 
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      <i-tabler class="d-flex" name="bell" [matBadge]="count" matBadgeColor="primary"></i-tabler>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li class="dropdown-item" *ngFor="let item of notification; let i = index">{{item.contenue}}
+      </li>
+    </ul>
+  </div>
 
   <span class="flex-1-auto"></span>
   <button
