@@ -146,6 +146,7 @@ def addOnRedis(data_store):
     for item in data_store:
         id_classe_etudiant = item['id_classe_etudiant']
         image_path = item['imagePath']  # Example: \\192.168.1.8\bevazaha$\Photo9353.jpg
+        prenom = item['prenom']
 
         # Convert network path for Windows
         network_path = image_path.replace('/', '\\')
@@ -156,7 +157,7 @@ def addOnRedis(data_store):
                 image_data = image_file.read()
 
             # Store image content in Redis
-            r.set(id_classe_etudiant, image_data)
+            r.set(id_classe_etudiant, image_data, prenom)
         else:
             print(f"Tsy hita le sary: {network_path}")
 

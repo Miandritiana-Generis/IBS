@@ -24,7 +24,8 @@ export interface ProductsData {
   matiere : string;
   enseignant : string;
   classe : string;
-  id_edt : string
+  id_edt : string;
+  id_classe_etudiant : string
 }
 
 @Component({
@@ -88,6 +89,7 @@ export class AppFichePresenceComponent {
           enseignant: item.enseignant,
           classe: item.classe,
           id_edt : item.id_edt,
+          id_classe_etudiant : item.id_classe_etudiant
         }));
 
         // Set the data source for the table

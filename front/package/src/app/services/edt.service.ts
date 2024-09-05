@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { Constants } from '../util/constants';
 import { Time } from '@angular/common';
 import { Edt } from '../modeles/Edt';
@@ -81,8 +81,17 @@ export class EdtService {
         date: Date;
         debut: Time;
         fin: Time;
-    }>(this.urlFichePresence, { params });
-}
+    }>(this.urlFichePresence, { params }).pipe(
+        map(response => {
+            // Nettoyer les chemins de fichiers dans la réponse
+            if (response && response.photo) {
+                // response.photo = response.photo.replace(/\\\\/g, '\\');
+                response.photo = response.photo.replace(/\\\\/g, '/').replace(/\\/g, '/');
+            }
+            return response;
+        })
+    );
+  }
 
   getInfoFichePresenceToday(id_salle : number, date : string) : Observable<any> {
     // let id_salle_temp = localStorage.getItem("salle");
