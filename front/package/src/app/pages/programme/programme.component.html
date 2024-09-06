@@ -123,7 +123,7 @@
           >
             Annulé ce cours
           </button>
-          <button *ngIf="verifierSalle(modalData?.event?.detail?.idSalle!)" 
+          <button *ngIf="verifierSalle(modalData?.event?.detail!) " 
           class="btn btn-primary" 
           (click)="redirectToFichePresence( modalData?.event?.detail?.id! )"
           style="background-color: #0085db; border-color: #0085db;">

@@ -260,8 +260,19 @@
       );
     }
 
-    verifierSalle(idSalle:number){
-      return parseInt(localStorage.getItem("salle")||"0")==idSalle;
+    verifierSalle(edt:{
+      "matiere":string,
+      "enseignant":string,
+      "salle":string,
+      "classe":string,
+      "idSalle":number,
+      "id":number,
+      "estAnnule":boolean
+  }){
+      if(edt.estAnnule){
+        return false;
+      }
+      return parseInt(localStorage.getItem("salle")||"0")==edt.idSalle;
     }
 
     redirectToFichePresence(idEdt:number) {
