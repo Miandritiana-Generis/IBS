@@ -8,6 +8,7 @@ export interface  CustomCalendarEvent extends CalendarEvent {
         "salle":string,
         "classe":string,
         "idSalle":number,
-        "id":number
+        "id":number,
+        "estAnnule":boolean
     };
 }

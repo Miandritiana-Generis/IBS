@@ -11,7 +11,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class EdtService {
   apiUrl: string = Constants.BASE_URL + '/presences'; // or another appropriate URL
-
+  urlAnnulerEdt: string = Constants.BASE_URL + '/edt/annuler/cours'; 
   
   sendFichePresenceData(data: any[]): Observable<any> {
     return this.http.post<any>(this.apiUrl, data);
@@ -175,4 +175,11 @@ export class EdtService {
     return this.http.post<any>('http://127.0.0.1:5000/api/set_id_salle', id_salle);
   }
 
+  annulerEdt(idEdt:number): Observable<Edt[]> {
+    const token=this.auth.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<Edt[]>(`${this.urlAnnulerEdt}?id_edt=${idEdt}`, { headers });
+  }
 }

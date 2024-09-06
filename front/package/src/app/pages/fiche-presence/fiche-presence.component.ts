@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Time } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,7 +25,9 @@ export interface ProductsData {
   enseignant : string;
   classe : string;
   id_edt : string;
-  id_classe_etudiant : string
+  id_classe_etudiant : string;
+  date : Date;
+  fin : Time
 }
 
 @Component({
@@ -61,7 +63,7 @@ export class AppFichePresenceComponent {
    this.route.queryParamMap.subscribe(params => {
       console.log(params.get("id_edt"));
       this.id_edt = params.get('id_edt')!;
-      this.getListFichePresence(this.id_salle ,this.heure, this.date, this.id_edt);
+      this.getListFichePresence(this.id_salle ,this.heure, this.date,this.id_edt);
     });
     
   }
@@ -86,7 +88,7 @@ export class AppFichePresenceComponent {
           // Si 'data' est un tableau, le mapper pour créer listeFichePresence
           this.listeFichePresence = data.map(item => ({
             id: item.id,
-            imagePath: 'assets/images/profile/default-user.jpg',
+            imagePath: item.photo ? `${item.photo}` : 'assets/images/profile/default-user.jpg',
             nom: item.nom,
             prenom: item.prenom,
             hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
@@ -96,6 +98,9 @@ export class AppFichePresenceComponent {
             enseignant: item.enseignant,
             classe: item.classe,
             id_edt: item.id_edt,
+            id_classe_etudiant : item.id_classe_etudiant,
+            date : item.date,
+            fin : item.fin
           }));
         } else {
           // Si la réponse n'est pas un tableau, afficher un message d'erreur
