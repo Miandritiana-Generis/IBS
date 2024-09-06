@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Time } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,7 +25,9 @@ export interface ProductsData {
   enseignant : string;
   classe : string;
   id_edt : string;
-  id_classe_etudiant : string
+  id_classe_etudiant : string;
+  date : Date;
+  fin : Time
 }
 
 @Component({

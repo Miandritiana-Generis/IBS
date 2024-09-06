@@ -51,7 +51,7 @@ def load_known_faces(folder_path):
     return known_faces, known_names
 
 # Load known faces
-known_faces, known_names = load_known_faces("static/images")
+# known_faces, known_names = load_known_faces("static/images")
 
 
 def load_known_faces_from_redis():
@@ -95,6 +95,8 @@ known_faces, known_ids = load_known_faces_from_redis()
 
 @socketio.on('frame')
 def handle_frame(base64_image):
+
+    dropDataRedis(data_store)
 
     # Check if both 'id_salle' and 'id_edt' exist in the session
     if 'id_salle' not in session or 'id_edt' not in session:
@@ -180,7 +182,6 @@ def fiche_presence():
         # If either doesn't exist, initialize both from data_store
         session['id_salle'] = data_store[0]['salle']
         session['id_edt'] = data_store[0]['id_edt']
-
 
     addOnRedis(data_store)
 
@@ -298,7 +299,25 @@ def present(idEdt, idClasseEtudiant, tempsArriver):
         print(f"An error occurred: {e}")
         return None
 
-
+def dropDataRedis(data_store):
+    # Connect to Redis
+    r = redis.Redis(host='localhost', port=6379, db=0)
+    
+    # Convert `data_store['date']` and `data_store['fin']` to datetime objects
+    data_date = datetime.datetime.strptime(data_store[0]['date'], "%Y-%m-%d")
+    data_fin = datetime.datetime.strptime(data_store[0]['fin'], "%H:%M:%S")
+    
+    # Get the current date and time
+    current_date_time = datetime.datetime.now()
+    
+    # Compare if both `data_store['date']` and `data_store['fin']` are greater than current time
+    if data_date > current_date_time and data_fin > current_date_time:
+        # If true, flush all data from Redis
+        r.flushdb()  # This will delete all keys from the current Redis database
+        print("All Redis data dropped (nofafana).")
+    else:
+        print("No data dropped Any Redis, mbola tsy depasse ny date fin edt")
+    
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)
