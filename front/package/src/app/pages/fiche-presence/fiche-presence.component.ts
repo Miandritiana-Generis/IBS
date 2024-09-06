@@ -88,7 +88,7 @@ export class AppFichePresenceComponent {
           // Si 'data' est un tableau, le mapper pour créer listeFichePresence
           this.listeFichePresence = data.map(item => ({
             id: item.id,
-            imagePath: 'assets/images/profile/default-user.jpg',
+            imagePath: item.photo ? `${item.photo}` : 'assets/images/profile/default-user.jpg',
             nom: item.nom,
             prenom: item.prenom,
             hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
@@ -98,6 +98,9 @@ export class AppFichePresenceComponent {
             enseignant: item.enseignant,
             classe: item.classe,
             id_edt: item.id_edt,
+            id_classe_etudiant : item.id_classe_etudiant,
+            date : item.date,
+            fin : item.fin
           }));
         } else {
           // Si la réponse n'est pas un tableau, afficher un message d'erreur
