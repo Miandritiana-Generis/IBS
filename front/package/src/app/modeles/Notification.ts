@@ -8,5 +8,6 @@ export class Notification {
     enseignant?:string;
     date?:Date;
     debut?:string;
+    fin?:string;
 
 }

@@ -45,6 +45,8 @@ public class ViewNotificationEdt {
     @Column
     private Time debut;
     @Column
+    private Time fin;
+    @Column
     private String enseignant;
     
 }

@@ -4,9 +4,7 @@
  */
 package com.ibs.suiviAbsence.controller;
 
-import com.ibs.suiviAbsence.modele.NotificationEdt;
 import com.ibs.suiviAbsence.modele.ViewNotificationEdt;
-import com.ibs.suiviAbsence.repository.NotificationEdtRepository;
 import com.ibs.suiviAbsence.repository.ViewNotificationEdtRepository;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
