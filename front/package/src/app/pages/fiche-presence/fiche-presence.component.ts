@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Time } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,7 +25,9 @@ export interface ProductsData {
   enseignant : string;
   classe : string;
   id_edt : string;
-  id_classe_etudiant : string
+  id_classe_etudiant : string;
+  date : Date;
+  fin : Time
 }
 
 @Component({
@@ -89,7 +91,9 @@ export class AppFichePresenceComponent {
           enseignant: item.enseignant,
           classe: item.classe,
           id_edt : item.id_edt,
-          id_classe_etudiant : item.id_classe_etudiant
+          id_classe_etudiant : item.id_classe_etudiant,
+          date : item.date,
+          fin : item.fin
         }));
 
         // Set the data source for the table
