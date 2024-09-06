@@ -88,7 +88,7 @@ public class EdtService {
             }
             edt.setEstAnnule(true);
             this.edtRepository.save(edt);
-            String contenue="Le cours annulé.";
+            String contenue="Cours annulé";
             this.notificationService.genererNotification(edt.getId(),contenue);
         }
         else{
