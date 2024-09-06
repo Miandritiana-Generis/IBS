@@ -55,7 +55,7 @@ export class EdtService {
     if (id_salle !== undefined) {
         params = params.append('id_salle', id_salle.toString());
     }
-    if (id_edt !== undefined) {
+    if (id_edt !== undefined && id_edt !== null && id_edt !== 'null') {
         params = params.append('id_edt', id_edt);
     }
     if (heure) {
