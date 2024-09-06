@@ -2,7 +2,6 @@ package com.ibs.suiviAbsence.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.NoSuchElementException;
 import java.time.LocalTime;
 import java.sql.Time;
 
@@ -11,7 +10,6 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,14 +70,17 @@ public class PresenceController {
     if (idEdt != null) {
         result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
         Optional<Presence> p = presenceRepository.findByIdEdt(idEdt);
-        if(p.get().getValideProf()==1){
-            Time heureDebut = result.get(0).getDebut();
-            Time heureFin = result.get(0).getFin();
-            LocalTime debutLocalTime = heureDebut.toLocalTime();
-            LocalTime finLocalTime = heureFin.toLocalTime();
-            LocalTime currentTime = LocalTime.now();
-            if(currentTime.isBefore(debutLocalTime)==true || currentTime.isAfter(finLocalTime)==true){
-                retour = true;
+        if(!p.isEmpty()){
+            if(p.get().getValideProf()==1){
+                Time heureDebut = result.get(0).getDebut();
+                Time heureFin = result.get(0).getFin();
+                LocalTime debutLocalTime = heureDebut.toLocalTime();
+                LocalTime finLocalTime = heureFin.toLocalTime();
+                LocalTime currentTime = LocalTime.now();
+                if(currentTime.isBefore(debutLocalTime)==true || currentTime.isAfter(finLocalTime)==true){
+                    retour = true;
+                }
+                
             }
             
         }
