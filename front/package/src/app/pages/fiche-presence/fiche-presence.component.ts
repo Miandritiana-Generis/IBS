@@ -61,7 +61,7 @@ export class AppFichePresenceComponent {
    this.route.queryParamMap.subscribe(params => {
       console.log(params.get("id_edt"));
       this.id_edt = params.get('id_edt')!;
-      this.getListFichePresence(this.id_salle,this.id_edt ,this.heure, this.date);
+      this.getListFichePresence(this.id_salle ,this.heure, this.date, this.id_edt);
     });
     
   }
