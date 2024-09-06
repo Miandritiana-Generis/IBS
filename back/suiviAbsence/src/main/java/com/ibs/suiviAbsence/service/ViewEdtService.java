@@ -77,7 +77,7 @@ public class ViewEdtService {
         List<V_InfoFichePresence> liste = v_iInfoFichePresenceRepository.getInfoFichePresence(id_salle, heure, date);
     
         if (liste.isEmpty()) {
-            throw new IllegalArgumentException("Aucune donnée trouvée pour les critères donnés.");
+            return liste;
         }
     
         
