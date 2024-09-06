@@ -3,4 +3,10 @@ export class Notification {
     contenue?:string;
     dateheure?:Date;
     idEdt?:number;
+    matiere?:string;
+    salle?:string;
+    enseignant?:string;
+    date?:Date;
+    debut?:string;
+
 }
