@@ -72,11 +72,10 @@ public class ViewEdtService {
         if (heure == null || heure.isEmpty()) {
             heure = null;
         }
-        
+    
         
         List<V_InfoFichePresence> liste = v_iInfoFichePresenceRepository.getInfoFichePresence(id_salle, heure, date);
-        
-        
+    
         if (liste.isEmpty()) {
             throw new IllegalArgumentException("Aucune donnée trouvée pour les critères donnés.");
         }
@@ -84,18 +83,18 @@ public class ViewEdtService {
         
         Time heureDebut = liste.get(0).getDebut();
         Time heureFin = liste.get(0).getFin();
+    
         
-        
-        LocalTime currentTime = LocalTime.now();
         LocalTime debutLocalTime = heureDebut.toLocalTime();
         LocalTime finLocalTime = heureFin.toLocalTime();
         
-        
+       
+        LocalTime currentTime = LocalTime.now();
         LocalTime debutMoins10Min = debutLocalTime.minusMinutes(10);
-        
+    
         
         if (currentTime.isAfter(debutMoins10Min) && currentTime.isBefore(finLocalTime)) {
-            return liste;
+            return liste;  // L'heure actuelle est dans la plage requise
         } else {
             throw new IllegalArgumentException("L'heure actuelle n'est pas dans la plage requise.");
         }
