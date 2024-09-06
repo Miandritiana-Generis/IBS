@@ -1,7 +1,14 @@
 package com.ibs.suiviAbsence.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.NoSuchElementException;
+import java.time.LocalTime;
+import java.sql.Time;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +28,7 @@ import com.ibs.suiviAbsence.modele.V_InfoFichePresence;
 import com.ibs.suiviAbsence.service.ViewEdtService;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.repository.DetailPresenceRepository;
+import com.ibs.suiviAbsence.repository.PresenceRepository;
 import com.ibs.suiviAbsence.repository.V_InfoFichePresenceRepository;
 import com.ibs.suiviAbsence.service.PresenceService;
 
@@ -33,6 +42,8 @@ public class PresenceController {
     DetailPresenceRepository detailPresenceRepository;
     @Autowired
     V_InfoFichePresenceRepository v_InfoFichePresence;
+    @Autowired
+    PresenceRepository presenceRepository;
     
     @PostMapping
     public ResponseEntity insert(@RequestBody PresenceInsertDTO presenceInsertDTO){
@@ -49,16 +60,30 @@ public class PresenceController {
     private ViewEdtService edtService;
 
     @GetMapping
-    public ResponseEntity<List<V_InfoFichePresence>> getInfoFichePresence(
+    public ResponseEntity<Map<String, Object>> getInfoFichePresence(
     @RequestParam(value = "id_salle", required = false) Integer idSalle,
     @RequestParam(value = "date", required = false) String date,
     @RequestParam(value = "heure", required = false) String heure,
     @RequestParam(value = "id_edt", required = false) Integer idEdt) {
 
     List<V_InfoFichePresence> result;
+    boolean retour = false;
 
     if (idEdt != null) {
         result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
+        Optional<Presence> p = presenceRepository.findByIdEdt(idEdt);
+        if(p.get().getValideProf()==1){
+            Time heureDebut = result.get(0).getDebut();
+            Time heureFin = result.get(0).getFin();
+            LocalTime debutLocalTime = heureDebut.toLocalTime();
+            LocalTime finLocalTime = heureFin.toLocalTime();
+            LocalTime currentTime = LocalTime.now();
+            if(currentTime.isBefore(debutLocalTime)==true || currentTime.isAfter(finLocalTime)==true){
+                retour = true;
+            }
+            
+        }
+
     } else if (idSalle != null) {
         if (date == null || date.isEmpty()) {
             date = null;
@@ -70,8 +95,11 @@ public class PresenceController {
     } else {
         return ResponseEntity.badRequest().body(null); // Si ni id_salle ni id_edt n'est fourni
     }
+    Map<String, Object> response = new HashMap<>();
+    response.put("data", result);
+    response.put("retour", retour);
 
-    return ResponseEntity.ok(result);
+    return ResponseEntity.ok(response);
 }
 
     
@@ -100,18 +128,12 @@ public class PresenceController {
     }
 
     @PutMapping("validerDelegue")
-    public ResponseEntity validerDelegue(@RequestParam int idEdt) {
-        try {
-            presenceService.validerDelegue(idEdt);
+    public ResponseEntity validerDelegue(@RequestParam int idEdt, @RequestHeader("Authorization") String tokenValue) {
+        
+            presenceService.validerDelegue(idEdt,tokenValue);
 
             return ResponseEntity.ok("Validation effectuée pour idEdt : " + idEdt);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Aucune entrée trouvée pour idEdt : " + idEdt);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erreur lors de la validation de la fiche de présence.");
-        }
+        
     }
     
 

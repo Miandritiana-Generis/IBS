@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Constants } from '../util/constants';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -27,12 +27,17 @@ export class FichePresenceService {
 }
 
 
+
+
   
-  validerDelegue(idEdt: string): Observable<{ message: string }> {
-    return this.http.put<{ message: string }>(
-      `${this.urlValiderDelegue}`, 
-      null, 
-      { params: { idEdt: idEdt.toString() } }
-    );
-  }
+validerDelegue(idEdt: string, tokenValue: string): Observable<{ message: string }> {
+  return this.http.put<{ message: string }>(
+    `${this.urlValiderDelegue}`, 
+    null, 
+    {
+      params: { idEdt: idEdt.toString() },
+      headers: new HttpHeaders().set('Authorization', `Bearer ${tokenValue}`)
+    }
+  );
+}
 }

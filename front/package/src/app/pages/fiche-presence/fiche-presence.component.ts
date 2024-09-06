@@ -45,11 +45,13 @@ export interface ProductsData {
   templateUrl: './fiche-presence.component.html'
 })
 export class AppFichePresenceComponent {
-  listeFichePresence: ProductsData[] = [];
+  listeFichePresence: any[] = [];
   id_salle = 25;
   heure = "";
   date = "";
-  id_edt :string= "0";
+  id_edt = "1";
+  message: string = ''; 
+  retour : any;
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
@@ -69,35 +71,49 @@ export class AppFichePresenceComponent {
    
   }
 
-  getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string,): void {
+  getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string): void {
 
     const salle = localStorage.getItem("salle");
     id_salle = parseInt(salle || "0", 10);
-    this.edtService.getInfoFichePresence(id_salle,heure, date,idEdt ).subscribe(
-      (data: any[]) => {
-        // Map data to include hourRate defaulting to null if not provided
-        this.listeFichePresence = data.map(item => ({
-          id: item.id,
-          imagePath: item.photo ? `${item.photo}` : 'assets/images/profile/default-user.jpg',
-          // imagePath: 'assets/images/profile/default-user.jpg',
-          nom: item.nom,
-          prenom: item.prenom,
-          hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
-          status: item.status ? (item.status === true ? 'Present' : 'Absent') : 'Absent',
-          salle: item.salle,
-          matiere: item.matiere,
-          enseignant: item.enseignant,
-          classe: item.classe,
-          id_edt : item.id_edt,
-          id_classe_etudiant : item.id_classe_etudiant
-        }));
 
-        // Set the data source for the table
+    this.edtService.getInfoFichePresence(id_salle, heure, date, idEdt).subscribe(
+      (response: { data: any[]; retour: boolean }) => {
+        // Vérification que 'data' est bien un tableau
+        const data = response.data;
+        this.retour = response.retour;
+
+        if (Array.isArray(data)) {
+          // Si 'data' est un tableau, le mapper pour créer listeFichePresence
+          this.listeFichePresence = data.map(item => ({
+            id: item.id,
+            imagePath: 'assets/images/profile/default-user.jpg',
+            nom: item.nom,
+            prenom: item.prenom,
+            hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
+            status: item.status ? (item.status === true ? 'Present' : 'Absent') : 'Absent',
+            salle: item.salle,
+            matiere: item.matiere,
+            enseignant: item.enseignant,
+            classe: item.classe,
+            id_edt: item.id_edt,
+          }));
+        } else {
+          // Si la réponse n'est pas un tableau, afficher un message d'erreur
+          console.error("La réponse n'est pas un tableau valide:", response);
+          this.listeFichePresence = [];
+        }
+
+        // Mettre à jour la source de données pour la table
         this.dataSource = this.listeFichePresence;
-        console.log("data:",this.listeFichePresence);
+        console.log("Données transformées:", this.listeFichePresence);
+      },
+      (error: any) => {
+        console.error("Erreur lors de l'appel à l'API:", error);
       }
     );
   }
+
+  
 
 
   sendFichePresenceData(): void {
@@ -116,35 +132,44 @@ export class AppFichePresenceComponent {
 
 
   validerProf(idEdt: string): void {
-    this.fichePresenceService.validerProf(idEdt)
-        .subscribe({
-            next: (response) => {
-                alert(response.message);
-            },
-            error: (error: HttpErrorResponse) => {
-                if (error.error && error.error.erreurs && error.error.erreurs.length > 0) {
-                    const backendError = error.error.erreurs[0];
-                    alert(`Erreur ${backendError.codeErreur}: ${backendError.messageErreur}`);
-                } else {
-                    alert(`Une erreur est survenue: ${error.message}`);
-                }
-            }
-        });
-}
-
-
-  validerDelegue(idEdt : string) : void {
-    if (confirm("Voulez-vous vraiment valider ?")) {
-      this.fichePresenceService.validerDelegue(idEdt).subscribe({
-          next: () => {
-              alert('Validation réussie.');
-          },
-          error: (err) => {
-              alert(err.message);  
+    const confirmed = confirm("Voulez-vous vraiment valider ce professeur ?");
+    if (confirmed) {
+      this.fichePresenceService.validerProf(idEdt).subscribe(
+        success => {
+          console.log("OKOK SUCCES");
+          alert('Validation réussie.');
+        },
+        error => {
+          console.log("OUPSIII");
+          if (error.erreurs && error.erreurs && error.erreurs.length > 0) {
+            this.message = error.erreurs[0].messageErreur;
+          } else {
+            alert(`Une erreur est survenue: ${error.message}`);
           }
-      });
+        }
+      );
+    }
   }
+  
+
+
+
+
+validerDelegue(idEdt: string): void {
+  const tokenValue = localStorage.getItem('token'); 
+  if (tokenValue && confirm("Voulez-vous vraiment valider ?")) {
+    this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
+      next: () => {
+        alert('Validation réussie.');
+      },
+      error: (err) => {
+        alert(err.message);
+      }
+    });
+  } else {
+    alert('Token manquant ou action annulée.');
   }
+}
 
     
 
