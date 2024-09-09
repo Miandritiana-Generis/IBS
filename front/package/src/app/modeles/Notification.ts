@@ -11,4 +11,6 @@ export class Notification {
     fin?:string;
     type?:number;
 
+    
+
 }

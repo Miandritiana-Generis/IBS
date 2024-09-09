@@ -10,7 +10,8 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Notification } from 'src/app/modeles/Notification';
 import { NotificationEdtService } from 'src/app/services/notification-edt.service';
-
+import 'moment/locale/fr'; 
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-header',
@@ -75,4 +76,17 @@ export class HeaderComponent {
       this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
     }
   }
+
+  public formaterDate(date : Date): string {
+    // Vérifie que this.date n'est pas undefined ou null
+    if (!date) {
+        return '';  // Retourne une chaîne vide si la date est absente
+    }
+
+    // Créer un objet moment à partir de this.date
+    const dateTemp = moment(date);
+
+    // Formatage de la date en utilisant moment
+    return dateTemp.format('dddd D MMMM YYYY');
+}
 }
