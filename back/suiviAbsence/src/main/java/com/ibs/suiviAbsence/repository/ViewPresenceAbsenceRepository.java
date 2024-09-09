@@ -14,5 +14,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author abc
  */
 public interface ViewPresenceAbsenceRepository  extends JpaRepository<ViewPresenceAbsence, Integer>{
-    public List<ViewPresenceAbsence> findByDateBetween(Date date1, Date date2);
+    public List<ViewPresenceAbsence> findByDateBetweenAndIsPresent(Date date1, Date date2,boolean isPresent);
 }

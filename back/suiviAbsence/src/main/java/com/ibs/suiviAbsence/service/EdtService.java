@@ -47,7 +47,7 @@ public class EdtService {
     private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
     
     public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
-        List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetween(date1, date2);
+        List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false);
         return liste;
     }
     
