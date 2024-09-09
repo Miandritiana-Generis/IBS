@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ibs.suiviAbsence.modele.Salle;
+import com.ibs.suiviAbsence.modele.ViewClasseEtudiantAllInfo;
 import com.ibs.suiviAbsence.modele.ViewEdt;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
+import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import com.ibs.suiviAbsence.repository.SalleRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtRepository;
 import com.ibs.suiviAbsence.service.EdtService;
@@ -42,6 +44,14 @@ public class EdtController {
             @RequestParam(name = "dateFin")  Date datefin){
         String token= FonctionUtil.getBearerToken(authorizationHeader);
         List<ViewEdtAllInfo>liste=this.edtService2.findEdt(token,dateDebut,datefin);
+        return ResponseEntity.ok(liste);
+    }
+    
+    @GetMapping("edt/absent")
+    public ResponseEntity getEtudiantAbsent(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,
+            @RequestParam(name = "dateDebut")  Date dateDebut, 
+            @RequestParam(name = "dateFin")  Date datefin){
+        List<ViewPresenceAbsence>liste=this.edtService2.listeEtudiantAbsent(dateDebut,datefin);
         return ResponseEntity.ok(liste);
     }
     

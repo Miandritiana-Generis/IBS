@@ -8,11 +8,14 @@ import com.ibs.suiviAbsence.exception.EdtException;
 import com.ibs.suiviAbsence.exception.PersonneException;
 import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.ViewClasseEtudiant;
+import com.ibs.suiviAbsence.modele.ViewClasseEtudiantAllInfo;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.modele.ViewLogin;
+import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 import com.ibs.suiviAbsence.repository.ViewLoginRepository;
+import com.ibs.suiviAbsence.repository.ViewPresenceAbsenceRepository;
 import com.ibs.suiviAbsence.utilitaire.Constante;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -40,6 +43,13 @@ public class EdtService {
     private EdtRepository edtRepository;
     @Autowired 
     private NotificationService notificationService;
+    @Autowired
+    private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
+    
+    public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
+        List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetween(date1, date2);
+        return liste;
+    }
     
     public List<ViewEdtAllInfo> findEdt(String token,Date datedebut ,Date datefin){
         List<ViewEdtAllInfo> liste=new ArrayList<>();
