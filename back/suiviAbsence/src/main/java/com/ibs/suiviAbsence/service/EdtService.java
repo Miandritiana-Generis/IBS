@@ -48,7 +48,6 @@ public class EdtService {
             throw new PersonneException("Token invalide");
         }
         else if(personne.getIdEnseignant()>0){
-            System.out.println("getIdEnseignant=="+personne.getIdEnseignant());
             liste=viewEdtAllInfoRepository.findByIdEnseignantAndDateBetween(personne.getIdEnseignant(),datedebut,datefin);
         } 
         else if(personne.getIdEtudiant()>0){
