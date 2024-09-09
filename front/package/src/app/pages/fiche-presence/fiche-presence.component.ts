@@ -54,6 +54,7 @@ export class AppFichePresenceComponent {
   id_edt = "1";
   message: string = ''; 
   retour : any;
+  estAnnule: boolean | null = null;
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
@@ -70,7 +71,7 @@ export class AppFichePresenceComponent {
 
 
   ngOnInit() {
-   
+    this.checkIfAnnule(parseInt(this.id_edt));
   }
 
   getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string): void {
@@ -141,12 +142,12 @@ export class AppFichePresenceComponent {
     if (confirmed) {
       this.fichePresenceService.validerProf(idEdt).subscribe(
         success => {
-          console.log("OKOK SUCCES");
+          //console.log("OKOK SUCCES");
           alert('Validation réussie.');
         },
         error => {
-          console.log("OUPSIII");
-          if (error.erreurs && error.erreurs && error.erreurs.length > 0) {
+          //console.log("OUPSIII");
+          if (error.error.erreurs && error.error.erreurs && error.error.erreurs.length > 0) {
             this.message = error.erreurs[0].messageErreur;
           } else {
             alert(`Une erreur est survenue: ${error.message}`);
@@ -176,6 +177,16 @@ validerDelegue(idEdt: string): void {
   }
 }
 
+checkIfAnnule(idEdt: number): void {
+  this.fichePresenceService.estAnnule(idEdt).subscribe(
+    (response: any) => {
+      this.estAnnule = response.estAnnule;
+    },
+    (error) => {
+      console.error('Erreur lors de la vérification:', error);
+    }
+  );
+}
     
 
 

@@ -141,6 +141,7 @@ public class PresenceService {
         }
     }
 
+
     public boolean estDelegue(String tokenValue) {
         Token tok = token.findByToken(tokenValue);
         Optional<Personne> p = personneRepo.findById(tok.getId_personne());
@@ -151,6 +152,12 @@ public class PresenceService {
         }
         return false;
     }
+
+    // public boolean estProf(String tokenValue) {
+    //     Token tok = token.findByToken(tokenValue);
+    //     Optional<Personne> p = personneRepo.findById(tok.getId_personne());
+
+    // }
 
 
 }

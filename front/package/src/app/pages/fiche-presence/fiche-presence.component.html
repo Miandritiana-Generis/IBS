@@ -2,9 +2,18 @@
   <div class="row">
     <mat-card class="cardWithShadow w-100">
         <mat-card-content class="p-32">
+          <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="estAnnule == true"
+              [ngStyle]="{ 'background-color': '#fa896b', 'color': 'white', 'width': '800px', 'line-height': '50px' }"
+            >
+
+             cours annulé
+          </mat-chip>
             <mat-card-header>
               <mat-card-title>Fiche de presence</mat-card-title>
-
+              
               <mat-chip-set
                 class="example-chip"
                 cdkDropList
@@ -16,6 +25,7 @@
               class="example-box f-s-14"
               cdkDrag
               *ngIf="listeFichePresence.length > 0"
+              
             >
 
             Salle : {{ listeFichePresence[0].salle }}
