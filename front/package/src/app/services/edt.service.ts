@@ -83,13 +83,13 @@ export class EdtService {
             debut: string;
             fin: string;
         }[];
-        retour: boolean;
+        retour: string;
     }>(this.urlFichePresence, { params }).pipe(
         map(response => {
             // Vérifie que response.data est défini et est un tableau
             if (!response || !Array.isArray(response.data)) {
                 console.error('Invalid response format:', response);
-                return { data: [], retour: false };
+                return { data: [], retour: '' };
             }
 
             // Transformation des données

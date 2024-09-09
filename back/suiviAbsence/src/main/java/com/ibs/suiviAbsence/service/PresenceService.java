@@ -19,6 +19,7 @@ import com.ibs.suiviAbsence.modele.Personne;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.Token;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
+import com.ibs.suiviAbsence.modele.ViewLogin;
 import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.EtudiantRepository;
 import com.ibs.suiviAbsence.repository.PersonneRepository;
@@ -27,6 +28,7 @@ import com.ibs.suiviAbsence.repository.DetailPresenceRepository;
 import com.ibs.suiviAbsence.repository.PresenceRepository;
 import com.ibs.suiviAbsence.repository.TokenRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
+import com.ibs.suiviAbsence.repository.ViewLoginRepository;
 
 @Service
 public class PresenceService {
@@ -44,6 +46,9 @@ public class PresenceService {
     EtudiantRepository etudiantRepo;
     @Autowired
     ClasseEtudiantRepository classeEtudiant;
+    @Autowired
+    private ViewLoginRepository loginRepository;
+
 
     DetailPresenceRepository detailPresenceRepository;
     
@@ -141,6 +146,7 @@ public class PresenceService {
         }
     }
 
+
     public boolean estDelegue(String tokenValue) {
         Token tok = token.findByToken(tokenValue);
         Optional<Personne> p = personneRepo.findById(tok.getId_personne());
@@ -150,6 +156,16 @@ public class PresenceService {
             return true;
         }
         return false;
+    }
+
+    public boolean estProf(String tokenValue) {
+        boolean retour = false;
+        ViewLogin v = loginRepository.findLoginByToken(tokenValue);
+        if (v.getIdEnseignant() != 0) {
+            retour = true;
+        }
+        return retour;
+
     }
 
 

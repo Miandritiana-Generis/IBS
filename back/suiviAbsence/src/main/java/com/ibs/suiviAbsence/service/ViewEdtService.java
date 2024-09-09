@@ -5,6 +5,8 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalTime;
+import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.PersonneRepository;
 import com.ibs.suiviAbsence.repository.V_InfoFichePresenceRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtRepository;
+import com.ibs.suiviAbsence.repository.ViewLoginRepository;
 
 @Service
 public class ViewEdtService {
@@ -30,6 +33,9 @@ public class ViewEdtService {
     private EdtRepository edtRepository;
     @Autowired
     private V_InfoFichePresenceRepository v_iInfoFichePresenceRepository;
+
+    @Autowired
+    private ViewLoginRepository loginRepository;
     
     public Edt findEdtCourant(int idSalle,Date datedonner,Time time) {
         Edt viewEdt=null;
@@ -99,6 +105,17 @@ public class ViewEdtService {
             throw new IllegalArgumentException("L'heure actuelle n'est pas dans la plage requise.");
         }
     }
+
+    public boolean estAnnule(Integer idEdt) {
+        boolean retour = false;
+        Edt edt = edtRepository.getById(idEdt);
+        if (edt.isEstAnnule()){
+            retour = true;
+        }
+        return retour;
+    }
+
+
     
 
     public List<V_InfoFichePresence> getInfoFichePresenceToday(int id_salle, String date) {

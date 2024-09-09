@@ -54,6 +54,10 @@ export class AppFichePresenceComponent {
   id_edt = "1";
   message: string = ''; 
   retour : any;
+  estAnnule: boolean | null = null;
+  retourDelegue : string = '';
+  retourProf : string = '';
+
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
@@ -70,7 +74,7 @@ export class AppFichePresenceComponent {
 
 
   ngOnInit() {
-   
+    this.checkIfAnnule(parseInt(this.id_edt));
   }
 
   getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string): void {
@@ -83,6 +87,9 @@ export class AppFichePresenceComponent {
         // Vérification que 'data' est bien un tableau
         const data = response.data;
         this.retour = response.retour;
+        const l= this.retour.split(";");
+        this.retourProf = l[0];
+        this.retourDelegue = l[1];
 
         if (Array.isArray(data)) {
           // Si 'data' est un tableau, le mapper pour créer listeFichePresence
@@ -141,12 +148,11 @@ export class AppFichePresenceComponent {
     if (confirmed) {
       this.fichePresenceService.validerProf(idEdt).subscribe(
         success => {
-          console.log("OKOK SUCCES");
           alert('Validation réussie.');
+          window.location.reload();
         },
         error => {
-          console.log("OUPSIII");
-          if (error.erreurs && error.erreurs && error.erreurs.length > 0) {
+          if (error.error.erreurs && error.error.erreurs && error.error.erreurs.length > 0) {
             this.message = error.erreurs[0].messageErreur;
           } else {
             alert(`Une erreur est survenue: ${error.message}`);
@@ -174,6 +180,17 @@ validerDelegue(idEdt: string): void {
   } else {
     alert('Token manquant ou action annulée.');
   }
+}
+
+checkIfAnnule(idEdt: number): void {
+  this.fichePresenceService.estAnnule(idEdt).subscribe(
+    (response: any) => {
+      this.estAnnule = response.estAnnule;
+    },
+    (error) => {
+      console.error('Erreur lors de la vérification:', error);
+    }
+  );
 }
 
     

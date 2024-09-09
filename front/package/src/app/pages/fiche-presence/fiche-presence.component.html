@@ -2,9 +2,18 @@
   <div class="row">
     <mat-card class="cardWithShadow w-100">
         <mat-card-content class="p-32">
+          <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="estAnnule == true"
+              [ngStyle]="{ 'background-color': '#fa896b', 'color': 'white', 'width': '800px', 'line-height': '50px' }"
+            >
+
+             cours annulé
+          </mat-chip>
             <mat-card-header>
               <mat-card-title>Fiche de presence</mat-card-title>
-
+              
               <mat-chip-set
                 class="example-chip"
                 cdkDropList
@@ -16,6 +25,7 @@
               class="example-box f-s-14"
               cdkDrag
               *ngIf="listeFichePresence.length > 0"
+              
             >
 
             Salle : {{ listeFichePresence[0].salle }}
@@ -46,7 +56,7 @@
         </mat-chip-set>
 
               <div class="m-l-auto cursor-pointer">
-                <a (click)="sendFichePresenceData()" *ngIf="retour == false">
+                <a (click)="sendFichePresenceData()" *ngIf="retourProf == 'ValideProf = 0'">
                   <div class="bg-light-error text-error shadow-none icon-96">
                     <div class="icon-demo">
                       <div class="icon-demo-icon">
@@ -141,7 +151,7 @@
 
     <div class="row">
       <div class="col-6">
-        <a *ngIf="retour == false"
+        <a *ngIf="retourProf == 'ValideProf = 0'"
           mat-flat-button
           color="primary"
           
@@ -153,7 +163,7 @@
         </a>
       </div>
       <div class="col-6">
-        <a *ngIf="retour == false"
+        <a *ngIf="retourDelegue == 'ValideDelegue = 0'"
           mat-flat-button
           color="warn"
           
