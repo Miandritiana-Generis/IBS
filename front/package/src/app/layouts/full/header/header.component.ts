@@ -18,6 +18,7 @@ import 'moment/locale/fr';
   selector: 'app-header',
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
+  // styleUrls: ['/src/assets/scss/pages/_dashboards.scss'],
 })
 export class HeaderComponent {
   @Input() showToggle = true;
@@ -29,6 +30,7 @@ export class HeaderComponent {
   showFiller = false;
   nom="My profil";
   count=0;
+  page =0;
   notification:Notification[]=[];
   constructor(public dialog: MatDialog,private authService:AuthService ,
     private router:Router,
@@ -37,17 +39,55 @@ export class HeaderComponent {
     this.nom=localStorage.getItem("nom")|| "My Profil";
     this.setNotification();
   }
-  private setNotification(){
-    this.notificationService.getNotification().subscribe(
+  public charger(event: MouseEvent){
+    event.stopPropagation();
+    this.page=this.page+1;
+    this.setNotification();
+  }
+  public actualiser(event: MouseEvent){
+    this.notification=[];
+    event.stopPropagation();
+    this.setNotification();
+  }
+  public setNotification(){
+    this.notificationService.getNotification(this.page).subscribe(
       (data: any)=> {
         this.count=data.count;
-        this.notification=data.data
+        for(let item of data.data){
+          this.notification.push(item)
+        }
       },error => {
-
       });
   }
   logout(){
     this.authService.logout();
     this.router.navigate(['/authentication/login']);
   }
+
+  formatTime(time: string): string {
+    if (!time) {
+      return '';
+    }
+    // Extraire HH:mm à partir de HH:mm:ss
+    return time.slice(0, 5);
+  }
+
+  redirifer(idEdt:number , type:number){
+    if(type==1){
+      this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
+    }
+  }
+
+  public formaterDate(date : Date): string {
+    // Vérifie que this.date n'est pas undefined ou null
+    if (!date) {
+        return '';  // Retourne une chaîne vide si la date est absente
+    }
+
+    // Créer un objet moment à partir de this.date
+    const dateTemp = moment(date);
+
+    // Formatage de la date en utilisant moment
+    return dateTemp.format('dddd D MMMM YYYY');
+}
 }

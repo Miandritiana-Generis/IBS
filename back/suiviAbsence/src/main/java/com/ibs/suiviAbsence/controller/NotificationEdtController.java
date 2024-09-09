@@ -4,8 +4,8 @@
  */
 package com.ibs.suiviAbsence.controller;
 
-import com.ibs.suiviAbsence.modele.NotificationEdt;
-import com.ibs.suiviAbsence.repository.NotificationEdtRepository;
+import com.ibs.suiviAbsence.modele.ViewNotificationEdt;
+import com.ibs.suiviAbsence.repository.ViewNotificationEdtRepository;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,13 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/notifications")
 public class NotificationEdtController {
     @Autowired
-    NotificationEdtRepository notificationEdtRepository;
+    ViewNotificationEdtRepository notificationEdtRepository;
     
     @GetMapping()
     public ResponseEntity  listeNotification(@RequestParam(value = "page", required = false ,defaultValue = "0")   int page){
         Sort sort = Sort.by(Sort.Order.desc("dateheure"));
         Pageable pageable = PageRequest.of(page, 10,sort);
-        Page<NotificationEdt> notificationEdts= this.notificationEdtRepository.findAll(pageable);
+        Page<ViewNotificationEdt> notificationEdts= this.notificationEdtRepository.findAll(pageable);
         long nombre= this.notificationEdtRepository.count();
         HashMap map= new HashMap();
         map.put("data", notificationEdts.getContent());

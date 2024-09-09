@@ -9,10 +9,10 @@ import com.ibs.suiviAbsence.exception.PersonneException;
 import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.ViewClasseEtudiant;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
-import com.ibs.suiviAbsence.modele.ViewPersonneStatut;
+import com.ibs.suiviAbsence.modele.ViewLogin;
 import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
-import com.ibs.suiviAbsence.repository.ViewPersonneStatutRepository;
+import com.ibs.suiviAbsence.repository.ViewLoginRepository;
 import com.ibs.suiviAbsence.utilitaire.Constante;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class EdtService {
     @Autowired
     private ViewEdtAllInfoRepository viewEdtAllInfoRepository;
     @Autowired
-    private ViewPersonneStatutRepository viewPersonneStatutRepository;
+    private ViewLoginRepository loginRepository;
     @Autowired
     private AutorisationPatService autorisationPatService;
     @Autowired
@@ -40,14 +40,15 @@ public class EdtService {
     private EdtRepository edtRepository;
     @Autowired 
     private NotificationService notificationService;
+    
     public List<ViewEdtAllInfo> findEdt(String token,Date datedebut ,Date datefin){
         List<ViewEdtAllInfo> liste=new ArrayList<>();
-        ViewPersonneStatut personne = viewPersonneStatutRepository.findPersonneByToken(token);
+        ViewLogin personne = loginRepository.findLoginByToken(token);
         if(personne==null){
             throw new PersonneException("Token invalide");
         }
         else if(personne.getIdEnseignant()>0){
-            liste=viewEdtAllInfoRepository.findByIdEnseignant(personne.getIdEnseignant());
+            liste=viewEdtAllInfoRepository.findByIdEnseignantAndDateBetween(personne.getIdEnseignant(),datedebut,datefin);
         } 
         else if(personne.getIdEtudiant()>0){
             ViewClasseEtudiant classeEtudiant= etudiantService.findClasseEtudiant(personne.getIdEtudiant());
@@ -65,8 +66,7 @@ public class EdtService {
     
     @Transactional(rollbackFor = Exception.class)
     public void annulerCours(String token ,int idEdt){
-        List<ViewEdtAllInfo> liste=new ArrayList<>();
-        ViewPersonneStatut personne = viewPersonneStatutRepository.findPersonneByToken(token);
+        ViewLogin personne = loginRepository.findLoginByToken(token);
         if(personne==null){
             throw new PersonneException("Token invalide");
         }
@@ -88,10 +88,8 @@ public class EdtService {
             }
             edt.setEstAnnule(true);
             this.edtRepository.save(edt);
-            ViewEdtAllInfo edtView= this.viewEdtAllInfoRepository.findById(idEdt).get();
-            String contenue="Le cours de %s prévu le %s à %s en salle %s est annulé.";
-            contenue=String.format(contenue, edtView.getMatiere(),edtView.getDate(),edtView.getDebut(),edtView.getSalle());
-            this.notificationService.genererNotification(edt.getId(),contenue);
+            String contenue="Cours annulé";
+            this.notificationService.genererNotification(edt.getId(),contenue,Constante.coursAnnule);
         }
         else{
             throw new EdtException("Vous n'avez par le droit d'annulé un cours");

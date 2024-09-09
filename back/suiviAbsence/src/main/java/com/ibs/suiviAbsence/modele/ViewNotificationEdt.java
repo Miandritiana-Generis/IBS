@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +23,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Table(name="notificationedt")
+@Table(name="v_notificationedt")
 @Entity
 @NoArgsConstructor
-public class NotificationEdt {
+public class ViewNotificationEdt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -35,18 +37,18 @@ public class NotificationEdt {
     @Column
     private int idEdt;
     @Column
+    private String matiere;
+    @Column
+    private String salle;
+    @Column
+    private Date date;
+    @Column
+    private Time debut;
+    @Column
+    private Time fin;
+    @Column
+    private String enseignant;
+    @Column
     private int type;
     
-    public NotificationEdt(String contenue, Timestamp dateheure, int idEdt) {
-        this.contenue = contenue;
-        this.dateheure = dateheure;
-        this.idEdt = idEdt;
-    }
-    
-    public NotificationEdt(String contenue, Timestamp dateheure, int idEdt,int type) {
-        this.contenue = contenue;
-        this.dateheure = dateheure;
-        this.idEdt = idEdt;
-        this.type=type;
-    }
 }
