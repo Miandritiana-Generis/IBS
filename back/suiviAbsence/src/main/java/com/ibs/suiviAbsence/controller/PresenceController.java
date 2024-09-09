@@ -67,11 +67,12 @@ public class PresenceController {
     List<V_InfoFichePresence> result;
     boolean retour = false;
     Optional<Presence> p;
+    String stringRetour = "ValideProf = 0;" + "ValideDelegue = 0";
 
     if (idEdt != null) {
         result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
         p = presenceRepository.findByIdEdt(idEdt);
-        if(p.isPresent() && p.get().getValideProf()==1){
+        if(p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==0){
             Time heureDebut = result.get(0).getDebut();
             Time heureFin = result.get(0).getFin();
             LocalTime debutLocalTime = heureDebut.toLocalTime();
@@ -79,6 +80,19 @@ public class PresenceController {
             LocalTime currentTime = LocalTime.now();
             if(currentTime.isBefore(debutLocalTime)==true || currentTime.isAfter(finLocalTime)==true){
                 retour = true;
+                stringRetour = "ValideProf = 1;" + "ValideDelegue = 0";
+            }
+            
+        }
+        else if(p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==1){
+            Time heureDebut = result.get(0).getDebut();
+            Time heureFin = result.get(0).getFin();
+            LocalTime debutLocalTime = heureDebut.toLocalTime();
+            LocalTime finLocalTime = heureFin.toLocalTime();
+            LocalTime currentTime = LocalTime.now();
+            if(currentTime.isBefore(debutLocalTime)==true || currentTime.isAfter(finLocalTime)==true){
+                retour = true;
+                stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
             }
             
         }
@@ -92,29 +106,46 @@ public class PresenceController {
         }
         result = edtService.getInfoFichePresence(idSalle, heure, date);
         p =  presenceRepository.findByIdEdt(result.get(0).getId_edt());
-        if (p.isPresent() && p.get().getValideProf()==1){
+        if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==0){
             retour = true;
+            stringRetour = "ValideProf = 1;" + "ValideDelegue = 0";
+        }
+        else if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==1){
+            retour = true;
+            stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
         }
     } else {
         return ResponseEntity.badRequest().body(null); // Si ni id_salle ni id_edt n'est fourni
     }
     Map<String, Object> response = new HashMap<>();
     response.put("data", result);
-    response.put("retour", retour);
+    response.put("retour", stringRetour);
 
     return ResponseEntity.ok(response);
-}
+    }
 
-@GetMapping("/estAnnule")
-public ResponseEntity<Map<String, Boolean>> estAnnule(@RequestParam Integer idEdt) {
-    boolean estAnnule = edtService.estAnnule(idEdt);
+    @GetMapping("/estAnnule")
+    public ResponseEntity<Map<String, Boolean>> estAnnule(@RequestParam Integer idEdt) {
+        boolean estAnnule = edtService.estAnnule(idEdt);
 
-    // Préparer la réponse en format JSON
-    Map<String, Boolean> response = new HashMap<>();
-    response.put("estAnnule", estAnnule);
+        // Préparer la réponse en format JSON
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("estAnnule", estAnnule);
 
-    return ResponseEntity.ok(response);
-}
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/estProf")
+    public ResponseEntity<Map<String, Boolean>> estProf(@RequestHeader("Authorization") String tokenValue) {
+        boolean estProf = presenceService.estProf(tokenValue);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("estAnnule", estProf);
+
+        return ResponseEntity.ok(response);
+    }
+
+
 
     
     

@@ -55,6 +55,9 @@ export class AppFichePresenceComponent {
   message: string = ''; 
   retour : any;
   estAnnule: boolean | null = null;
+  retourDelegue : string = '';
+  retourProf : string = '';
+
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
@@ -84,6 +87,9 @@ export class AppFichePresenceComponent {
         // Vérification que 'data' est bien un tableau
         const data = response.data;
         this.retour = response.retour;
+        const l= this.retour.split(";");
+        this.retourProf = l[0];
+        this.retourDelegue = l[1];
 
         if (Array.isArray(data)) {
           // Si 'data' est un tableau, le mapper pour créer listeFichePresence
@@ -142,11 +148,10 @@ export class AppFichePresenceComponent {
     if (confirmed) {
       this.fichePresenceService.validerProf(idEdt).subscribe(
         success => {
-          //console.log("OKOK SUCCES");
           alert('Validation réussie.');
+          window.location.reload();
         },
         error => {
-          //console.log("OUPSIII");
           if (error.error.erreurs && error.error.erreurs && error.error.erreurs.length > 0) {
             this.message = error.erreurs[0].messageErreur;
           } else {
@@ -187,6 +192,7 @@ checkIfAnnule(idEdt: number): void {
     }
   );
 }
+
     
 
 

@@ -19,6 +19,7 @@ import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.PersonneRepository;
 import com.ibs.suiviAbsence.repository.V_InfoFichePresenceRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtRepository;
+import com.ibs.suiviAbsence.repository.ViewLoginRepository;
 
 @Service
 public class ViewEdtService {
@@ -32,6 +33,9 @@ public class ViewEdtService {
     private EdtRepository edtRepository;
     @Autowired
     private V_InfoFichePresenceRepository v_iInfoFichePresenceRepository;
+
+    @Autowired
+    private ViewLoginRepository loginRepository;
     
     public Edt findEdtCourant(int idSalle,Date datedonner,Time time) {
         Edt viewEdt=null;

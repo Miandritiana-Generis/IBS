@@ -11,6 +11,7 @@ export class FichePresenceService {
   private urlValiderProf = Constants.BASE_URL+'/presences/validerProf';
   private urlValiderDelegue = Constants.BASE_URL+'/presences/validerDelegue';
   private urlCoursEstAnnule = Constants.BASE_URL+'/presences/estAnnule';
+  private urlEstProf = Constants.BASE_URL+'/presences/estProf';
 
   constructor(private http: HttpClient) { }
 
@@ -56,5 +57,14 @@ estAnnule(idEdt: number): Observable<any> {
     })
   );
 }
+
+estProf(tokenValue: string): Observable<{ estAnnule: boolean }> {
+  const headers = new HttpHeaders({
+    'Authorization': tokenValue
+  });
+
+  return this.http.get<{ estAnnule: boolean }>(`${this.urlEstProf}`, { headers });
+}
+
 
 }
