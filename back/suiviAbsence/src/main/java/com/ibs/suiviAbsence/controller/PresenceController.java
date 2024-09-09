@@ -93,7 +93,6 @@ public class PresenceController {
         result = edtService.getInfoFichePresence(idSalle, heure, date);
         p =  presenceRepository.findByIdEdt(result.get(0).getId_edt());
         if (p.isPresent() && p.get().getValideProf()==1){
-            //System.out.println("presence :"+ String.valueOf(p.get().getIdEdt()));
             retour = true;
         }
     } else {

@@ -48,5 +48,7 @@ public class ViewNotificationEdt {
     private Time fin;
     @Column
     private String enseignant;
+    @Column
+    private int type;
     
 }

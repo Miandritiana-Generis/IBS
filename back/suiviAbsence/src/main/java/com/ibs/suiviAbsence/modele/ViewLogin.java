@@ -4,49 +4,47 @@
  */
 package com.ibs.suiviAbsence.modele;
 
+/**
+ *
+ * @author abc
+ */
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
-/**
- *
- * @author abc
- */
 @Getter
 @Setter
-@Table(name="notificationedt")
-@Entity
 @NoArgsConstructor
-public class NotificationEdt {
+@Entity
+@Table(name="v_login")
+public class ViewLogin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
-    private String contenue;
+    private String login;
     @Column
-    private Timestamp dateheure;
+    private String password;
+    @Column(name="id_pat")
+    @Nullable
+    private int idPat;
+    @Column(name="id_enseignant")
+    @Nullable
+    private int idEnseignant;
+    @Column(name="id_etudiant")
+    @Nullable
+    private int idEtudiant;
+    @Column(name="id_personne")
+    @Nullable
+    private int idPersonne;
     @Column
-    private int idEdt;
-    @Column
-    private int type;
-    
-    public NotificationEdt(String contenue, Timestamp dateheure, int idEdt) {
-        this.contenue = contenue;
-        this.dateheure = dateheure;
-        this.idEdt = idEdt;
-    }
-    
-    public NotificationEdt(String contenue, Timestamp dateheure, int idEdt,int type) {
-        this.contenue = contenue;
-        this.dateheure = dateheure;
-        this.idEdt = idEdt;
-        this.type=type;
-    }
+    private int idDirection;
 }

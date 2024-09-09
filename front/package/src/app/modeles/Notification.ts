@@ -9,5 +9,8 @@ export class Notification {
     date?:Date;
     debut?:string;
     fin?:string;
+    type?:number;
+
+    
 
 }

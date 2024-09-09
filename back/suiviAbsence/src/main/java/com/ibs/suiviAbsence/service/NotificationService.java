@@ -21,8 +21,8 @@ public class NotificationService {
     NotificationEdtRepository notificationEdtRepository;
     
     @Transactional(rollbackFor = Exception.class)
-    public void genererNotification(int idEdt,String contenu){
-        NotificationEdt notificationEdt= new NotificationEdt(contenu, new Timestamp(System.currentTimeMillis()), idEdt);
+    public void genererNotification(int idEdt,String contenu,int type){
+        NotificationEdt notificationEdt= new NotificationEdt(contenu, new Timestamp(System.currentTimeMillis()), idEdt,type);
         this.notificationEdtRepository.save(notificationEdt);
     }
 }
