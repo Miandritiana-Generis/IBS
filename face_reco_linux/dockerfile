@@ -5,15 +5,38 @@ FROM python:3.10-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+<<<<<<< Updated upstream
+=======
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    cmake \
+    gcc \
+    g++ \
+    dos2unix \
+    && rm -rf /var/lib/apt/lists/*
+
+>>>>>>> Stashed changes
 # Set the working directory
 WORKDIR /app
 
 # Copy the requirements file into the container
 COPY requirements.txt /app/
 
+<<<<<<< Updated upstream
 # Install the Python dependencies
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
+=======
+# Install virtualenv and create the environment in the container
+RUN pip install --upgrade pip && pip install virtualenv
+RUN virtualenv myenv
+
+# Convert line endings in activate file
+RUN dos2unix myenv/bin/activate
+
+# Activate the virtual environment and install dependencies
+RUN . myenv/bin/activate && pip install -r requirements.txt
+>>>>>>> Stashed changes
 
 # Copy the rest of the application code into the container
 COPY . /app/
@@ -21,5 +44,10 @@ COPY . /app/
 # Expose the port Flask is running on
 EXPOSE 5000
 
+<<<<<<< Updated upstream
 # Command to run the application
 CMD ["python", "app.py"]
+=======
+# Command to activate virtualenv and run the app
+CMD ["/bin/bash", "-c", "source myenv/bin/activate && python app.py"]
+>>>>>>> Stashed changes

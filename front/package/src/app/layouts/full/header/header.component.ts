@@ -10,7 +10,13 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Notification } from 'src/app/modeles/Notification';
 import { NotificationEdtService } from 'src/app/services/notification-edt.service';
+<<<<<<< Updated upstream
 
+=======
+import 'moment/locale/fr'; 
+import * as moment from 'moment';
+import 'moment/locale/fr'; 
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-header',
