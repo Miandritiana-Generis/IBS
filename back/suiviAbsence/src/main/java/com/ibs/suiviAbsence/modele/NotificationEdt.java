@@ -34,10 +34,19 @@ public class NotificationEdt {
     private Timestamp dateheure;
     @Column
     private int idEdt;
-
+    @Column
+    private int type;
+    
     public NotificationEdt(String contenue, Timestamp dateheure, int idEdt) {
         this.contenue = contenue;
         this.dateheure = dateheure;
         this.idEdt = idEdt;
+    }
+    
+    public NotificationEdt(String contenue, Timestamp dateheure, int idEdt,int type) {
+        this.contenue = contenue;
+        this.dateheure = dateheure;
+        this.idEdt = idEdt;
+        this.type=type;
     }
 }

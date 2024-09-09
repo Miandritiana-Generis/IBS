@@ -20,7 +20,7 @@
       <i-tabler class="d-flex" name="bell" [matBadge]="count" matBadgeColor="primary"></i-tabler>
     </button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li class="dropdown-item d-flex overflow-hidden" *ngFor="let stat of notification" (click)="redirifer(stat.idEdt!)">
+        <li class="dropdown-item d-flex overflow-hidden" *ngFor="let stat of notification" (click)="redirifer(stat.idEdt!, stat.type!)">
           <div class="time text-right mat-subtitle-1 f-s-14 align-items-center">
             {{ stat.date }} <br>
             {{formatTime(stat.debut!) }} - {{formatTime(stat.fin!) }}
@@ -32,6 +32,24 @@
           <div class="desc">
             <span class="mat-subtitle-1 f-s-14 lh-20">{{ stat.contenue }}</span>
             <span class="mat-subtitle-1 f-s-14 lh-20 f-w-600 d-block">{{ stat.matiere }}</span>
+          </div>
+        </li>
+        <li>
+          <div class="p-x-12 m-t-12">
+            <a
+            (click)="actualiser($event)"
+              mat-flat-button
+              color="primary"
+              class="w-50"
+              >Actualiser</a
+            >
+            <a
+            (click)="charger($event)"
+              mat-flat-button
+              color="primary"
+              class="w-50"
+              >Charger plus</a
+            >
           </div>
         </li>
       </ul>

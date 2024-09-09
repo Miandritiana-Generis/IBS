@@ -14,11 +14,11 @@ export class NotificationEdtService {
 
   }
 
-  getNotification() : Observable<any> {
+  getNotification(page :number) : Observable<any> {
     return this.http.get<{
       data:Notification[],
       count:number
-    }>(`${this.apiUrl}`);
+    }>(`${this.apiUrl}?page=${page}`);
   }
 
 

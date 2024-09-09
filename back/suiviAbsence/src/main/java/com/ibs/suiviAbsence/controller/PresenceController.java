@@ -71,7 +71,7 @@ public class PresenceController {
     if (idEdt != null) {
         result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
         p = presenceRepository.findByIdEdt(idEdt);
-        if(p.get().getValideProf()==1){
+        if(p.isPresent() && p.get().getValideProf()==1){
             Time heureDebut = result.get(0).getDebut();
             Time heureFin = result.get(0).getFin();
             LocalTime debutLocalTime = heureDebut.toLocalTime();
@@ -92,7 +92,7 @@ public class PresenceController {
         }
         result = edtService.getInfoFichePresence(idSalle, heure, date);
         p =  presenceRepository.findByIdEdt(result.get(0).getId_edt());
-        if (p.get().getValideProf()==1){
+        if (p.isPresent() && p.get().getValideProf()==1){
             retour = true;
         }
     } else {

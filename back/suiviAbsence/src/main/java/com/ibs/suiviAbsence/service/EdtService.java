@@ -65,7 +65,6 @@ public class EdtService {
     
     @Transactional(rollbackFor = Exception.class)
     public void annulerCours(String token ,int idEdt){
-        List<ViewEdtAllInfo> liste=new ArrayList<>();
         ViewPersonneStatut personne = viewPersonneStatutRepository.findPersonneByToken(token);
         if(personne==null){
             throw new PersonneException("Token invalide");
@@ -89,7 +88,7 @@ public class EdtService {
             edt.setEstAnnule(true);
             this.edtRepository.save(edt);
             String contenue="Cours annulé";
-            this.notificationService.genererNotification(edt.getId(),contenue);
+            this.notificationService.genererNotification(edt.getId(),contenue,Constante.coursAnnule);
         }
         else{
             throw new EdtException("Vous n'avez par le droit d'annulé un cours");

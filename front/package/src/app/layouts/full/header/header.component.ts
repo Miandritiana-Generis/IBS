@@ -28,6 +28,7 @@ export class HeaderComponent {
   showFiller = false;
   nom="My profil";
   count=0;
+  page =0;
   notification:Notification[]=[];
   constructor(public dialog: MatDialog,private authService:AuthService ,
     private router:Router,
@@ -36,13 +37,24 @@ export class HeaderComponent {
     this.nom=localStorage.getItem("nom")|| "My Profil";
     this.setNotification();
   }
-  private setNotification(){
-    this.notificationService.getNotification().subscribe(
+  public charger(event: MouseEvent){
+    event.stopPropagation();
+    this.page=this.page+1;
+    this.setNotification();
+  }
+  public actualiser(event: MouseEvent){
+    this.notification=[];
+    event.stopPropagation();
+    this.setNotification();
+  }
+  public setNotification(){
+    this.notificationService.getNotification(this.page).subscribe(
       (data: any)=> {
         this.count=data.count;
-        this.notification=data.data
+        for(let item of data.data){
+          this.notification.push(item)
+        }
       },error => {
-
       });
   }
   logout(){
@@ -58,7 +70,9 @@ export class HeaderComponent {
     return time.slice(0, 5);
   }
 
-  redirifer(idEdt:number){
-    this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
+  redirifer(idEdt:number , type:number){
+    if(type==1){
+      this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
+    }
   }
 }
