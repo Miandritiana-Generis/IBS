@@ -123,6 +123,7 @@ export class AppFichePresenceComponent {
 
   sendFichePresenceData(): void {
     const dataToSend = this.listeFichePresence;  // Assuming listeFichePresence contains the data you want to send
+    withCredentials: true
     this.edtService.sendFichePresenceDataService(dataToSend).subscribe(
       (response: any) => {
         console.log('Data sent successfully:', response);

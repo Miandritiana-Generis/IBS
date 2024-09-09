@@ -24,11 +24,11 @@ consecutive_matches = 0
 
 def check_redis_connection():
     try:
-        r = redis.Redis(host='localhost', port=6379, db=0)
-        # Attempt to ping Redis to check connectivity
+        r = redis.Redis(host='redis', port=6379, db=0)  # Use 'redis' as the hostname
         r.ping()
+        # redis_client.ping()
         return True
-    except ConnectionError:
+    except redis.ConnectionError:
         return False
     
 # Load known faces
@@ -89,9 +89,6 @@ def load_known_faces_from_redis():
     except ConnectionError as e:
         print(f"Tsy afaka ni connecte @ Redis: {e}")
         return [], []
-
-# Load known faces and corresponding IDs
-known_faces, known_ids = load_known_faces_from_redis()
 
 @socketio.on('frame')
 def handle_frame(base64_image):
@@ -171,11 +168,18 @@ def handle_frame(base64_image):
 
 @app.route('/api/fiche-presence', methods=['POST'])
 def fiche_presence():
-
+    print("fiche-presence endpoint hittttttttttttttttttttttttttttt")
     global data_store
     data = request.get_json()  # Get the JSON data sent from Angular
     print(data)  # For debugging, print the received data
     data_store = data
+
+    # Check if Redis is available and load known faces only when this route is called
+    known_faces, known_ids = [], []
+    if check_redis_connection():
+        known_faces, known_ids = load_known_faces_from_redis()
+    else:
+        print("Redis not available, proceeding without Redis data.")
 
     # Check if both 'id_salle' and 'id_edt' exist in the session
     if 'id_salle' not in session or 'id_edt' not in session:

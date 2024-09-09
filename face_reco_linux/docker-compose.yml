@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: face-reco-app
+    volumes:
+      - D:/Suivi-d-absence-IBS/face_reco_linux:/app 
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
