@@ -65,6 +65,10 @@ const ELEMENT_DATA: productsData[] = [
 })
 export class AppListeAbsence {
   absents:Absence[]=[];
+  totalElements=0;
+  totalPages=0;
+  page=1;
+  date=new Date();
   constructor(public dialog: MatDialog , private presenceService: PresenceService) {
     this.getAbsence();
   }
@@ -86,9 +90,11 @@ export class AppListeAbsence {
   hideDelay = new FormControl(2000);
 
   public getAbsence(){
-    this.presenceService.getAbsent(new Date().toISOString().split('T')[0],new Date().toISOString().split('T')[0]).subscribe(
+    this.presenceService.getAbsent(this.date.toISOString().split('T')[0],this.date.toISOString().split('T')[0],this.page).subscribe(
       success=>{
-        this.absents=success;
+        this.absents=success.content;
+        this.totalElements=success.totalElements;
+        this.totalPages=success.totalPages;
         },error => {
           // this.message=error.error.erreurs[0].messageErreur
       });

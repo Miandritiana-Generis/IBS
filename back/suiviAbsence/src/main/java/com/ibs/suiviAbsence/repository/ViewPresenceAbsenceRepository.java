@@ -7,6 +7,8 @@ package com.ibs.suiviAbsence.repository;
 import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import java.sql.Date;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -15,4 +17,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ViewPresenceAbsenceRepository  extends JpaRepository<ViewPresenceAbsence, Integer>{
     public List<ViewPresenceAbsence> findByDateBetweenAndIsPresent(Date date1, Date date2,boolean isPresent);
+    public Page<ViewPresenceAbsence> findByDateBetweenAndIsPresent(Date date1, Date date2,boolean isPresent,Pageable pageable);
+
 }

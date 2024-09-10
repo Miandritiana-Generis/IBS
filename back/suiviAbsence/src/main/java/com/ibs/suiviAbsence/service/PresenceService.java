@@ -31,6 +31,10 @@ import com.ibs.suiviAbsence.repository.TokenRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 import com.ibs.suiviAbsence.repository.ViewLoginRepository;
 import com.ibs.suiviAbsence.repository.ViewPresenceAbsenceRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class PresenceService {
@@ -54,8 +58,11 @@ public class PresenceService {
     @Autowired
     private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
     
-    public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
-        List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false);
+    public Page<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2,int page){
+        int nombreParPage=25;
+        Sort sort = Sort.by(Sort.Order.desc("date"));
+        Pageable pageable = PageRequest.of(page-1, nombreParPage,sort);
+        Page<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false,pageable);
         return liste;
     }
 

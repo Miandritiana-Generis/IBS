@@ -135,6 +135,13 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
+          <pagination
+            [totalItems]="totalElements"
+            [itemsPerPage]="totalPages"
+            [(ngModel)]="page"
+            (pageChanged)="getAbsence()"
+            >
+          </pagination>
         </div>
       </mat-card-content>
     </mat-card>

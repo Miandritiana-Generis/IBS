@@ -23,6 +23,8 @@ import { MatInputModule } from '@angular/material/input';
 
 import { ComponentType } from '@angular/cdk/portal';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+
 
 
 @NgModule({
@@ -45,6 +47,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
+    PaginationModule 
   ],
   exports: [TablerIconsModule],
   declarations: [
