@@ -1,6 +1,6 @@
 package com.ibs.suiviAbsence.modele;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;  
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Table(name="justfication_absence")
+@Table(name="justification_absence")
 @Entity
 @NoArgsConstructor
 public class JustificationAbsence {
@@ -22,7 +22,7 @@ public class JustificationAbsence {
     @Column
     int id_classe_etudiant;
     @Column
-    String decription;
+    String description;
     @Column
     Timestamp date_time_debut;
     @Column

@@ -69,6 +69,9 @@ public class PresenceService {
 
      public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
         List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false);
+        return liste;
+     }
+     
     
     public Page<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2,int page){
         int nombreParPage=25;
