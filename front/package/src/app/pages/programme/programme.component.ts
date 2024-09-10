@@ -277,7 +277,9 @@
 
     redirectToFichePresence(idEdt:number) {
       
-      this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
+      this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } }).then(() => {
+        window.location.reload(); // Recharger la page après la redirection
+      });
     }
 
     annulerCours(event:CustomCalendarEvent){

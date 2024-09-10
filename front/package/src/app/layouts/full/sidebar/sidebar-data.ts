@@ -13,7 +13,9 @@ export const navItems: NavItem[] = [
     displayName: 'Fiche de presence',
     iconName: 'list',
     route: '/fiche-presence',
-  },
+  }
+];
+export const navItemsPAT: NavItem[] = [
   {
     navCap: 'PAT',
   },
@@ -28,3 +30,6 @@ export const navItems: NavItem[] = [
     route: '/liste-absence',
   },
 ];
+
+
+

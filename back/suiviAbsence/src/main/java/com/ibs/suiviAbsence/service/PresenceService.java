@@ -115,9 +115,7 @@ public class PresenceService {
     /**
      * Ce metier permet de valider le fiche de presence en tant que prof mais ne fiche ne doit être
      * validable que 30 min après le cours
-     * @param idSalle
      * @param idEdt
-     * @return
      */
     public void validerProf(Integer idEdt) {
         Optional<Edt> edt = edtRepository.findById(idEdt);      

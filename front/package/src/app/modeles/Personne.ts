@@ -6,4 +6,5 @@ export class Personne {
     "contact": string
     "login": string
     "token": string
+    "idPat":number
 }

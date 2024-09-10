@@ -34,7 +34,9 @@ export class AuthService {
               localStorage.setItem('id', `${response.token.idPersonne}`);
               const token = response.token.token;
               this.getInfo(token);
-              this.router.navigate(['/']);
+              this.router.navigate(['/']).then(() => {
+                window.location.reload(); // Recharger la page après la redirection
+              });
             return true;
 
           } else {
@@ -57,6 +59,7 @@ export class AuthService {
         localStorage.setItem('prenom',data.prenom);
         localStorage.setItem('mail',data.mail);
         localStorage.setItem('contact',data.contact);
+        localStorage.setItem('idPat',`${data.idPat}`);
       }
     );
   }
