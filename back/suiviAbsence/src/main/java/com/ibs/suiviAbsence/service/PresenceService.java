@@ -18,12 +18,14 @@ import org.springframework.stereotype.Service;
 import com.ibs.suiviAbsence.exception.PresenceException;
 import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.Etudiant;
+import com.ibs.suiviAbsence.modele.JustificationAbsence;
 import com.ibs.suiviAbsence.modele.NotificationEdt;
 import com.ibs.suiviAbsence.modele.Personne;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.Token;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.modele.ViewLogin;
+import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.EtudiantRepository;
 import com.ibs.suiviAbsence.repository.NotificationEdtRepository;
@@ -61,6 +63,12 @@ public class PresenceService {
     private NotificationService notificationService;
 
 
+     public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
+        List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false);
+        return liste;
+    }
+
+    
     DetailPresenceRepository detailPresenceRepository;
     
     public Presence recupererPresence(int idEdt){
@@ -183,6 +191,9 @@ public class PresenceService {
         return retour;
 
     }
+
+   
+
 
 
 }

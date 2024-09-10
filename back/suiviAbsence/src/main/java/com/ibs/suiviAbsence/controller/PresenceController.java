@@ -59,6 +59,14 @@ public class PresenceController {
     @Autowired
     private ViewEdtService edtService;
 
+    /**
+     * Cette methode permet de lister les etudiant dans une classe à un jour 
+     * @param idSalle
+     * @param date
+     * @param heure
+     * @param idEdt
+     * @return
+     */
     @GetMapping
     public ResponseEntity<Map<String, Object>> getInfoFichePresence(
     @RequestParam(value = "id_salle", required = false) Integer idSalle,
