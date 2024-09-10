@@ -54,6 +54,8 @@ public class ViewPresenceAbsence {
     private String enseignant;
     @Column
     private String salle ;
+    @Column
+    private String photo ;
 
 
 

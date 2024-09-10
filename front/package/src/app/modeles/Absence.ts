@@ -1,15 +1,22 @@
 export class Absence {
     "id": number;
-    "idMatiere": number
-    "idClasse": number;
-    "idSalle": number;
-    "idEnseignant": number;
-    "estAnnule": boolean;
+    "id_classe": number;
+    "idEtudiant": number;
+    "id_annee_scolaire": number;
+    "est_delegue": number;
+    "idMatiere": number;
     "date": Date;
-    "debut": Date;
+    "debut": string;
     "fin": string;
-    "matiere": string;
+    "idEdt": number;
+    "valideProf":number
+    "valideDelegue": number
+    "nom": string;
+    "prenom": string;
     "classe": string;
-    "enseignant": string;
+    "matiere": string;
+    "enseignant":string;
     "salle": string;
+    "present": boolean;
+    "photo":string;
 }

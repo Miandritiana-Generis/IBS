@@ -1,9 +1,17 @@
 <div class="col-lg-10">
     <mat-card class="cardWithShadow">
       <mat-card-content class="p-24">
-        <mat-card-title>Justification des absences</mat-card-title>
+        <div class="d-flex mb-0">
+          <mat-card-title>Justification des absences</mat-card-title>
+          <div class="m-l-auto">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>Date</mat-label>
+              <input matInput type="date" rows="4" [(ngModel)]="date" (keydown.enter)="onEnter()"/>
+            </mat-form-field>
+          </div>
+        </div>
         <div class="table-responsive m-t-16">
-          <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
+          <table mat-table [dataSource]="absents" class="w-100 table-borderless">
             <!-- Position Column -->
             <ng-container matColumnDef="Etudiant">
               <th
@@ -16,7 +24,7 @@
               <td mat-cell *matCellDef="let element">
                 <div class="d-flex align-items-center">
                   <img
-                    [src]="element.imagePath"
+                    [src]="element.photo"
                     alt="users"
                     width="50"
                     class="rounded-circle"
@@ -43,7 +51,7 @@
                 Cours
               </th>
               <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
-                {{ element.cours }}
+                {{ element.matiere }}
               </td>
             </ng-container>
 
@@ -135,6 +143,15 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
+          <pagination *ngIf="totalPages!=0"
+            [totalItems]="totalElements"
+            [itemsPerPage]="totalPages"
+            [(ngModel)]="page"
+            (pageChanged)="getAbsence()"
+            previousText="Précédent"
+            nextText="Suivant"
+            >
+          </pagination>
         </div>
       </mat-card-content>
     </mat-card>
@@ -146,6 +163,20 @@
       <h3 class="modal-title">Justifié </h3>
     </div>
     <div class="modal-body m-5 mb-0">
+      <div class="row mb-3">
+        <div class="col-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Date debut</mat-label>
+            <input matInput rows="4" type="datetime-local"/>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Date fin</mat-label>
+            <input matInput rows="4" type="datetime-local"/>
+          </mat-form-field>
+        </div>
+      </div>
       <div class="mb-3">
         <mat-form-field class="w-100" appearance="outline">
           <mat-label>Description</mat-label>

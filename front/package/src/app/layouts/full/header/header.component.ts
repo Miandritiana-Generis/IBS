@@ -12,6 +12,7 @@ import { Notification } from 'src/app/modeles/Notification';
 import { NotificationEdtService } from 'src/app/services/notification-edt.service';
 import 'moment/locale/fr'; 
 import * as moment from 'moment';
+import 'moment/locale/fr'; 
 
 @Component({
   selector: 'app-header',

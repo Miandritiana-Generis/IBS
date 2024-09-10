@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     cmake \
     gcc \
     g++ \
+    dos2unix \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # Install virtualenv
@@ -21,12 +23,13 @@ WORKDIR /app
 # Copy the requirements file into the container
 COPY requirements.txt /app/
 
-# Create a virtual environment and install dependencies
-RUN virtualenv venv
-RUN . venv/bin/activate && pip install -r requirements.txt
+# Copy the wait-for-redis script into the container
+COPY wait-for-redis.sh /app/wait-for-redis.sh
+RUN chmod +x /app/wait-for-redis.sh
 
-# Install dependencies with retry logic (Optional)
-RUN for i in 1 2 3; do pip install --upgrade pip && pip install -r requirements.txt && break || sleep 5; done
+# Create a virtual environment and install dependencies
+RUN virtualenv myenv
+RUN . myenv/bin/activate && pip install -r requirements.txt
 
 # Copy the rest of the application code into the container
 COPY . /app/
@@ -34,5 +37,5 @@ COPY . /app/
 # Expose the port Flask is running on
 EXPOSE 5000
 
-# Command to run the application using virtualenv
-CMD ["venv/bin/python", "app.py"]
+# Command to run the app with Redis wait
+CMD ["./wait-for-redis.sh", "myenv/bin/python", "app.py"]

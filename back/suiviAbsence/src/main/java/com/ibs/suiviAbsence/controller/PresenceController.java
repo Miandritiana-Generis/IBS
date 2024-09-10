@@ -31,6 +31,7 @@ import com.ibs.suiviAbsence.repository.PresenceRepository;
 import com.ibs.suiviAbsence.repository.V_InfoFichePresenceRepository;
 import com.ibs.suiviAbsence.service.PresenceService;
 import java.sql.Date;
+import org.springframework.data.domain.Page;
 
 
 @RestController
@@ -199,9 +200,10 @@ public class PresenceController {
     
     @GetMapping("/absents")
     public ResponseEntity getEtudiantAbsent(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,
-            @RequestParam(name = "dateDebut")  Date dateDebut, 
-            @RequestParam(name = "dateFin")  Date datefin){
-        List<ViewPresenceAbsence>liste=this.presenceService.listeEtudiantAbsent(dateDebut,datefin);
+        @RequestParam(name = "dateDebut")  Date dateDebut, 
+        @RequestParam(name = "dateFin")  Date datefin,
+        @RequestParam(value = "page", required = false ,defaultValue = "1")   int page){
+        Page<ViewPresenceAbsence>liste=this.presenceService.listeEtudiantAbsent(dateDebut,datefin,page);
         return ResponseEntity.ok(liste);
     }
 
