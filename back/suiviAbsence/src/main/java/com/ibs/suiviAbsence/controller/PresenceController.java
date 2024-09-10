@@ -189,7 +189,7 @@ public class PresenceController {
         return ResponseEntity.ok(response);
     }
     
-    @GetMapping("absents")
+    @GetMapping("/absents")
     public ResponseEntity getEtudiantAbsent(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,
             @RequestParam(name = "dateDebut")  Date dateDebut, 
             @RequestParam(name = "dateFin")  Date datefin){

@@ -42,7 +42,18 @@ public class ViewPresenceAbsence {
     private int valideDelegue;
     @Column
     private boolean isPresent;
-
+    @Column
+    private String nom;
+    @Column
+    private String prenom ;
+    @Column
+    private String classe ;
+    @Column
+    private String matiere;
+    @Column
+    private String enseignant;
+    @Column
+    private String salle ;
 
 
 
