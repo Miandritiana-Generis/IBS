@@ -90,6 +90,8 @@ def load_known_faces_from_redis():
         print(f"Tsy afaka ni connecte @ Redis: {e}")
         return [], []
 
+known_faces, known_ids = load_known_faces_from_redis()
+
 @socketio.on('frame')
 def handle_frame(base64_image):
 
@@ -174,13 +176,6 @@ def fiche_presence():
     print(data)  # For debugging, print the received data
     data_store = data
 
-    # Check if Redis is available and load known faces only when this route is called
-    known_faces, known_ids = [], []
-    if check_redis_connection():
-        known_faces, known_ids = load_known_faces_from_redis()
-    else:
-        print("Redis not available, proceeding without Redis data.")
-
     # Check if both 'id_salle' and 'id_edt' exist in the session
     if 'id_salle' not in session or 'id_edt' not in session:
         # If either doesn't exist, initialize both from data_store
@@ -189,6 +184,7 @@ def fiche_presence():
 
     addOnRedis(data_store)
 
+    app.logger.info("fiche-presence endpoint hit")
     return jsonify({"message": "Data received successfully"}), 200
 
 
@@ -322,10 +318,13 @@ def dropDataRedis(data_store):
     else:
         print("No data dropped Any Redis, mbola tsy depasse ny date fin edt")
     
+@app.route('/api/test', methods=['GET'])
+def test():
+    print("fasdias7yefalsifbslfauslbfalsbiyasdiuasydfuyyyyyyyyyyyyyyyyyyyyy")
+    return "Test endpoint is working!"
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True)
-    app.run(host='0.0.0.0', port=5000)
+    socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True, host='0.0.0.0')
 
 
 

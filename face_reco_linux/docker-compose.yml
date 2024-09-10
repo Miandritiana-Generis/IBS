@@ -1,20 +1,26 @@
 version: '3.8'
 
 services:
+  app:
+    build: .
+    depends_on:
+      - redis
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    volumes:
+      - D:/Suivi-d-absence-IBS/face_reco_linux:/app 
+    container_name: face-reco-app
+
   redis:
     image: redis:latest
     container_name: redis
+    networks:
+      - app-network
     ports:
       - "6379:6379"
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: face-reco-app
-    volumes:
-      - D:/Suivi-d-absence-IBS/face_reco_linux:/app 
-    ports:
-      - "5000:5000"
-    depends_on:
-      - redis
+networks:
+  app-network:
+    driver: bridge

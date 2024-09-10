@@ -88,7 +88,10 @@ export class AppFichePresenceComponent {
           // Si 'data' est un tableau, le mapper pour créer listeFichePresence
           this.listeFichePresence = data.map(item => ({
             id: item.id,
-            imagePath: item.photo ? `${item.photo}` : 'assets/images/profile/default-user.jpg',
+            // If the photo exists, format it correctly to ensure it's treated as an absolute URL
+            imagePath: item.photo 
+              ? item.photo.replace('\\\\192.168.1.8\\bevazaha$', 'http://192.168.1.8/bevazaha$').replace(/\\/g, '/') 
+              : 'assets/images/profile/default-user.jpg',
             nom: item.nom,
             prenom: item.prenom,
             hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
@@ -122,7 +125,8 @@ export class AppFichePresenceComponent {
 
 
   sendFichePresenceData(): void {
-    const dataToSend = this.listeFichePresence;  // Assuming listeFichePresence contains the data you want to send
+    const dataToSend = this.listeFichePresence;
+    console.log("fdasdsgiulsag");
     this.edtService.sendFichePresenceDataService(dataToSend).subscribe(
       (response: any) => {
         console.log('Data sent successfully:', response);
