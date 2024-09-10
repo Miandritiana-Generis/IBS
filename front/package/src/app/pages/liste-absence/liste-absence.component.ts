@@ -1,6 +1,8 @@
 import { Component, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
+import { PresenceService } from 'src/app/services/presence.service';
+import { Absence } from 'src/app/modeles/Absence';
 
 export interface productsData {
   id: number;
@@ -62,8 +64,10 @@ const ELEMENT_DATA: productsData[] = [
   templateUrl: './liste-absence.component.html',
 })
 export class AppListeAbsence {
-
-  constructor(public dialog: MatDialog) {}
+  absents:Absence[]=[];
+  constructor(public dialog: MatDialog , private presenceService: PresenceService) {
+    this.getAbsence();
+  }
 
   displayedColumns: string[] = ['Etudiant', 'Cours', 'Classe', 'Enseignant', 'Justification', 'Modifier'];
   dataSource = ELEMENT_DATA;
@@ -81,4 +85,12 @@ export class AppListeAbsence {
   showDelay = new FormControl(1000);
   hideDelay = new FormControl(2000);
 
+  public getAbsence(){
+    this.presenceService.getAbsent(new Date().toISOString().split('T')[0],new Date().toISOString().split('T')[0]).subscribe(
+      success=>{
+        this.absents=success;
+        },error => {
+          // this.message=error.error.erreurs[0].messageErreur
+      });
+  }
 }
