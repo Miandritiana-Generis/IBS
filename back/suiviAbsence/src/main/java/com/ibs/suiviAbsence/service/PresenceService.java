@@ -20,6 +20,7 @@ import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.Token;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.modele.ViewLogin;
+import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.EtudiantRepository;
 import com.ibs.suiviAbsence.repository.PersonneRepository;
@@ -29,6 +30,7 @@ import com.ibs.suiviAbsence.repository.PresenceRepository;
 import com.ibs.suiviAbsence.repository.TokenRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 import com.ibs.suiviAbsence.repository.ViewLoginRepository;
+import com.ibs.suiviAbsence.repository.ViewPresenceAbsenceRepository;
 
 @Service
 public class PresenceService {
@@ -48,7 +50,14 @@ public class PresenceService {
     ClasseEtudiantRepository classeEtudiant;
     @Autowired
     private ViewLoginRepository loginRepository;
-
+    
+    @Autowired
+    private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
+    
+    public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
+        List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false);
+        return liste;
+    }
 
     DetailPresenceRepository detailPresenceRepository;
     

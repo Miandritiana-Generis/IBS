@@ -43,13 +43,6 @@ public class EdtService {
     private EdtRepository edtRepository;
     @Autowired 
     private NotificationService notificationService;
-    @Autowired
-    private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
-    
-    public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
-        List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false);
-        return liste;
-    }
     
     public List<ViewEdtAllInfo> findEdt(String token,Date datedebut ,Date datefin){
         List<ViewEdtAllInfo> liste=new ArrayList<>();

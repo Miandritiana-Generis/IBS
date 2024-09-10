@@ -25,10 +25,12 @@ import com.ibs.suiviAbsence.modele.DetailPresence;
 import com.ibs.suiviAbsence.modele.V_InfoFichePresence;
 import com.ibs.suiviAbsence.service.ViewEdtService;
 import com.ibs.suiviAbsence.modele.Presence;
+import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import com.ibs.suiviAbsence.repository.DetailPresenceRepository;
 import com.ibs.suiviAbsence.repository.PresenceRepository;
 import com.ibs.suiviAbsence.repository.V_InfoFichePresenceRepository;
 import com.ibs.suiviAbsence.service.PresenceService;
+import java.sql.Date;
 
 
 @RestController
@@ -187,7 +189,13 @@ public class PresenceController {
         return ResponseEntity.ok(response);
     }
     
-
+    @GetMapping("absents")
+    public ResponseEntity getEtudiantAbsent(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,
+            @RequestParam(name = "dateDebut")  Date dateDebut, 
+            @RequestParam(name = "dateFin")  Date datefin){
+        List<ViewPresenceAbsence>liste=this.presenceService.listeEtudiantAbsent(dateDebut,datefin);
+        return ResponseEntity.ok(liste);
+    }
 
 
 
