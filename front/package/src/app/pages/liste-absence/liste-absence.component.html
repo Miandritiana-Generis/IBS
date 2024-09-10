@@ -143,11 +143,13 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
-          <pagination
+          <pagination *ngIf="totalPages!=0"
             [totalItems]="totalElements"
             [itemsPerPage]="totalPages"
             [(ngModel)]="page"
             (pageChanged)="getAbsence()"
+            previousText="Précédent"
+            nextText="Suivant"
             >
           </pagination>
         </div>
