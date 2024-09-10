@@ -8,6 +8,7 @@ import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import java.sql.Date;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  *
@@ -15,4 +16,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ViewPresenceAbsenceRepository  extends JpaRepository<ViewPresenceAbsence, Integer>{
     public List<ViewPresenceAbsence> findByDateBetween(Date date1, Date date2);
+
+    @Query(value = "SELECT count(*) as nombre from v_presence_absence where is_present = false and id_edt =:id_edt", nativeQuery = true)
+    public int countAbsence(Integer id_edt);
 }

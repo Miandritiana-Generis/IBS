@@ -7,6 +7,9 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
+
+import javax.management.Notification;
+
 import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.ibs.suiviAbsence.exception.PresenceException;
 import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.Etudiant;
+import com.ibs.suiviAbsence.modele.NotificationEdt;
 import com.ibs.suiviAbsence.modele.Personne;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.Token;
@@ -22,6 +26,7 @@ import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
 import com.ibs.suiviAbsence.modele.ViewLogin;
 import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.EtudiantRepository;
+import com.ibs.suiviAbsence.repository.NotificationEdtRepository;
 import com.ibs.suiviAbsence.repository.PersonneRepository;
 import com.ibs.suiviAbsence.repository.ClasseEtudiantRepository;
 import com.ibs.suiviAbsence.repository.DetailPresenceRepository;
@@ -29,6 +34,8 @@ import com.ibs.suiviAbsence.repository.PresenceRepository;
 import com.ibs.suiviAbsence.repository.TokenRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 import com.ibs.suiviAbsence.repository.ViewLoginRepository;
+import com.ibs.suiviAbsence.repository.ViewPresenceAbsenceRepository;
+import com.ibs.suiviAbsence.utilitaire.Constante;
 
 @Service
 public class PresenceService {
@@ -48,6 +55,10 @@ public class PresenceService {
     ClasseEtudiantRepository classeEtudiant;
     @Autowired
     private ViewLoginRepository loginRepository;
+    @Autowired
+    private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
+    @Autowired
+    private NotificationService notificationService;
 
 
     DetailPresenceRepository detailPresenceRepository;
@@ -138,8 +149,13 @@ public class PresenceService {
      */
     public void validerDelegue(Integer idEdt,String tokenValue) {
         Optional<Presence> presence = presenceRepository.findById(idEdt);
+        int nbAbsent = viewPresenceAbsenceRepository.countAbsence(idEdt);
         if (presence.get().getValideProf()==1 && this.estDelegue(tokenValue)==true) {
             presenceRepository.validerFichePresenceDelegue(idEdt);
+            if(nbAbsent>0){
+                String contenue="absence de"+nbAbsent+"etudiants";
+                this.notificationService.genererNotification(idEdt,contenue,Constante.absence);
+            }
         } 
         else {
             throw new PresenceException("Vous ne pouvez pas encore valider le fiche de presence");
