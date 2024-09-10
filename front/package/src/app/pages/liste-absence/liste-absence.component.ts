@@ -68,8 +68,10 @@ export class AppListeAbsence {
   totalElements=0;
   totalPages=0;
   page=1;
-  date=new Date();
+  date: string;
   constructor(public dialog: MatDialog , private presenceService: PresenceService) {
+    const today = new Date();
+    this.date = today.toISOString().split('T')[0];
     this.getAbsence();
   }
 
@@ -90,7 +92,7 @@ export class AppListeAbsence {
   hideDelay = new FormControl(2000);
 
   public getAbsence(){
-    this.presenceService.getAbsent(this.date.toISOString().split('T')[0],this.date.toISOString().split('T')[0],this.page).subscribe(
+    this.presenceService.getAbsent(this.date,this.date,this.page).subscribe(
       success=>{
         this.absents=success.content;
         this.totalElements=success.totalElements;
@@ -98,5 +100,9 @@ export class AppListeAbsence {
         },error => {
           // this.message=error.error.erreurs[0].messageErreur
       });
+  }
+
+  onEnter() {
+    this.getAbsence();
   }
 }
