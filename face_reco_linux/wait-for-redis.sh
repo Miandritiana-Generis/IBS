@@ -7,5 +7,4 @@ while ! nc -z redis 6379; do
 done
 
 echo "Redis is up and running! ok ok"
-exec /app/myenv/bin/python /app/app.py
-
+exec python /app/app.py
