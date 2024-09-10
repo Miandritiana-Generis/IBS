@@ -154,7 +154,7 @@ public class PresenceService {
             presenceRepository.validerFichePresenceDelegue(idEdt);
             if(nbAbsent>0){
                 String contenue="absence de"+nbAbsent+"etudiants";
-                this.notificationService.genererNotification(idEdt,contenue,Constante.absence);
+                this.notificationService.genererNotification(idEdt,contenue,Constante.coursAnnule);
             }
         } 
         else {

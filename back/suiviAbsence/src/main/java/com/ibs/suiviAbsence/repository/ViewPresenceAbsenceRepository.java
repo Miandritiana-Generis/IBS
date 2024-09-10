@@ -19,4 +19,5 @@ public interface ViewPresenceAbsenceRepository  extends JpaRepository<ViewPresen
 
     @Query(value = "SELECT count(*) as nombre from v_presence_absence where is_present = false and id_edt =:id_edt", nativeQuery = true)
     public int countAbsence(Integer id_edt);
+    public List<ViewPresenceAbsence> findByDateBetweenAndIsPresent(Date date1, Date date2,boolean isPresent);
 }

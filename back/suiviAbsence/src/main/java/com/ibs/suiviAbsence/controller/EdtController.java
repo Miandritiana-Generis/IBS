@@ -47,14 +47,6 @@ public class EdtController {
         return ResponseEntity.ok(liste);
     }
     
-    @GetMapping("edt/absent")
-    public ResponseEntity getEtudiantAbsent(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,
-            @RequestParam(name = "dateDebut")  Date dateDebut, 
-            @RequestParam(name = "dateFin")  Date datefin){
-        List<ViewPresenceAbsence>liste=this.edtService2.listeEtudiantAbsent(dateDebut,datefin);
-        return ResponseEntity.ok(liste);
-    }
-    
     /**
      * cette methode permet d'afficher la liste des emplois du temps
      * @param id_personne
