@@ -1,7 +1,15 @@
 <div class="col-lg-10">
     <mat-card class="cardWithShadow">
       <mat-card-content class="p-24">
-        <mat-card-title>Justification des absences</mat-card-title>
+        <div class="d-flex mb-0">
+          <mat-card-title>Justification des absences</mat-card-title>
+          <div class="m-l-auto">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>Date</mat-label>
+              <input matInput type="datetime-local" rows="4" />
+            </mat-form-field>
+          </div>
+        </div>
         <div class="table-responsive m-t-16">
           <table mat-table [dataSource]="absents" class="w-100 table-borderless">
             <!-- Position Column -->
@@ -153,6 +161,20 @@
       <h3 class="modal-title">Justifié </h3>
     </div>
     <div class="modal-body m-5 mb-0">
+      <div class="row mb-3">
+        <div class="col-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Date debut</mat-label>
+            <input matInput rows="4" type="datetime-local"/>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Date fin</mat-label>
+            <input matInput rows="4" type="datetime-local"/>
+          </mat-form-field>
+        </div>
+      </div>
       <div class="mb-3">
         <mat-form-field class="w-100" appearance="outline">
           <mat-label>Description</mat-label>
