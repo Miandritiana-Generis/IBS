@@ -35,6 +35,13 @@ public class EdtController {
     @Autowired
     EdtService edtService2;
     
+    @GetMapping("edt/annuler/cours")
+    public ResponseEntity annuler(@RequestHeader(value = "Authorization", required = true)String authorizationHeader , @RequestParam(value = "id_edt", required = true) int id_edt){
+        
+        String token= FonctionUtil.getBearerToken(authorizationHeader);
+        this.edtService2.annulerCours(token,id_edt);
+        return ResponseEntity.ok(null);
+    }
     
     @GetMapping("edt")
     public ResponseEntity getAllEdt(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,

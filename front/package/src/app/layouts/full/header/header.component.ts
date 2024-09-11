@@ -8,8 +8,6 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Notification } from 'src/app/modeles/Notification';
-import { NotificationEdtService } from 'src/app/services/notification-edt.service';
 
 
 @Component({
@@ -25,25 +23,13 @@ export class HeaderComponent {
   @Output() toggleCollapsed = new EventEmitter<void>();
 
   showFiller = false;
-  nom="My profil";
-  count=0;
-  notification:Notification[]=[];
+  nom="My profil"
   constructor(public dialog: MatDialog,private authService:AuthService ,
-    private router:Router,
-    private notificationService:NotificationEdtService
+    private router:Router
   ) {
     this.nom=localStorage.getItem("nom")|| "My Profil";
-    this.setNotification();
   }
-  private setNotification(){
-    this.notificationService.getNotification().subscribe(
-      (data: any)=> {
-        this.count=data.count;
-        this.notification=data.data
-      },error => {
 
-      });
-  }
   logout(){
     this.authService.logout();
     this.router.navigate(['/authentication/login']);

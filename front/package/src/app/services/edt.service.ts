@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { Constants } from '../util/constants';
 import { Time } from '@angular/common';
 import { Edt } from '../modeles/Edt';
@@ -21,6 +21,7 @@ export class EdtService {
   private urlFichePresence = Constants.BASE_URL+'/presences';
   private urlFichePresenceToday = Constants.BASE_URL+'/presences/today';
   private urlEdt = Constants.BASE_URL+'/edt';
+  private urlAnnulerEdt = Constants.BASE_URL+'/edt/annuler/cours';
 
   constructor(private http: HttpClient, private auth: AuthService) { }
 
@@ -72,26 +73,17 @@ export class EdtService {
         nom: string;
         prenom: string;
         photo: string;
-        heure_arrive: string;
+        heure_arrive: Time;
         status: boolean;
         salle: string;
         matiere: string;
         enseignant: string;
         classe: string;
-        date: string;
-        debut: string;
-        fin: string;
-    }[]>(this.urlFichePresence, { params }).pipe(
-        map(response => {
-            return response.map(item => {
-                if (item.photo) {
-                  item.photo = item.photo.replace(/\\\\/g, '\\').replace(/\\(?=[\\])/g, '\\');
-                }
-                return item;
-            });
-        })
-    );
-  }
+        date: Date;
+        debut: Time;
+        fin: Time;
+    }>(this.urlFichePresence, { params });
+}
 
   getInfoFichePresenceToday(id_salle : number, date : string) : Observable<any> {
     // let id_salle_temp = localStorage.getItem("salle");
@@ -134,6 +126,14 @@ export class EdtService {
       .pipe(
         catchError(this.handleError<Edt[]>('getEdt'))
       );
+  }
+  
+  annulerEdt(idEdt:number): Observable<Edt[]> {
+    const token=this.auth.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<Edt[]>(`${this.urlAnnulerEdt}?id_edt=${idEdt}`, { headers });
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

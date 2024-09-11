@@ -92,11 +92,17 @@ public class PresenceController {
 
     @PutMapping("validerProf")
     public ResponseEntity validerProf(@RequestParam int idEdt) {
-        
+        try {
             presenceService.validerProf(idEdt);
 
             return ResponseEntity.ok("Validation effectuée pour idEdt : " + idEdt);
-       
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Aucune entrée trouvée pour idEdt : " + idEdt);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de la validation de la fiche de présence.");
+        }
     }
 
     @PutMapping("validerDelegue")

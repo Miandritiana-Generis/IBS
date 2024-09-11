@@ -105,6 +105,8 @@
     </div>
     <div class="modal-body m-3 mt-2 mb-2">
       <div>
+        {{message}}
+        <pre *ngIf="modalData?.event?.detail?.estAnnule">Cours annulé</pre>
         <pre>Matière: {{ modalData?.event?.detail?.matiere }}</pre>
         <pre>Classe: {{ modalData?.event?.detail?.classe }}</pre>
         <pre>Salle: {{ modalData?.event?.detail?.salle }}</pre>
@@ -113,9 +115,11 @@
     </div>
     <div class="modal-footer d-flex justify-content-center m-3 mb-0">
           <button 
+            *ngIf="!modalData?.event?.detail?.estAnnule"
             class="btn btn-secondary" 
             [disabled]="estCoursDans48heures(modalData?.event)"
             style="background-color: #fa896b; color: white; border-color: #fa896b;"
+            (click)="annulerCours(modalData?.event!)"
           >
             Annulé ce cours
           </button>

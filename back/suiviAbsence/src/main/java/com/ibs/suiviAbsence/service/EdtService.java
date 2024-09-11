@@ -38,7 +38,7 @@ public class EdtService {
     private EtudiantService etudiantService;
     @Autowired
     private EdtRepository edtRepository;
-    @Autowired 
+    @Autowired
     private NotificationService notificationService;
     public List<ViewEdtAllInfo> findEdt(String token,Date datedebut ,Date datefin){
         List<ViewEdtAllInfo> liste=new ArrayList<>();
@@ -88,10 +88,7 @@ public class EdtService {
             }
             edt.setEstAnnule(true);
             this.edtRepository.save(edt);
-            ViewEdtAllInfo edtView= this.viewEdtAllInfoRepository.findById(idEdt).get();
-            String contenue="Le cours de %s prévu le %s à %s en salle %s est annulé.";
-            contenue=String.format(contenue, edtView.getMatiere(),edtView.getDate(),edtView.getDebut(),edtView.getSalle());
-            this.notificationService.genererNotification(edt.getId(),contenue);
+            this.notificationService.genererNotification(edt.getId(),"Cours annulé");
         }
         else{
             throw new EdtException("Vous n'avez par le droit d'annulé un cours");

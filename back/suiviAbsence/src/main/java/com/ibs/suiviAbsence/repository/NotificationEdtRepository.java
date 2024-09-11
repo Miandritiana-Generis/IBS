@@ -5,11 +5,7 @@
 package com.ibs.suiviAbsence.repository;
 
 import com.ibs.suiviAbsence.modele.NotificationEdt;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
 
 /**
  *
@@ -17,9 +13,4 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface NotificationEdtRepository extends JpaRepository<NotificationEdt, Integer>{
     
-    @Override
-    public Page<NotificationEdt> findAll(Pageable pageable);
-    
-    @Query("SELECT COUNT(n) FROM NotificationEdt n WHERE FUNCTION('DATE', n.dateheure) = CURRENT_DATE")
-    public long count();
 }

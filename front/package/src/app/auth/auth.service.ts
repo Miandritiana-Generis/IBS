@@ -74,12 +74,16 @@ export class AuthService {
       .pipe(
         map(response => {
           // this.loaderService.hide();
-          localStorage.clear()
+          var salle:string=localStorage.getItem("salle")||"";
+          localStorage.clear();
+          localStorage.setItem("salle",salle);
           return true; // Ajouté pour indiquer un succès
         }),
         catchError(error => {
           // this.loaderService.hide();
-          localStorage.clear()
+          var salle:string=localStorage.getItem("salle")||"";
+          localStorage.clear();
+          localStorage.setItem("salle",salle);
           return throwError(() => new Error(error.error.erreurs[0].messageErreur));
         })
       )
