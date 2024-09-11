@@ -22,58 +22,185 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:4400"}}, methods=[
 data_store = {}
 consecutive_matches = 0
 
+
+#fanombohana...................................................................
+#cree connection amn Redis
 def check_redis_connection():
     try:
         r = redis.Redis(host='redis', port=6379, db=0)  # Use 'redis' as the hostname
         r.ping()
-        # redis_client.ping()
-        return True
+        return r
     except redis.ConnectionError:
-        return False
+        return None
     
-# Load known faces
-def load_known_faces(folder_path):
-    known_faces = []
-    known_names = []
 
-    for file_name in os.listdir(folder_path):
-        if file_name.endswith(".jpg") or file_name.endswith(".png"):
-            image_path = os.path.join(folder_path, file_name)
-            image = face_recognition.load_image_file(image_path)
-            encodings = face_recognition.face_encodings(image)
-            if encodings:
-                known_faces.append(encodings[0])
-                known_names.append(os.path.splitext(file_name)[0])
-            else:
-                print(f"Tsy misy tarehy : {file_name}")
+#atsoin angular rhf adefa le data json
+@app.route('/api/fiche-presence', methods=['POST'])
+def fiche_presence():
+    known_faces, known_ids = load_known_faces_from_redis()  # Reload faces after adding new data to Redis
+    print("fiche-presence endpoint hittttttttttttttttttttttttttttt")
+    global data_store
+    data = request.get_json()  # Get the JSON data sent from Angular
+    print(data)  # For debugging, print the received data
+    data_store = data
+
+    # Check if both 'id_salle' and 'id_edt' exist in the session
+    if 'id_salle' not in session or 'id_edt' not in session:
+        # If either doesn't exist, initialize both from data_store
+        session['id_salle'] = data_store[0]['salle']
+        session['id_edt'] = data_store[0]['id_edt']
+
+    addOnRedis(data_store)
+
+    app.logger.info("fiche-presence endpoint hit")
+    return jsonify({"message": "Data received successfully"}), 200
 
 
-    return known_faces, known_names
+#atsoin angular ko adefasa id salle, tsy de ilaina be satria efa azo id salle amle le data json
+@app.route('/api/set_id_salle', methods=['POST'])
+def set_id_salle():
+    id_salle = request.get_json()
+    if id_salle is not None:
+        session['id_salle'] = id_salle
+        return {'message': 'Session variable set!', 'id_salle': id_salle}, 200
+    else:
+        return {'message': 'No id_salle provided'}, 400
 
-# Load known faces
-# known_faces, known_names = load_known_faces("static/images")
 
-
-def load_known_faces_from_redis():
-    if not check_redis_connection():
-        print("Redis tsy mety made.")
-        return [], []
+def fetch_prenom_from_api(id_classe_etudiant):
+    api_url = f"http://localhost:8082/etudiants/prenom?idClasseEtudiant={id_classe_etudiant}"
     
     try:
-        r = redis.Redis(host='localhost', port=6379, db=0)
+        response = requests.get(api_url, timeout=5)  # Timeout to avoid hanging
+        response.raise_for_status()  # Raise an error for 4xx/5xx responses
+        
+        # Parse the JSON response
+        data = response.json()
+        
+        # Return the 'prenom' if it exists, otherwise return 'Inconnue'
+        return data.get('prenom', 'Inconnue')
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching prenom for id_classe_etudiant {id_classe_etudiant}: {e}")
+        return 'Inconnue'
+    
+#presence (nalaina tany amn spring boot via ws)
+def present(idEdt, idClasseEtudiant, tempsArriver):
+    api_url = "http://localhost:8082/presences"
+    
+    # Data to be sent in the POST request
+    payload = {
+        "idEdt": idEdt,
+        "idClasseEtudiant": idClasseEtudiant,
+        "tempsArriver": tempsArriver
+    }
+
+    try:
+        # Send the POST request with the JSON data
+        response = requests.post(api_url, json=payload)
+        
+        if response.status_code == 200:
+            return response.json()  # Return the response data if needed
+        else:
+            print(f">>presence eto : Error: Received status code {response.status_code}")
+            return None
+
+    except requests.RequestException as e:
+        print(f"Misy error occurred: {e}")
+        return None
+    
+
+#fonction add anaty redis
+def addOnRedis(data_store):
+    try:
+        # Connect to Redis
+        r = check_redis_connection()  # Ensure the port matches your Redis configuration
+
+        if not r:
+            print("Redis tsy mety.")
+            return
+
+        for item in data_store:
+            id_classe_etudiant = item.get('id_classe_etudiant')
+            image_path = item.get('imagePath')  # Example: \\192.168.1.8\bevazaha$\Photo9353.jpg
+
+            if not id_classe_etudiant or not image_path:
+                print("Missing 'id_classe_etudiant' or 'imagePath' in data_store item.")
+                continue
+
+            # Convert network path for Windows
+            network_path = image_path.replace('/', '\\')
+
+            if os.path.exists(network_path):
+                try:
+                    # Read the image file in binary mode
+                    with open(network_path, 'rb') as image_file:
+                        image_data = image_file.read()
+
+                    # Store image content in Redis
+                    r.set(id_classe_etudiant, image_data)
+                    print(f"Stored image data for ID: {id_classe_etudiant}")
+                except IOError as e:
+                    print(f"Tsy voavaky le sary file {network_path}: {e}")
+            else:
+                print(f"FTsy hita le sary file: {network_path}")
+
+        print(f"NETY TSARA NY REDIS")
+
+    except redis.RedisError as e:
+        print(f"Redis tsy mety: {e}")
+
+#mamafa anaty redis
+def dropDataRedis(data_store):
+    # Connect to Redis
+    r = redis.Redis(host='localhost', port=6379, db=0)
+    
+    # Convert `data_store['date']` and `data_store['fin']` to datetime objects
+    data_date = datetime.datetime.strptime(data_store[0]['date'], "%Y-%m-%d")
+    data_fin = datetime.datetime.strptime(data_store[0]['fin'], "%H:%M:%S")
+    
+    # Get the current date and time
+    current_date_time = datetime.datetime.now()
+    
+    # Compare if both `data_store['date']` and `data_store['fin']` are greater than current time
+    if data_date > current_date_time and data_fin > current_date_time:
+        # If true, flush all data from Redis
+        r.flushdb()  # This will delete all keys from the current Redis database
+        print("All Redis data dropped (nofafana).")
+    else:
+        print("No data dropped Any Redis, mbola tsy depasse ny date fin edt")
+
+
+
+
+#eto amzay reconnaissance facial...................................
+def load_known_faces_from_redis():
+    r = check_redis_connection()
+    if not r:
+        print("Redis tsy mety made.")
+        return [], []
+    else:
+        print("Redis connected successfullyyyyyyyYYY")
+    
+    try:
         known_faces = []
         known_ids = []
 
         # Get all keys from Redis
         keys = r.keys()
+        print(f"Keys from Redis: {keys}>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<")
 
         for key in keys:
+            print(f"Key: {key}, Length of image data: {len(r.get(key))}")
             # Fetch image data from Redis
             image_data = r.get(key)
+            if image_data is None:
+                print(f">>>>> redis tsis data : No image data for key: {key}")
+                continue
 
             # Convert binary image data to a format that face_recognition can process
             image = Image.open(io.BytesIO(image_data))
-            image_np = np.array(image)
+            image_np = np.array(image.convert("RGB"))
 
             # Get face encodings
             encodings = face_recognition.face_encodings(image_np)
@@ -90,8 +217,12 @@ def load_known_faces_from_redis():
         print(f"Tsy afaka ni connecte @ Redis: {e}")
         return [], []
 
-known_faces, known_ids = load_known_faces_from_redis()
+#mi active anle fonction ambony io de mload ze ilaina rht
+# known_faces, known_ids = load_known_faces_from_redis()
 
+
+
+#atsoiny js any amn html chaque 0.5seconde i verifier ny face
 @socketio.on('frame')
 def handle_frame(base64_image):
 
@@ -168,61 +299,8 @@ def handle_frame(base64_image):
     emit('update', response)
 
 
-@app.route('/api/fiche-presence', methods=['POST'])
-def fiche_presence():
-    print("fiche-presence endpoint hittttttttttttttttttttttttttttt")
-    global data_store
-    data = request.get_json()  # Get the JSON data sent from Angular
-    print(data)  # For debugging, print the received data
-    data_store = data
 
-    # Check if both 'id_salle' and 'id_edt' exist in the session
-    if 'id_salle' not in session or 'id_edt' not in session:
-        # If either doesn't exist, initialize both from data_store
-        session['id_salle'] = data_store[0]['salle']
-        session['id_edt'] = data_store[0]['id_edt']
-
-    addOnRedis(data_store)
-
-    app.logger.info("fiche-presence endpoint hit")
-    return jsonify({"message": "Data received successfully"}), 200
-
-
-
-@app.route('/api/set_id_salle', methods=['POST'])
-def set_id_salle():
-    id_salle = request.get_json()
-    if id_salle is not None:
-        session['id_salle'] = id_salle
-        return {'message': 'Session variable set!', 'id_salle': id_salle}, 200
-    else:
-        return {'message': 'No id_salle provided'}, 400
-
-
-def fetch_prenom_from_api(id_classe_etudiant):
-    api_url = f"http://localhost:8082/etudiants/prenom?idClasseEtudiant={id_classe_etudiant}"
-    
-    try:
-        response = requests.get(api_url, timeout=5)  # Timeout to avoid hanging
-        response.raise_for_status()  # Raise an error for 4xx/5xx responses
-        
-        # Parse the JSON response
-        data = response.json()
-        
-        # Return the 'prenom' if it exists, otherwise return 'Inconnue'
-        return data.get('prenom', 'Inconnue')
-    
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching prenom for id_classe_etudiant {id_classe_etudiant}: {e}")
-        return 'Inconnue'
-
-
-@app.route('/get_id_salle')
-def get_session():
-    id_salle = session.get('id_salle', 'Tsy mbola misy')
-    return f'Tafiditra, {id_salle}!'
-
-
+#makany amn index
 @app.route('/')
 def index():
 
@@ -238,93 +316,9 @@ def index():
         # return redirect('http://localhost:4400/programme')
     
     return render_template('index.html', listeFichePresence=data_store)
-    
-def addOnRedis(data_store):
-    try:
-        # Connect to Redis
-        r = redis.Redis(host='localhost', port=6379, db=0)  # Ensure the port matches your Redis configuration
-
-        for item in data_store:
-            id_classe_etudiant = item.get('id_classe_etudiant')
-            image_path = item.get('imagePath')  # Example: \\192.168.1.8\bevazaha$\Photo9353.jpg
-
-            if not id_classe_etudiant or not image_path:
-                print("Missing 'id_classe_etudiant' or 'imagePath' in data_store item.")
-                continue
-
-            # Convert network path for Windows
-            network_path = image_path.replace('/', '\\')
-
-            if os.path.exists(network_path):
-                try:
-                    # Read the image file in binary mode
-                    with open(network_path, 'rb') as image_file:
-                        image_data = image_file.read()
-
-                    # Store image content in Redis
-                    r.set(id_classe_etudiant, image_data)
-                    print(f"Stored image data for ID: {id_classe_etudiant}")
-                except IOError as e:
-                    print(f"Tsy voavaky le sary file {network_path}: {e}")
-            else:
-                print(f"FTsy hita le sary file: {network_path}")
-
-        print(f"NETY TSARA NY REDIS")
-
-    except redis.RedisError as e:
-        print(f"Redis tsy mety: {e}")
 
 
-def present(idEdt, idClasseEtudiant, tempsArriver):
-    api_url = "http://localhost:8082/presences"
-    
-    # Data to be sent in the POST request
-    payload = {
-        "idEdt": idEdt,
-        "idClasseEtudiant": idClasseEtudiant,
-        "tempsArriver": tempsArriver
-    }
-
-    try:
-        # Send the POST request with the JSON data
-        response = requests.post(api_url, json=payload)
-        
-        if response.status_code == 200:
-            return response.json()  # Return the response data if needed
-        else:
-            print(f"Error: Received status code {response.status_code}")
-            return None
-
-    except requests.RequestException as e:
-        print(f"An error occurred: {e}")
-        return None
-
-def dropDataRedis(data_store):
-    # Connect to Redis
-    r = redis.Redis(host='localhost', port=6379, db=0)
-    
-    # Convert `data_store['date']` and `data_store['fin']` to datetime objects
-    data_date = datetime.datetime.strptime(data_store[0]['date'], "%Y-%m-%d")
-    data_fin = datetime.datetime.strptime(data_store[0]['fin'], "%H:%M:%S")
-    
-    # Get the current date and time
-    current_date_time = datetime.datetime.now()
-    
-    # Compare if both `data_store['date']` and `data_store['fin']` are greater than current time
-    if data_date > current_date_time and data_fin > current_date_time:
-        # If true, flush all data from Redis
-        r.flushdb()  # This will delete all keys from the current Redis database
-        print("All Redis data dropped (nofafana).")
-    else:
-        print("No data dropped Any Redis, mbola tsy depasse ny date fin edt")
-    
-@app.route('/api/test', methods=['GET'])
-def test():
-    print("fasdias7yefalsifbslfauslbfalsbiyasdiuasydfuyyyyyyyyyyyyyyyyyyyyy")
-    return "Test endpoint is working!"
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True, host='0.0.0.0')
-
-
 
