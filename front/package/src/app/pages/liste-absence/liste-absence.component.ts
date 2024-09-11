@@ -90,14 +90,14 @@ export class AppListeAbsence {
   displayedColumns: string[] = ['Etudiant', 'Cours', 'Classe', 'Enseignant', 'Justification', 'Modifier'];
   dataSource = ELEMENT_DATA;
 
-  // Ouverture du modal
+  
   openModal(templateRef: TemplateRef<any>, absenceId: number): void {
     this.selectedAbsence = absenceId; 
     const dialogRef = this.dialog.open(templateRef, {
       width: '800px' 
     });
 
-    // Récupérer les valeurs des champs lorsque le modal est fermé
+    
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.submitJustification( this.description, this.dateDebut, this.dateFin);
@@ -105,7 +105,7 @@ export class AppListeAbsence {
     });
   }
 
-  // Méthode pour soumettre la justification
+  
   submitJustification( description: string, dateDebut: Date, dateFin: Date) {
     const absenceId = this.selectedAbsence.id
     const justificationPayload = {
@@ -125,7 +125,7 @@ export class AppListeAbsence {
     );
   }
   
-  // Récupérer les absences
+  
   public getAbsence() {
     this.presenceService.getAbsent(this.date, this.date, this.page).subscribe(
       success => {
@@ -134,12 +134,12 @@ export class AppListeAbsence {
         this.totalPages = success.totalPages;
       },
       error => {
-        // Gérer l'erreur ici
+        
       }
     );
   }
 
-  // Méthode déclenchée lors de l'appui sur Entrée
+ 
   onEnter() {
     this.getAbsence();
   }

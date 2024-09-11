@@ -145,44 +145,75 @@ export class AppFichePresenceComponent {
 
 
   validerProf(idEdt: string): void {
+    const tokenValue = localStorage.getItem('token') || '';  // Assurer que tokenValue n'est jamais null
     const confirmed = confirm("Voulez-vous vraiment valider ce professeur ?");
+    
     if (confirmed) {
-      this.fichePresenceService.validerProf(idEdt).subscribe(
+      this.fichePresenceService.validerProf(idEdt, tokenValue).subscribe(
         success => {
           alert('Validation réussie.');
           window.location.reload();
         },
         error => {
-          if (error.error.erreurs && error.error.erreurs && error.error.erreurs.length > 0) {
-            this.message = error.erreurs[0].messageErreur;
-          } else {
+          console.error('Erreur capturée:', error);  // Afficher les détails de l'erreur dans la console
+
+          // Si l'erreur contient des erreurs spécifiques
+          if (error.error && error.error.erreurs && error.error.erreurs.length > 0) {
+            this.message = error.error.erreurs[0].messageErreur;
+          } 
+          // Gérer le cas où l'erreur HTTP est 400 (Bad Request)
+          else if (error.status === 400) {
+            alert('Erreur 400: Requête invalide. Veuillez vérifier les données envoyées.');
+          } 
+          // Gérer d'autres types d'erreurs (401, 403, etc.)
+          else if (error.status === 401) {
+            alert('Erreur 401: Non autorisé. Veuillez vous reconnecter.');
+          } else if (error.status === 403) {
+            alert('Erreur 403: Accès refusé. Vous n\'avez pas les droits pour cette action.');
+          } 
+          // Cas par défaut pour les autres erreurs
+          else {
             alert(`Une erreur est survenue: ${error.message}`);
           }
         }
       );
     }
   }
+
+
+
+
+
+  validerDelegue(idEdt: string): void {
+    const tokenValue = localStorage.getItem('token') || '';  
+    if (tokenValue && confirm("Voulez-vous vraiment valider ?")) {
+      this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
+        next: () => {
+          alert('Validation réussie.');
+          window.location.reload();  
+        },
+        error: (err) => {
+          console.error('Erreur lors de la validation du délégué:', err);  // Log pour plus de détails
   
-
-
-
-
-validerDelegue(idEdt: string): void {
-  const tokenValue = localStorage.getItem('token'); 
-  if (tokenValue && confirm("Voulez-vous vraiment valider ?")) {
-    this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
-      next: () => {
-        alert('Validation réussie.');
-      },
-      error: (err) => {
-        alert(err.message);
-      }
-    });
-  } else {
-    alert('Token manquant ou action annulée.');
+          // Gestion des erreurs en fonction du code HTTP
+          if (err.status === 400) {
+            alert('Erreur 400: Requête invalide. Vérifiez les données envoyées.');
+          } else if (err.status === 401) {
+            alert('Erreur 401: Non autorisé. Veuillez vous reconnecter.');
+          } else if (err.status === 403) {
+            alert('Erreur 403: Accès refusé. Vous n\'avez pas les droits pour cette action.');
+          } else if (err.status === 404) {
+            alert('Erreur 404: La fiche de présence est introuvable.');
+          } else {
+            alert(`Une erreur est survenue: ${err.message}`);
+          }
+        }
+      });
+    } else {
+      alert('Token manquant ou action annulée.');
+    }
   }
-}
-
+  
 checkIfAnnule(idEdt: number): void {
   this.fichePresenceService.estAnnule(idEdt).subscribe(
     (response: any) => {

@@ -176,8 +176,8 @@ public class PresenceController {
 
 
     @PutMapping("/validerProf")
-    public ResponseEntity<Map<String, String>> validerProf(@RequestParam int idEdt) {
-        presenceService.validerProf(idEdt);
+    public ResponseEntity<Map<String, String>> validerProf(@RequestParam int idEdt,@RequestHeader("Authorization") String tokenValue) {
+        presenceService.validerProf(idEdt,tokenValue);
         
         Map<String, String> response = new HashMap<>();
         response.put("message", "Validation effectuée pour idEdt : " + idEdt);
