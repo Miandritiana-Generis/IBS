@@ -128,9 +128,6 @@ export class AppFichePresenceComponent {
     );
   }
 
-  
-
-
   sendFichePresenceData(): void {
     const dataToSend = this.listeFichePresence;
     console.log("fdasdsgiulsag");
