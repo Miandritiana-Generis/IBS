@@ -90,3 +90,22 @@ INSERT INTO et (date, debut, fin, idClasse, idMatiere, idSalle, estAnnule) VALUE
 ('2023-09-04', '14:00', '16:00', 1, 4, 1, false),
 ('2023-09-05', '16:00', '18:00', 2, 5, 2, false),
 ('2023-09-06', '18:00', '20:00', 3, 6, 3, false);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------
+insert into personne (nom, prenom, login, mdp, photo) values ('Andria', 'Miandritiana', 'miandritiana', 'miandritiana1234', '\\192.168.1.8\bevazaha$\me.jpg')
+insert into etudiant (id_personne) values (15)
+insert into classe_etudiant (id_classe, id_etudiant, id_annee_scolaire) values (1, 5, 1)

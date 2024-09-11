@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app:
+  face-reco-app:
     build: .
     depends_on:
       - redis
@@ -10,7 +10,7 @@ services:
     networks:
       - app-network
     volumes:
-      - D:/Suivi-d-absence-IBS/face_reco_linux:/app 
+      - D:/Suivi-d-absence-IBS/face_reco_linux:/app
     container_name: face-reco-app
 
   redis:

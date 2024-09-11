@@ -32,9 +32,12 @@ COPY . /app/
 # Copy the wait-for-redis script and make it executable
 COPY wait-for-redis.sh /app/wait-for-redis.sh
 RUN chmod +x /app/wait-for-redis.sh
+RUN dos2unix wait-for-redis.sh
+# RUN /app/wait-for-redis.sh
 
 # Expose the port Flask is running on
 EXPOSE 5000
 
 # Command to run the app with Redis wait
-CMD ["./wait-for-redis.sh", "python", "app.py"]
+# CMD ["sh", "/app/wait-for-redis.sh", "python", "app.py"]
+CMD ["python", "app.py"]
