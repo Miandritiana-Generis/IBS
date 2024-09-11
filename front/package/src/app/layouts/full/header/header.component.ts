@@ -71,7 +71,7 @@ export class HeaderComponent {
     return time.slice(0, 5);
   }
 
-  redirifer(idEdt:number , type:number){
+  rediriger(idEdt:number , type:number){
     if(type==1){
       this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
     }
