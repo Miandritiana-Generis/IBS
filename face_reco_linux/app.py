@@ -130,24 +130,24 @@ def handle_frame(base64_image):
             id_classe_etudiant = known_ids[first_match_index]
 
             # Update consecutive_matches
-            consecutive_matches += 1
+            # consecutive_matches += 1
 
             # Check if we have reached 5 consecutive matches
-            if consecutive_matches >= 5:
+            # if consecutive_matches >= 5:
                 # Fetch prenom using the Spring Boot API
-                prenom = fetch_prenom_from_api(id_classe_etudiant)
-                name = prenom if prenom else id_classe_etudiant
+            prenom = fetch_prenom_from_api(id_classe_etudiant)
+            name = prenom if prenom else id_classe_etudiant
 
-                print(f"Match found: {prenom} for ID: {id_classe_etudiant}")
+            print(f"Match found: {prenom} for ID: {id_classe_etudiant}")
 
-                # Get the current time when the face is detected
-                detection_time = datetime.datetime.now().strftime("%H:%M:%S")
+            # Get the current time when the face is detected
+            detection_time = datetime.datetime.now().strftime("%H:%M:%S")
 
-                # Call the present function here
-                present(session['id_edt'], id_classe_etudiant, detection_time)
+            # Call the present function here
+            present(session['id_edt'], id_classe_etudiant, detection_time)
 
-                # Reset counter after calling present function
-                consecutive_matches = 0
+            # Reset counter after calling present function
+            consecutive_matches = 0
 
         detected_names.append(name)
 
