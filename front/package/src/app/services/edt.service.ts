@@ -21,7 +21,6 @@ export class EdtService {
   private urlFichePresence = Constants.BASE_URL+'/presences';
   private urlFichePresenceToday = Constants.BASE_URL+'/presences/today';
   private urlEdt = Constants.BASE_URL+'/edt';
-  private urlAnnulerEdt = Constants.BASE_URL+'/edt/annuler/cours';
 
   constructor(private http: HttpClient, private auth: AuthService) { }
 
@@ -184,11 +183,4 @@ export class EdtService {
     return this.http.post<any>('http://127.0.0.1:5000/api/set_id_salle', id_salle);
   }
 
-  annulerEdt(idEdt:number): Observable<Edt[]> {
-    const token=this.auth.getToken();
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-    return this.http.get<Edt[]>(`${this.urlAnnulerEdt}?id_edt=${idEdt}`, { headers });
-  }
 }

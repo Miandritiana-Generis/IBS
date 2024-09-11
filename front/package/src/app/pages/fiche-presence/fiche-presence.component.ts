@@ -11,6 +11,7 @@ import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { FichePresenceService } from 'src/app/services/fiche-presence.service';
 
 export interface ProductsData {
   id: number;
@@ -58,7 +59,7 @@ export class AppFichePresenceComponent {
   dataSource: ProductsData[] = [];
   apiUrl: any;
 
-  constructor(private edtService: EdtService, private http: HttpClient ,private route:ActivatedRoute) {
+  constructor(private edtService: EdtService, private http: HttpClient ,private route:ActivatedRoute, private fichePresenceService: FichePresenceService) {
    this.route.queryParamMap.subscribe(params => {
       console.log(params.get("id_edt"));
       this.id_edt = params.get('id_edt')!;
@@ -76,28 +77,6 @@ export class AppFichePresenceComponent {
 
     const salle = localStorage.getItem("salle");
     id_salle = parseInt(salle || "0", 10);
-    this.edtService.getInfoFichePresence(id_salle,heure, date,idEdt ).subscribe(
-      (data: any[]) => {
-        // Map data to include hourRate defaulting to null if not provided
-        this.listeFichePresence = data.map(item => ({
-          id: item.id,
-          // imagePath: item.photo ? `assets/images/profile/${item.photo}` : 'assets/images/profile/default-user.jpg',
-          imagePath: 'assets/images/profile/default-user.jpg',
-          nom: item.nom,
-          prenom: item.prenom,
-          hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
-          status: item.status ? (item.status === true ? 'Present' : 'Absent') : 'Absent',
-          salle: item.salle,
-          matiere: item.matiere,
-          enseignant: item.enseignant,
-          classe: item.classe,
-          id_edt : item.id_edt,
-          id_classe_etudiant : item.id_classe_etudiant,
-          date : item.date,
-          fin : item.fin
-        }));
-        
-        
 
     this.edtService.getInfoFichePresence(id_salle, heure, date, idEdt).subscribe(
       (response: { data: any[]; retour: boolean }) => {
