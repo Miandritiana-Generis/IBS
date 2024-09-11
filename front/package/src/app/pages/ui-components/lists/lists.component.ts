@@ -46,7 +46,8 @@ export class AppListsComponent {
       this.edtService.sendIdSalle(shoeId).subscribe(
         (response: any) => {
           console.log('Data sent successfully:', response);
-        },
+          window.location.href = 'http://localhost:4400';
+      },
         (error: any) => {
           alert("Tsy mety lasa le id salle");
           console.error('Error sending data:', error);
