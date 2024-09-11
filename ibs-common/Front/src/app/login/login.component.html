@@ -1,0 +1,40 @@
+<div class="card">
+  <div class="card-body mb-5 ms-3 me-3">
+      <form id="formAuthentication" [formGroup]="myForm" (ngSubmit)="login()"class="mb-3">
+        <div>
+          <h1>👋</h1>
+          <h2>Bienvenue</h2>
+          <p>Veuillez vous connecter pour accéder à votre compte</p>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email ou Username</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="identifiant"
+            id="identifiant"
+            placeholder="Entrer votre email ou username"/>
+        </div>
+        <div class="mb-3 form-password-toggle">
+          <div class="d-flex justify-content-between">
+            <label class="form-label" for="password">Mot de passe</label>
+          </div>
+          <div class="input-group input-group-merge">
+            <input
+              type="password"
+              class="form-control"
+              formControlName="password"
+              name="password"
+              id="password"
+              placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+              aria-describedby="password"/>
+            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+          </div>
+        </div>
+        <div *ngIf="message" class="alert alert-danger mt-2 mb-2" role="alert">{{message}}</div>
+        <div class="mb-3">
+          <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+        </div>
+      </form>
+  </div>
+</div>

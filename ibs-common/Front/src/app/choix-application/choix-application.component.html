@@ -1,0 +1,13 @@
+<ul class="list-group">
+  <li *ngFor="let item of listeAppli" (click)="setSelectedId(item.id)" class="list-group-item">
+    <input class="form-check-input me-1" name="application"       type="radio" 
+    value="" id="checkbox-{{item.id}}">
+    <label class="form-check-label" for="checkbox-{{item.id}}">{{ item.nom }}</label>
+  </li>
+</ul>
+
+<button class="btn btn-primary mt-3"
+        [disabled]="selectedId === null"
+        (click)="passerIdApplication(selectedId!)">
+  Continuer
+</button>
