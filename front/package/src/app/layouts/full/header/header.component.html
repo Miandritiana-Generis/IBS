@@ -9,9 +9,34 @@
   <!-- Notification Dropdown -->
   <!-- --------------------------------------------------------------- -->
 
-  <button mat-icon-button aria-label="Notifications">
-    <i-tabler class="d-flex" name="bell" matBadge="114" matBadgeColor="primary"></i-tabler>
-  </button>
+  
+  <div class="btn-group">
+    <button mat-icon-button aria-label="Notifications"
+      type="button"
+      class="dropdown-toggle" 
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      <i-tabler class="d-flex" name="bell" [matBadge]="count" matBadgeColor="primary"></i-tabler>
+    </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li class="dropdown-item d-flex overflow-hidden" *ngFor="let stat of notification" (click)="redirifer(stat.idEdt!)">
+          <div class="time text-right mat-subtitle-1 f-s-14 align-items-center">
+            {{ stat.date }} <br>
+            {{formatTime(stat.debut!) }} - {{formatTime(stat.fin!) }}
+          </div>
+          <div class="point d-flex align-items-center">
+            <span class="timeline-badge border-primary m-y-8"></span>
+            <span class="timeline-border d-block"></span>
+          </div>
+          <div class="desc">
+            <span class="mat-subtitle-1 f-s-14 lh-20">{{ stat.contenue }}</span>
+            <span class="mat-subtitle-1 f-s-14 lh-20 f-w-600 d-block">{{ stat.matiere }}</span>
+          </div>
+        </li>
+      </ul>
+      
+  </div>
 
   <span class="flex-1-auto"></span>
   <button

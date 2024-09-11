@@ -79,4 +79,12 @@ public class EdtController {
      List<Salle> salles = salleRepo.findAll(); // Récupérer la liste des personnes
     return ResponseEntity.ok(salles);
    }
+   
+   @GetMapping("edt/annuler/cours")
+   public ResponseEntity annuler(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,@RequestParam(value = "id_edt", required = true) int id_edt){
+       
+        String token= FonctionUtil.getBearerToken(authorizationHeader);
+        this.edtService2.annulerCours(token,id_edt);
+        return ResponseEntity.ok(null);
+    }
 }

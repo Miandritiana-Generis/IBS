@@ -1,5 +1,6 @@
 package com.ibs.suiviAbsence.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,6 @@ public interface PresenceRepository extends JpaRepository<Presence, Integer>{
     @Transactional
     @Query("UPDATE Presence p SET p.valideDelegue = 1 WHERE p.idEdt = :idEdt")
     public void validerFichePresenceDelegue(@Param("idEdt") int idEdt);
+
+    public Optional<Presence> findByIdEdt(Integer idEdt);
 }

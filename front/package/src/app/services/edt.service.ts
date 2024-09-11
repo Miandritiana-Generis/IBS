@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Constants } from '../util/constants';
 import { Time } from '@angular/common';
 import { Edt } from '../modeles/Edt';
@@ -11,7 +11,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class EdtService {
   apiUrl: string = Constants.BASE_URL + '/presences'; // or another appropriate URL
-
+  urlAnnulerEdt: string = Constants.BASE_URL + '/edt/annuler/cours'; 
   
   sendFichePresenceData(data: any[]): Observable<any> {
     return this.http.post<any>(this.apiUrl, data);
@@ -67,22 +67,50 @@ export class EdtService {
     }
 
     return this.http.get<{
-        id: string;
-        id_edt: string;
-        id_classe_etudiant: string;
-        nom: string;
-        prenom: string;
-        photo: string;
-        heure_arrive: Time;
-        status: boolean;
-        salle: string;
-        matiere: string;
-        enseignant: string;
-        classe: string;
-        date: Date;
-        debut: Time;
-        fin: Time;
-    }>(this.urlFichePresence, { params });
+        data: {
+            id: string;
+            id_edt: string;
+            id_classe_etudiant: string;
+            nom: string;
+            prenom: string;
+            photo: string;
+            heure_arrive: string;
+            status: boolean;
+            salle: string;
+            matiere: string;
+            enseignant: string;
+            classe: string;
+            date: string;
+            debut: string;
+            fin: string;
+        }[];
+        retour: boolean;
+    }>(this.urlFichePresence, { params }).pipe(
+        map(response => {
+            // Vérifie que response.data est défini et est un tableau
+            if (!response || !Array.isArray(response.data)) {
+                console.error('Invalid response format:', response);
+                return { data: [], retour: false };
+            }
+
+            // Transformation des données
+            response.data = response.data.map(item => {
+                if (item.photo) {
+                    item.photo = item.photo.replace(/\\\\/g, '\\').replace(/\\(?=[\\])/g, '\\');
+                }
+                return item;
+            });
+
+            // Affiche la réponse après transformation pour débogage
+            console.log('Transformed response:', response);
+
+            return response;
+        }),
+        catchError(error => {
+            console.error('Error fetching data:', error);
+            return throwError(() => new Error('Error fetching data'));
+        })
+    );
 }
 
   getInfoFichePresenceToday(id_salle : number, date : string) : Observable<any> {
@@ -156,4 +184,11 @@ export class EdtService {
     return this.http.post<any>('http://127.0.0.1:5000/api/set_id_salle', id_salle);
   }
 
+  annulerEdt(idEdt:number): Observable<Edt[]> {
+    const token=this.auth.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<Edt[]>(`${this.urlAnnulerEdt}?id_edt=${idEdt}`, { headers });
+  }
 }

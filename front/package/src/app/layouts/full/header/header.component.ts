@@ -14,6 +14,7 @@ import { AuthService } from 'src/app/auth/auth.service';
   selector: 'app-header',
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
+  // styleUrls: ['/src/assets/scss/pages/_dashboards.scss'],
 })
 export class HeaderComponent {
   @Input() showToggle = true;
@@ -33,5 +34,17 @@ export class HeaderComponent {
   logout(){
     this.authService.logout();
     this.router.navigate(['/authentication/login']);
+  }
+
+  formatTime(time: string): string {
+    if (!time) {
+      return '';
+    }
+    // Extraire HH:mm à partir de HH:mm:ss
+    return time.slice(0, 5);
+  }
+
+  redirifer(idEdt:number){
+    this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } });
   }
 }
