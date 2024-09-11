@@ -1,197 +1,155 @@
 <div class="col-lg-10">
-    <mat-card class="cardWithShadow">
-      <mat-card-content class="p-24">
-        <div class="d-flex mb-0">
-          <mat-card-title>Justification des absences</mat-card-title>
-          <div class="m-l-auto">
-            <mat-form-field class="w-100" appearance="outline">
-              <mat-label>Date</mat-label>
-              <input matInput type="date" rows="4" [(ngModel)]="date" (keydown.enter)="onEnter()"/>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="table-responsive m-t-16">
-          <table mat-table [dataSource]="absents" class="w-100 table-borderless">
-            <!-- Position Column -->
-            <ng-container matColumnDef="Etudiant">
-              <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="f-w-600 mat-subtitle-1 f-s-14"
-              >
-                Etudiant
-              </th>
-              <td mat-cell *matCellDef="let element">
-                <div class="d-flex align-items-center">
-                  <img
-                    [src]="element.photo"
-                    alt="users"
-                    width="50"
-                    class="rounded-circle"
-                  />
-                  <div class="m-l-16">
-                    <h6 class="mat-subtitle-1 f-s-14 f-w-700">
-                      {{ element.nom }}
-                    </h6>
-                    <span class="mat-body-1 f-s-14">
-                      {{ element.prenom }}
-                    </span>
-                  </div>
-                </div>
-              </td>
-            </ng-container>
-
-            <!-- Name Column -->
-            <ng-container matColumnDef="Cours">
-              <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="f-w-600 mat-subtitle-1 f-s-14"
-              >
-                Cours
-              </th>
-              <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
-                {{ element.matiere }}
-              </td>
-            </ng-container>
-
-            <!-- Weight Column -->
-            <ng-container matColumnDef="Classe">
-              <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="f-w-600 mat-subtitle-1 f-s-14"
-              >
-                Classe
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                class="mat-body-1"
-              >
-                {{ element.classe }}
-              </td>
-            </ng-container>
-
-            <!-- Weight Column -->
-            <ng-container matColumnDef="Enseignant">
-              <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="f-w-600 mat-subtitle-1 f-s-14"
-              >
-                Enseignant
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                class="mat-body-1"
-              >
-                {{ element.enseignant }}
-              </td>
-            </ng-container>
-
-            <!-- Symbol Column -->
-            <ng-container matColumnDef="Justification">
-              <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="f-w-600 mat-subtitle-1 f-s-14"
-              >
-                Justification
-              </th>
-              <td mat-cell *matCellDef="let element">
-                <ng-template [ngIf]="element.status == 'Justifié'">
-                  <span
-                    class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14"
-                  >
-                    {{ element.status | titlecase }}
-                  </span>
-                </ng-template>
-                <ng-template [ngIf]="element.status == 'Non justifié'">
-                  <span
-                    class="bg-light-error text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14"
-                  >
-                    {{ element.status | titlecase }}
-                  </span>
-                </ng-template>
-              </td>
-            </ng-container>
-
-            <!-- Symbol Column -->
-            <ng-container matColumnDef="Modifier">
-              <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="f-w-600 mat-subtitle-1 f-s-14"
-              >
-                .
-              </th>
-              <td mat-cell *matCellDef="let element" class="d-flex align-items-center m-l-auto">
-                <button
-                  mat-fab
-                  class="shadow-none icon-48 rounded-circle"
-                  style="background-color: #fa896b; border: none;"
-                  aria-hidden="false" aria-modal="true"
-                  (click)="openModal(modalContent)"
-                >
-                  <i-tabler name="pencil-minus" class="text-white"></i-tabler>
-                </button>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-          </table>
-          <pagination *ngIf="totalPages!=0"
-            [totalItems]="totalElements"
-            [itemsPerPage]="totalPages"
-            [(ngModel)]="page"
-            (pageChanged)="getAbsence()"
-            previousText="Précédent"
-            nextText="Suivant"
-            >
-          </pagination>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-
-  <ng-template #modalContent let-close="close">
-    <div class="modal-header m-5 mt-4 mb-2">
-      <h3 class="modal-title">Justifié </h3>
-    </div>
-    <div class="modal-body m-5 mb-0">
-      <div class="row mb-3">
-        <div class="col-6">
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+      <div class="d-flex mb-0">
+        <mat-card-title>Justification des absences</mat-card-title>
+        <div class="m-l-auto">
           <mat-form-field class="w-100" appearance="outline">
-            <mat-label>Date debut</mat-label>
-            <input matInput rows="4" type="datetime-local"/>
-          </mat-form-field>
-        </div>
-        <div class="col-6">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>Date fin</mat-label>
-            <input matInput rows="4" type="datetime-local"/>
+            <mat-label>Date</mat-label>
+            <input matInput type="date" rows="4" [(ngModel)]="date" (keydown.enter)="onEnter()"/>
           </mat-form-field>
         </div>
       </div>
-      <div class="mb-3">
+      <div class="table-responsive m-t-16">
+        <table mat-table [dataSource]="absents" class="w-100 table-borderless">
+          <!-- Etudiant Column -->
+          <ng-container matColumnDef="Etudiant">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+              Etudiant
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="d-flex align-items-center">
+                <img [src]="element.photo" alt="users" width="50" class="rounded-circle" />
+                <div class="m-l-16">
+                  <h6 class="mat-subtitle-1 f-s-14 f-w-700">{{ element.nom }}</h6>
+                  <span class="mat-body-1 f-s-14">{{ element.prenom }}</span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Cours Column -->
+          <ng-container matColumnDef="Cours">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+              Cours
+            </th>
+            <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
+              {{ element.cours }}
+            </td>
+          </ng-container>
+
+          <!-- Classe Column -->
+          <ng-container matColumnDef="Classe">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+              Classe
+            </th>
+            <td mat-cell *matCellDef="let element" class="mat-body-1">
+              {{ element.classe }}
+            </td>
+          </ng-container>
+
+          <!-- Enseignant Column -->
+          <ng-container matColumnDef="Enseignant">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+              Enseignant
+            </th>
+            <td mat-cell *matCellDef="let element" class="mat-body-1">
+              {{ element.enseignant }}
+            </td>
+          </ng-container>
+
+          <!-- Justification Column -->
+          <ng-container matColumnDef="Justification">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
+              Justification
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <ng-template [ngIf]="element.status == 'Justifié'">
+                <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                  {{ element.status | titlecase }}
+                </span>
+              </ng-template>
+              <ng-template [ngIf]="element.status == 'Non justifié'">
+                <span class="bg-light-error text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                  {{ element.status | titlecase }}
+                </span>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <!-- Modifier Column -->
+          <ng-container matColumnDef="Modifier">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">.</th>
+            <td mat-cell *matCellDef="let element" class="d-flex align-items-center m-l-auto">
+              <button
+                mat-fab
+                class="shadow-none icon-48 rounded-circle"
+                style="background-color: #fa896b; border: none;"
+                (click)="openModal(modalContent, element.id)"
+              >
+                <i-tabler name="pencil-minus" class="text-white"></i-tabler>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <pagination *ngIf="totalPages != 0"
+          [totalItems]="totalElements"
+          [itemsPerPage]="totalPages"
+          [(ngModel)]="page"
+          (pageChanged)="getAbsence()"
+          previousText="Précédent"
+          nextText="Suivant"
+        ></pagination>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Modal Content -->
+<ng-template #modalContent let-close="close">
+  <div class="modal-header m-5 mt-4 mb-2">
+    <h3 class="modal-title">Justification de l'absence</h3>
+  </div>
+  <div class="modal-body m-5 mb-0">
+    <div class="row mb-3">
+      <div class="col-6">
         <mat-form-field class="w-100" appearance="outline">
-          <mat-label>Description</mat-label>
-          <textarea matInput rows="4"></textarea>
+          <mat-label>Date début</mat-label>
+          <input matInput type="datetime-local" [(ngModel)]="dateDebut" />
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Date fin</mat-label>
+          <input matInput type="datetime-local" [(ngModel)]="dateFin" />
         </mat-form-field>
       </div>
     </div>
-    <div class="modal-footer d-flex justify-content-center m-0 mb-4">
-      <button 
-        class="btn btn-secondary btn-lg me-3" 
-        style="background-color: #fa896b; color: white; border-color: #fa896b;"
-        (click)="close()"
-      >
-        Annule
-      </button>
-      <button class="btn btn-primary btn-lg" style="background-color: #0085db; border-color: #0085db;">Valider</button>
+    <div class="mb-3">
+      <mat-form-field class="w-100" appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="4" [(ngModel)]="description"></textarea>
+      </mat-form-field>
     </div>
-  </ng-template>
+  </div>
+  <div class="modal-footer d-flex justify-content-center m-0 mb-4">
+    <button 
+      class="btn btn-secondary btn-lg me-3" 
+      style="background-color: #fa896b; color: white; border-color: #fa896b;"
+      (click)="close()"
+    >
+      Annuler
+    </button>
+    <button 
+      class="btn btn-primary btn-lg" 
+      style="background-color: #0085db; border-color: #0085db;"
+      (click)="submitJustification(description, dateDebut, dateFin)"
+    >
+      Valider
+    </button>
+  </div>
+</ng-template>

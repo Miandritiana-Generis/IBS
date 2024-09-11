@@ -1,15 +1,15 @@
 import { Component, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl } from '@angular/forms';
 import { PresenceService } from 'src/app/services/presence.service';
 import { Absence } from 'src/app/modeles/Absence';
+import { JustificationAbsenceService } from 'src/app/services/justification-absence.service';
 
 export interface productsData {
   id: number;
   imagePath: string;
   nom: string;
   prenom: string;
-  cours: string
+  cours: string;
   classe: string;
   enseignant: string;
   status: string;
@@ -64,12 +64,24 @@ const ELEMENT_DATA: productsData[] = [
   templateUrl: './liste-absence.component.html',
 })
 export class AppListeAbsence {
-  absents:Absence[]=[];
-  totalElements=0;
-  totalPages=0;
-  page=1;
+  absents: Absence[] = [];
+  totalElements = 0;
+  totalPages = 0;
+  page = 1;
   date: string;
-  constructor(public dialog: MatDialog , private presenceService: PresenceService) {
+  selectedAbsence: any;
+
+
+  // Ajout des variables pour les champs du formulaire
+  description: string = ''; 
+  dateDebut: any;
+  dateFin: any;
+
+  constructor(
+    public dialog: MatDialog,
+    private presenceService: PresenceService,
+    private justificationService: JustificationAbsenceService
+  ) {
     const today = new Date();
     this.date = today.toISOString().split('T')[0];
     this.getAbsence();
@@ -78,30 +90,56 @@ export class AppListeAbsence {
   displayedColumns: string[] = ['Etudiant', 'Cours', 'Classe', 'Enseignant', 'Justification', 'Modifier'];
   dataSource = ELEMENT_DATA;
 
-  openModal(templateRef: TemplateRef<any>): void {
-    this.dialog.open(templateRef, {
-      width: '800px' // You can adjust the size as needed
+  
+  openModal(templateRef: TemplateRef<any>, absenceId: number): void {
+    this.selectedAbsence = absenceId; 
+    const dialogRef = this.dialog.open(templateRef, {
+      width: '800px' 
+    });
+
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.submitJustification( this.description, this.dateDebut, this.dateFin);
+      }
     });
   }
+
   
-  //  disabled
-  disabled = new FormControl(false);
-
-  // show and hide
-  showDelay = new FormControl(1000);
-  hideDelay = new FormControl(2000);
-
-  public getAbsence(){
-    this.presenceService.getAbsent(this.date,this.date,this.page).subscribe(
-      success=>{
-        this.absents=success.content;
-        this.totalElements=success.totalElements;
-        this.totalPages=success.totalPages;
-        },error => {
-          // this.message=error.error.erreurs[0].messageErreur
-      });
+  submitJustification( description: string, dateDebut: Date, dateFin: Date) {
+    const absenceId = this.selectedAbsence.id
+    const justificationPayload = {
+      id_classe_etudiant: absenceId,  
+      description: description,
+      date_time_debut: dateDebut,
+      date_time_fin: dateFin
+    };
+  
+    this.justificationService.justifierDelegue(justificationPayload).subscribe(
+      response => {
+        console.log('Justification envoyée avec succès', response);
+      },
+      error => {
+        console.error('Erreur lors de l\'envoi de la justification', error);
+      }
+    );
+  }
+  
+  
+  public getAbsence() {
+    this.presenceService.getAbsent(this.date, this.date, this.page).subscribe(
+      success => {
+        this.absents = success.content;
+        this.totalElements = success.totalElements;
+        this.totalPages = success.totalPages;
+      },
+      error => {
+        
+      }
+    );
   }
 
+ 
   onEnter() {
     this.getAbsence();
   }
