@@ -13,6 +13,7 @@ import redis
 import requests
 import os
 from redis.exceptions import ConnectionError
+import subprocess
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -37,12 +38,15 @@ def check_redis_connection():
 #atsoin angular rhf adefa le data json
 @app.route('/api/fiche-presence', methods=['POST'])
 def fiche_presence():
-    known_faces, known_ids = load_known_faces_from_redis()  # Reload faces after adding new data to Redis
+    # known_faces, known_ids = load_known_faces_from_redis()  # Reload faces after adding new data to Redis
     print("fiche-presence endpoint hittttttttttttttttttttttttttttt")
     global data_store
     data = request.get_json()  # Get the JSON data sent from Angular
     print(data)  # For debugging, print the received data
     data_store = data
+
+    #mapiditra data
+    addOnRedis(data_store)
 
     # Check if both 'id_salle' and 'id_edt' exist in the session
     if 'id_salle' not in session or 'id_edt' not in session:
@@ -50,9 +54,6 @@ def fiche_presence():
         session['id_salle'] = data_store[0]['salle']
         session['id_edt'] = data_store[0]['id_edt']
 
-    addOnRedis(data_store)
-
-    app.logger.info("fiche-presence endpoint hit")
     return jsonify({"message": "Data received successfully"}), 200
 
 
@@ -110,7 +111,7 @@ def present(idEdt, idClasseEtudiant, tempsArriver):
         return None
     
 
-#fonction add anaty redis
+# Function to add data to Redis
 def addOnRedis(data_store):
     try:
         # Connect to Redis
@@ -121,17 +122,28 @@ def addOnRedis(data_store):
             return
 
         for item in data_store:
+            print("redis etoooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             id_classe_etudiant = item.get('id_classe_etudiant')
             image_path = item.get('imagePath')  # Example: \\192.168.1.8\bevazaha$\Photo9353.jpg
 
             if not id_classe_etudiant or not image_path:
-                print("Missing 'id_classe_etudiant' or 'imagePath' in data_store item.")
+                print("Tsy voaray 'id_classe_etudiant' or 'imagePath' in data_store item.")
                 continue
 
             # Convert network path for Windows
-            network_path = image_path.replace('/', '\\')
+            network_path = '\\\\' + image_path.replace('/', '\\').lstrip('\\')
+            print(f"REdis oooooooooooooooooo: {network_path}")
+            
+            # Run a shell command to check if the path is accessible
+            cmd = f'dir "{network_path}"'
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+
+            # Print the output to see if the network path is accessible
+            print(f"Command output: {result.stdout}")
+            print(f"Command error: {result.stderr}")
 
             if os.path.exists(network_path):
+                print("etooooooooooooooooooooooooooooooooooo")
                 try:
                     # Read the image file in binary mode
                     with open(network_path, 'rb') as image_file:
@@ -140,15 +152,28 @@ def addOnRedis(data_store):
                     # Store image content in Redis
                     r.set(id_classe_etudiant, image_data)
                     print(f"Stored image data for ID: {id_classe_etudiant}")
+                    print(f"Stored image file path: {network_path}")
+
+                    # Verification: Check if the data is stored in Redis
+                    if r.exists(id_classe_etudiant):
+                        stored_data = r.get(id_classe_etudiant)
+                        if stored_data == image_data:
+                            print(f"Verification successful: Data for ID {id_classe_etudiant} is correctly stored in Redis.")
+                        else:
+                            print(f"Verification failed: Data mismatch for ID {id_classe_etudiant}.")
+                    else:
+                        print(f"Verification failed: No data found in Redis for ID {id_classe_etudiant}.")
+                        
                 except IOError as e:
                     print(f"Tsy voavaky le sary file {network_path}: {e}")
             else:
                 print(f"FTsy hita le sary file: {network_path}")
 
-        print(f"NETY TSARA NY REDIS")
+        print("NETY TSARA NY REDIS")
 
     except redis.RedisError as e:
         print(f"Redis tsy mety: {e}")
+
 
 #mamafa anaty redis
 def dropDataRedis(data_store):
@@ -218,7 +243,7 @@ def load_known_faces_from_redis():
         return [], []
 
 #mi active anle fonction ambony io de mload ze ilaina rht
-# known_faces, known_ids = load_known_faces_from_redis()
+known_faces, known_ids = load_known_faces_from_redis()
 
 
 
@@ -310,8 +335,8 @@ def index():
         session['id_salle'] = data_store[0]['salle']
         session['id_edt'] = data_store[0]['id_edt']
 
-        print(session.get('id_salle', 'Tsy mbola misy id salle'))
-        print(session.get('id_edt', 'Tsy mbola misy id edt'))
+        # print(session.get('id_salle', 'Tsy mbola misy id salle'))
+        # print(session.get('id_edt', 'Tsy mbola misy id edt'))
         # return jsonify({'redirect': True, 'message': 'Salle non designe'}), 403
         # return redirect('http://localhost:4400/programme')
     
