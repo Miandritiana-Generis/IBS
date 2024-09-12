@@ -122,7 +122,6 @@ def addOnRedis(data_store):
             return
 
         for item in data_store:
-            print("redis etoooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             id_classe_etudiant = item.get('id_classe_etudiant')
             image_path = item.get('imagePath')  # Example: \\192.168.1.8\bevazaha$\Photo9353.jpg
 
@@ -131,28 +130,19 @@ def addOnRedis(data_store):
                 continue
 
             # Convert network path for Windows
-            network_path = '\\\\' + image_path.replace('/', '\\').lstrip('\\')
-            print(f"REdis oooooooooooooooooo: {network_path}")
-            
-            # Run a shell command to check if the path is accessible
-            cmd = f'dir "{network_path}"'
-            result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+            network_path = image_path.replace('\\', '/')
+            print(image_path)
 
-            # Print the output to see if the network path is accessible
-            print(f"Command output: {result.stdout}")
-            print(f"Command error: {result.stderr}")
+            try:
+                print(network_path)
+                response = requests.get(network_path)
 
-            if os.path.exists(network_path):
-                print("etooooooooooooooooooooooooooooooooooo")
-                try:
-                    # Read the image file in binary mode
-                    with open(network_path, 'rb') as image_file:
-                        image_data = image_file.read()
+                if response.status_code == 200:
+                    image_data = response.content  # Image data in binary form
 
                     # Store image content in Redis
                     r.set(id_classe_etudiant, image_data)
                     print(f"Stored image data for ID: {id_classe_etudiant}")
-                    print(f"Stored image file path: {network_path}")
 
                     # Verification: Check if the data is stored in Redis
                     if r.exists(id_classe_etudiant):
@@ -163,11 +153,11 @@ def addOnRedis(data_store):
                             print(f"Verification failed: Data mismatch for ID {id_classe_etudiant}.")
                     else:
                         print(f"Verification failed: No data found in Redis for ID {id_classe_etudiant}.")
-                        
-                except IOError as e:
-                    print(f"Tsy voavaky le sary file {network_path}: {e}")
-            else:
-                print(f"FTsy hita le sary file: {network_path}")
+                else:
+                    print(f"Failed to fetch the image. HTTP Status Code: {response.status_code}")
+                    
+            except requests.RequestException as e:
+                print(f"Tsy voavaky le sary avy amin'ny URL {network_path}: {e}")
 
         print("NETY TSARA NY REDIS")
 

@@ -96,9 +96,11 @@ export class AppFichePresenceComponent {
           this.listeFichePresence = data.map(item => ({
             id: item.id,
             // If the photo exists, format it correctly to ensure it's treated as an absolute URL
-            imagePath: item.photo 
-              ? item.photo.replace('\\\\192.168.1.8\\bevazaha$', 'http://192.168.1.8/bevazaha$').replace(/\\/g, '/') 
-              : 'assets/images/profile/default-user.jpg',
+            imagePath: 'http:\\'+item.photo,
+            // ? item.photo
+            //     .replace('\\\\192.168.1.8\\bevazaha$', 'http://192.168.1.8/bevazaha$')
+            //     .replace(/\\/g, '/') // Ensure backslashes are converted to forward slashes
+            // : 'assets/images/profile/default-user.jpg',        
             nom: item.nom,
             prenom: item.prenom,
             hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
@@ -121,6 +123,10 @@ export class AppFichePresenceComponent {
         // Mettre à jour la source de données pour la table
         this.dataSource = this.listeFichePresence;
         console.log("Données transformées:", this.listeFichePresence);
+        this.listeFichePresence.forEach(item => {
+          console.log(item.imagePath);
+        });
+        
       },
       (error: any) => {
         console.error("Erreur lors de l'appel à l'API:", error);
