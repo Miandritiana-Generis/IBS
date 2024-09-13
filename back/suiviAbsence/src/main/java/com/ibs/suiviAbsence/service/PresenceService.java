@@ -65,7 +65,7 @@ public class PresenceService {
         Page<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false,pageable);
         return liste;
     }
-
+    @Autowired
     DetailPresenceRepository detailPresenceRepository;
     
     public Presence recupererPresence(int idEdt){
