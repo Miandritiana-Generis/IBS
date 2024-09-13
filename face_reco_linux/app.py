@@ -69,8 +69,8 @@ def set_id_salle():
 
 
 def fetch_prenom_from_api(id_classe_etudiant):
-    api_url = f"http://localhost:8082/etudiants/prenom?idClasseEtudiant={id_classe_etudiant}"
-    
+    api_url = f"http://host.docker.internal:8082/etudiants/prenom?idClasseEtudiant={id_classe_etudiant}"
+
     try:
         response = requests.get(api_url, timeout=5)  # Timeout to avoid hanging
         response.raise_for_status()  # Raise an error for 4xx/5xx responses
@@ -87,7 +87,7 @@ def fetch_prenom_from_api(id_classe_etudiant):
     
 #presence (nalaina tany amn spring boot via ws)
 def present(idEdt, idClasseEtudiant, tempsArriver):
-    api_url = "http://localhost:8082/presences"
+    api_url = "http://host.docker.internal:8082/presences"
     
     # Data to be sent in the POST request
     payload = {
@@ -95,6 +95,8 @@ def present(idEdt, idClasseEtudiant, tempsArriver):
         "idClasseEtudiant": idClasseEtudiant,
         "tempsArriver": tempsArriver
     }
+
+    print(payload)
 
     try:
         # Send the POST request with the JSON data
@@ -183,82 +185,105 @@ def dropDataRedis(data_store):
         r.flushdb()  # This will delete all keys from the current Redis database
         print("All Redis data dropped (nofafana).")
     else:
-        print("No data dropped Any Redis, mbola tsy depasse ny date fin edt")
+        print("Mbola tsy depasse ny date fin edt")
 
+
+#mamafa data store rhf miverina any fichePresence
+@app.route('/drop-data-store', methods=['POST'])
+def drop_data_store():
+    global data_store
+    data_store = []  # Clear the data_store
+    print(f"Data store after reset: {data_store}")  # Add this line to verify it's empty
+    return jsonify({"message": "Data store dropped successfully"}), 200
 
 
 
 #eto amzay reconnaissance facial...................................
+# Initialize global counter
+consecutive_matches = 0
+
 def load_known_faces_from_redis():
+    print("Connecting to Redis...")
     r = check_redis_connection()
     if not r:
-        print("Redis tsy mety made.")
+        print("Unable to connect to Redis.")
         return [], []
     else:
-        print("Redis connected successfullyyyyyyyYYY")
-    
-    try:
-        known_faces = []
-        known_ids = []
+        print("Connected to Redis.")
 
-        # Get all keys from Redis
-        keys = r.keys()
-        print(f"Keys from Redis: {keys}>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<")
+    known_faces = []
+    known_ids = []
 
-        for key in keys:
-            print(f"Key: {key}, Length of image data: {len(r.get(key))}")
-            # Fetch image data from Redis
-            image_data = r.get(key)
-            if image_data is None:
-                print(f">>>>> redis tsis data : No image data for key: {key}")
-                continue
+    # Get all keys from Redis
+    keys = r.keys()
+    print(f"Keys from Redis: {keys}")
 
-            # Convert binary image data to a format that face_recognition can process
-            image = Image.open(io.BytesIO(image_data))
-            image_np = np.array(image.convert("RGB"))
+    for key in keys:
+        print(f"Key: {key}, Length of image data: {len(r.get(key))}")
+        # Fetch image data from Redis
+        image_data = r.get(key)
+        if image_data is None:
+            print(f"No image data for key: {key}")
+            continue
 
-            # Get face encodings
-            encodings = face_recognition.face_encodings(image_np)
-            
-            if encodings:
-                known_faces.append(encodings[0])
-                known_ids.append(key.decode('utf-8'))  # Store id_classe_etudiant as a string
-            else:
-                print(f"No face found in image for ID: {key.decode('utf-8')}")
+        # Convert binary image data to a format that face_recognition can process
+        image = Image.open(io.BytesIO(image_data))
+        image_np = np.array(image.convert("RGB"))
 
-        return known_faces, known_ids
-    
-    except ConnectionError as e:
-        print(f"Tsy afaka ni connecte @ Redis: {e}")
-        return [], []
+        # Get face encodings
+        encodings = face_recognition.face_encodings(image_np)
+        
+        if encodings:
+            known_faces.append(encodings[0])
+            known_ids.append(key.decode('utf-8'))  # Store id_classe_etudiant as a string
+        else:
+            print(f"No face found in image for ID: {key.decode('utf-8')}")
 
-#mi active anle fonction ambony io de mload ze ilaina rht
+    return known_faces, known_ids
+
+# Sharpen the image to improve details
+def sharpen_image(image):
+    kernel = np.array([[0, -1, 0], [-1, 5,-1], [0, -1, 0]])
+    sharpened = cv2.filter2D(image, -1, kernel)
+    return sharpened
+
+# Denoise the image to reduce noise in low-quality images
+def denoise_image(image):
+    return cv2.fastNlMeansDenoisingColored(image, None, 10, 10, 7, 21)
+
+def get_madagascar_time():
+    # Get the current UTC time
+    utc_time = datetime.datetime.utcnow()
+
+    # Manually adjust for Madagascar's timezone (+03)
+    madagascar_time = utc_time + datetime.timedelta(hours=3)
+
+    # Format the time as HH:MM:SS
+    return madagascar_time.strftime("%H:%M:%S")
+
+# Load known faces
 known_faces, known_ids = load_known_faces_from_redis()
 
-
-
-#atsoiny js any amn html chaque 0.5seconde i verifier ny face
 @socketio.on('frame')
 def handle_frame(base64_image):
-
-    dropDataRedis(data_store)
-
-    # Check if both 'id_salle' and 'id_edt' exist in the session
-    if 'id_salle' not in session or 'id_edt' not in session:
-        # If either doesn't exist, initialize both from data_store
-        session['id_salle'] = data_store[0]['salle']
-        session['id_edt'] = data_store[0]['id_edt']
+    global consecutive_matches
     
     # Decode the base64 image
     image_data = base64.b64decode(base64_image.split(',')[1])
     try:
         image = Image.open(io.BytesIO(image_data))
     except UnidentifiedImageError:
-        print("Misy error le image, corrupted na invalide @ face reco.")
+        print("Error with image, possibly corrupted or invalid.")
         return
 
     open_cv_image = np.array(image)
     open_cv_image = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+
+    # Step 1: Denoise the image
+    open_cv_image = denoise_image(open_cv_image)
+
+    # Step 2: Sharpen the image
+    open_cv_image = sharpen_image(open_cv_image)
 
     # Find all face locations and encodings in the current frame
     face_locations = face_recognition.face_locations(open_cv_image)
@@ -269,30 +294,34 @@ def handle_frame(base64_image):
     for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
         matches = face_recognition.compare_faces(known_faces, face_encoding)
         name = "Inconnue"
-
-        # Process matches for only the first detected face (or a specific face)
-        if matches and True in matches:
-            first_match_index = matches.index(True)
-            id_classe_etudiant = known_ids[first_match_index]
-
-            # Update consecutive_matches
-            # consecutive_matches += 1
-
-            # Check if we have reached 5 consecutive matches
-            # if consecutive_matches >= 5:
-                # Fetch prenom using the Spring Boot API
+        
+        # Check face match confidence
+        face_distances = face_recognition.face_distance(known_faces, face_encoding)
+        best_match_index = np.argmin(face_distances)
+        if matches[best_match_index] and face_distances[best_match_index] < 0.55:  # Adjust threshold as needed
+            id_classe_etudiant = known_ids[best_match_index]
             prenom = fetch_prenom_from_api(id_classe_etudiant)
             name = prenom if prenom else id_classe_etudiant
 
             print(f"Match found: {prenom} for ID: {id_classe_etudiant}")
 
-            # Get the current time when the face is detected
-            detection_time = datetime.datetime.now().strftime("%H:%M:%S")
+            # Increase consecutive match counter
+            consecutive_matches += 1
+            
+            # Check if we have reached 5 consecutive matches
+            if consecutive_matches >= 5:
 
-            # Call the present function here
-            present(session['id_edt'], id_classe_etudiant, detection_time)
+                # Get the current time when the face is detected
+                detection_time = get_madagascar_time()
+                
+                # Call the present function
+                present(session['id_edt'], id_classe_etudiant, detection_time)
+                
+                # Reset counter after calling present function
+                consecutive_matches = 0
 
-            # Reset counter after calling present function
+        else:
+            # Reset counter if no match
             consecutive_matches = 0
 
         detected_names.append(name)
