@@ -298,7 +298,7 @@ def handle_frame(base64_image):
         # Check face match confidence
         face_distances = face_recognition.face_distance(known_faces, face_encoding)
         best_match_index = np.argmin(face_distances)
-        if matches[best_match_index] and face_distances[best_match_index] < 0.55:  # Adjust threshold as needed
+        if matches[best_match_index] and face_distances[best_match_index] < 0.6:  # Adjust threshold as needed
             id_classe_etudiant = known_ids[best_match_index]
             prenom = fetch_prenom_from_api(id_classe_etudiant)
             name = prenom if prenom else id_classe_etudiant
