@@ -54,7 +54,6 @@ public class PresenceService {
     ClasseEtudiantRepository classeEtudiant;
     @Autowired
     private ViewLoginRepository loginRepository;
-    
     @Autowired
     private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
     
@@ -79,6 +78,11 @@ public class PresenceService {
     }
     
     public void controlleInsertPrensence(int idPresence,int idClasseEtudiant){
+        Optional<ClasseEtudiant> etudiant =  this.classeEtudiant.findById(idClasseEtudiant);
+        if(etudiant.isEmpty()){
+            throw new PresenceException("L'etudiant n'est pas valide");
+        }
+        
         List<DetailPresence> detailPresence=detailPresenceRepository.findByIdPresenceAndIdClasseEtudiant(idPresence, idClasseEtudiant);
         if(!detailPresence.isEmpty()) throw new PresenceException("Pointage deja effectuer pour cette etudiant");
     }
