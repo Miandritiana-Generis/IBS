@@ -16,7 +16,12 @@
         [matMenuTriggerFor]="notifMenu"
         aria-label="Notifications" class="m-l-10"
       >
-  <i-tabler class="d-flex" name="bell" [matBadge]="count" matBadgeColor="primary"></i-tabler>
+      
+  <i-tabler class="d-flex" name="bell" *ngIf="count>0; else noNotifications" [matBadge]="count" matBadgeColor="primary"></i-tabler>
+  <ng-template #noNotifications>
+    <!-- Content to show when count is 0 or less -->
+    <i-tabler class="d-flex" name="bell" matBadgeColor="primary"></i-tabler>
+  </ng-template>
 
   </button>
   <mat-menu #notifMenu="matMenu" xPosition="before" class="topbar-dd cardWithShadow">

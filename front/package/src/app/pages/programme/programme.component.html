@@ -97,21 +97,29 @@
   <br /><br /><br />
   
   <ng-template #modalContent let-close="close">
-    <div class="modal-header m-3 mt-0">
+    <div class="modal-header m-1 mt-0">
       <h5 class="modal-title">Détail du cours</h5>
       <!-- <button type="button" class="close" (click)="close()">
         <span aria-hidden="true">&times;</span>
       </button> -->
     </div>
+    
     <div class="modal-body m-3 mt-2 mb-2">
-      <div>
-        {{message}}
-        <pre *ngIf="modalData?.event?.detail?.estAnnule">Cours annulé</pre>
-        <pre>Matière: {{ modalData?.event?.detail?.matiere }}</pre>
-        <pre>Classe: {{ modalData?.event?.detail?.classe }}</pre>
-        <pre>Salle: {{ modalData?.event?.detail?.salle }}</pre>
-        <pre>Enseignat: {{ modalData?.event?.detail?.enseignant }}</pre>
+
+        <!-- cours annule message -->
+      <span *ngIf="modalData?.event?.detail?.estAnnule"
+          class="badge w-100 mt-0"
+          [ngStyle]="{ 'background-color': '#fa896b', 'color': 'white' }">
+      Cours annulé
+      </span>
+
+      <div class="mt-2">
+        <h6 class="mb-3">Matière: {{ modalData?.event?.detail?.matiere }}</h6>
+        <h6 class="mb-3">Classe: {{ modalData?.event?.detail?.classe }}</h6>
+        <h6 class="mb-3">Salle: {{ modalData?.event?.detail?.salle }}</h6>
+        <h6>Enseignant: {{ modalData?.event?.detail?.enseignant }}</h6>
       </div>
+      
     </div>
     <div class="modal-footer d-flex justify-content-center m-3 mb-0">
           <button 
