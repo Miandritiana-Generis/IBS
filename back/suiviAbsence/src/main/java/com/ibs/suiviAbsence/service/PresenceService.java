@@ -7,6 +7,9 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
+
+import javax.management.Notification;
+
 import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Service;
 import com.ibs.suiviAbsence.exception.PresenceException;
 import com.ibs.suiviAbsence.modele.Edt;
 import com.ibs.suiviAbsence.modele.Etudiant;
+import com.ibs.suiviAbsence.modele.JustificationAbsence;
+import com.ibs.suiviAbsence.modele.NotificationEdt;
 import com.ibs.suiviAbsence.modele.Personne;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.Token;
@@ -23,6 +28,7 @@ import com.ibs.suiviAbsence.modele.ViewLogin;
 import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import com.ibs.suiviAbsence.repository.EdtRepository;
 import com.ibs.suiviAbsence.repository.EtudiantRepository;
+import com.ibs.suiviAbsence.repository.NotificationEdtRepository;
 import com.ibs.suiviAbsence.repository.PersonneRepository;
 import com.ibs.suiviAbsence.repository.ClasseEtudiantRepository;
 import com.ibs.suiviAbsence.repository.DetailPresenceRepository;
@@ -31,6 +37,7 @@ import com.ibs.suiviAbsence.repository.TokenRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtAllInfoRepository;
 import com.ibs.suiviAbsence.repository.ViewLoginRepository;
 import com.ibs.suiviAbsence.repository.ViewPresenceAbsenceRepository;
+import com.ibs.suiviAbsence.utilitaire.Constante;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +63,15 @@ public class PresenceService {
     private ViewLoginRepository loginRepository;
     @Autowired
     private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
+    @Autowired
+    private NotificationService notificationService;
+
+
+     public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
+        List<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false);
+        return liste;
+     }
+     
     
     public Page<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2,int page){
         int nombreParPage=25;
@@ -121,31 +137,37 @@ public class PresenceService {
      * validable que 30 min après le cours
      * @param idEdt
      */
-    public void validerProf(Integer idEdt) {
+    public void validerProf(Integer idEdt, String tokenValue) {
+        System.out.println("Validation du professeur avec idEdt: " + idEdt + " et tokenValue: " + tokenValue);
+        
         Optional<Edt> edt = edtRepository.findById(idEdt);      
-        if(idEdt == null) {
-            throw new PresenceException("l'emploi du temps n'existe pas");
+        if (idEdt == null) {
+            throw new PresenceException("L'emploi du temps n'existe pas");
         }  
-        if (edt.isPresent()) {
+        
+        if (edt.isPresent() && this.estProf(tokenValue)) {
             Time heureDebut = edt.get().getDebut();
             Time heureFin = edt.get().getFin();
             LocalTime currentTime = LocalTime.now();
             LocalTime debutLocalTime = heureDebut.toLocalTime();
             LocalTime finLocalTime = heureFin.toLocalTime();            
             LocalTime debutPlus30Min = debutLocalTime.plusMinutes(30);
-
-            
+    
+            System.out.println("Heure actuelle: " + currentTime);
+            System.out.println("Heure de début ajustée: " + debutPlus30Min + ", Heure de fin: " + finLocalTime);
+    
             if (currentTime.isAfter(debutPlus30Min) && currentTime.isBefore(finLocalTime)) {
                 presenceRepository.validerFichePresence(idEdt);
-                
             } else {
                 throw new PresenceException("L'heure actuelle n'est pas entre l'heure de début ajustée et l'heure de fin.");
             }
+        } else if (!this.estProf(tokenValue)) {
+            throw new PresenceException("Vous n'êtes pas autorisé à effectuer cette action");
         } else {
-            System.out.println("Aucune entrée trouvée pour l'ID fourni.");
             throw new PresenceException("Aucune entrée trouvée pour l'ID fourni.");
         }
     }
+    
 
     /**
      * Cette metier permet de valider le fiche de presence en tant que prof mais ne fiche ne doit être
@@ -154,16 +176,31 @@ public class PresenceService {
      * @param idEdt
      * @return
      */
-    public void validerDelegue(Integer idEdt,String tokenValue) {
+    public void validerDelegue(Integer idEdt, String tokenValue) {
         Optional<Presence> presence = presenceRepository.findById(idEdt);
-        if (presence.get().getValideProf()==1 && this.estDelegue(tokenValue)==true) {
+    
+      
+        if (presence.isEmpty()) {
+            throw new PresenceException("La fiche de présence avec l'ID fourni n'existe pas.");
+        }
+    
+        Presence presenceObj = presence.get();
+        int nbAbsent = viewPresenceAbsenceRepository.countAbsence(idEdt);
+    
+        
+        if (presenceObj.getValideProf() == 1 && this.estDelegue(tokenValue)) {
             presenceRepository.validerFichePresenceDelegue(idEdt);
-        } 
-        else {
-            throw new PresenceException("Vous ne pouvez pas encore valider le fiche de presence");
+    
+            
+            if (nbAbsent > 0) {
+                String contenu = "Absence de " + nbAbsent + " étudiants.";
+                this.notificationService.genererNotification(idEdt, contenu, Constante.coursAnnule);
+            }
+        } else {
+            throw new PresenceException("Vous ne pouvez pas encore valider la fiche de présence.");
         }
     }
-
+    
 
     public boolean estDelegue(String tokenValue) {
         Token tok = token.findByToken(tokenValue);
@@ -179,12 +216,22 @@ public class PresenceService {
     public boolean estProf(String tokenValue) {
         boolean retour = false;
         ViewLogin v = loginRepository.findLoginByToken(tokenValue);
+    
+        
+        if (v == null) {
+            System.out.println("Le token n'a pas été trouvé.");
+            return false;  
+        }
+    
         if (v.getIdEnseignant() != 0) {
             retour = true;
         }
         return retour;
-
     }
+    
+
+   
+
 
 
 }

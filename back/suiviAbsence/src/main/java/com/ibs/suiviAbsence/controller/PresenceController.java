@@ -60,6 +60,14 @@ public class PresenceController {
     @Autowired
     private ViewEdtService edtService;
 
+    /**
+     * Cette methode permet de lister les etudiant dans une classe à un jour 
+     * @param idSalle
+     * @param date
+     * @param heure
+     * @param idEdt
+     * @return
+     */
     @GetMapping
     public ResponseEntity<Map<String, Object>> getInfoFichePresence(
     @RequestParam(value = "id_salle", required = false) Integer idSalle,
@@ -168,8 +176,8 @@ public class PresenceController {
 
 
     @PutMapping("/validerProf")
-    public ResponseEntity<Map<String, String>> validerProf(@RequestParam int idEdt) {
-        presenceService.validerProf(idEdt);
+    public ResponseEntity<Map<String, String>> validerProf(@RequestParam int idEdt,@RequestHeader("Authorization") String tokenValue) {
+        presenceService.validerProf(idEdt,tokenValue);
         
         Map<String, String> response = new HashMap<>();
         response.put("message", "Validation effectuée pour idEdt : " + idEdt);

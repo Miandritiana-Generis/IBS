@@ -15,11 +15,11 @@ export class FichePresenceService {
 
   constructor(private http: HttpClient) { }
 
-  validerProf(idEdt: string): Observable<any> {
+  validerProf(idEdt: string, tokenValue: string): Observable<any> {
     return this.http.put(
         `${this.urlValiderProf}`,
         null,
-        { params: { idEdt: idEdt.toString() }, responseType: 'text' }  // <-- Ajout du responseType
+        { params: { idEdt: idEdt.toString() },headers: { 'Authorization': tokenValue }, responseType: 'text' }  // <-- Ajout du responseType
     ).pipe(
         catchError((error: HttpErrorResponse) => {
             return throwError(error);
