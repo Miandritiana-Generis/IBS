@@ -67,18 +67,27 @@
                       <tbody>
                         {% for ficheP in listeFichePresence %}
                         <tr>
-                            <td class="d-flex align-items-center">
-                                <img 
-                                    src="{{ ficheP.photo if ficheP.photo else url_for('static', filename='assets/img/avatars/default-user.jpg') }}" 
-                                    alt="Avatar" 
-                                    class="rounded-circle" 
-                                    width="10%"
-                                />
-                                <p class="mb-0 ml-2">{{ ficheP.nom }}</p>
+                            <td class="d-flex align-items-center w-50">
+                                <div class="d-flex align-items-center" style="width: 10%;">
+                                    <img 
+                                        src="{{ ficheP.imagePath }}"
+                                        alt="Avatar" 
+                                        class="rounded-circle" 
+                                        style="width: 100%;"
+                                    />
+                                    <div class="ms-3">
+                                        <p class="m-0">{{ ficheP.nom }}</p>
+                                    </div>
+                                </div>
                             </td>
-                            <td>{{ ficheP.prenom }}</td>
-                            <td>{{ ficheP.heure_arrive }}</td>
-                            <td>{{ ficheP.status }}</td>
+                            <td class="m-0">{{ ficheP.prenom }}</td>
+                            <td>{{ ficheP.get('hourRate', '00:00:00') }}</td><td>
+                                {% if ficheP.status == "Present" %}
+                                    <span class="badge rounded-pill bg-label-success">{{ ficheP.status }}</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-label-danger">{{ ficheP.status }}</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -89,9 +98,9 @@
         
 
         <div class="text-center mb-5">
-            <a href="http://localhost:4400/fiche-presence"><button class="btn btn-primary">Return fiche de présence</button></a>
+            <button class="btn btn-primary" onclick="dropDataStore()"><<<< Fiche de présence</button>
         </div>
-    </div>
+    </div>    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
     <script>
@@ -147,6 +156,27 @@
 
         // Capture a frame every 1000ms (1 second) and send it to the server
         setInterval(captureFrame, 500);
+
+
+
+        function dropDataStore() {
+            fetch('http://127.0.0.1:5000/api/drop-data-store', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Redirect to the fiche presence page after dropping data_store
+                window.location.href = 'http://localhost:4400/fiche-presence';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
     </script>
 
 

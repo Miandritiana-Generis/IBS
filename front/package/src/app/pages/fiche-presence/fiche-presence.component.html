@@ -6,9 +6,8 @@
               class="example-box f-s-14"
               cdkDrag
               *ngIf="estAnnule == true"
-              [ngStyle]="{ 'background-color': '#fa896b', 'color': 'white', 'width': '800px', 'line-height': '50px' }"
+              [ngStyle]="{ 'background-color': '#fa896b', 'color': 'white' }"
             >
-
              cours annulé
           </mat-chip>
             <mat-card-header>
@@ -56,7 +55,7 @@
         </mat-chip-set>
 
               <div class="m-l-auto cursor-pointer">
-                <a (click)="sendFichePresenceData()" *ngIf="retourProf == 'ValideProf = 0'">
+                <a (click)="sendFichePresenceData()" *ngIf="!isLoading && retourProf == 'ValideProf = 0'">
                   <div class="bg-light-error text-error shadow-none icon-96">
                     <div class="icon-demo">
                       <div class="icon-demo-icon">
@@ -81,6 +80,23 @@
               </div>
 
         </mat-card-header>
+
+        <!-- loader -->
+        <div *ngIf="isLoading" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); z-index: 9999;">
+          <div class="demo-inline-spacing">
+            <div class="spinner-grow text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-warning" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-danger" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+      
         <div class="table-responsive m-t-16">
           <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
             <!-- Nom Column -->
@@ -88,9 +104,9 @@
               <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
                 Nom
               </th>
-              <td mat-cell *matCellDef="let element">
+              <td mat-cell *matCellDef="let element" style="width: 40%;">
                 <div class="d-flex align-items-center">
-                  <img [src]="element.imagePath" alt="users" width="50" class="rounded-circle" />
+                  <img [src]="element.imagePath" alt="profile pic" width="10%" class="rounded-circle" />
                   <div class="m-l-16">
                     <h6 class="mat-subtitle-1 f-s-14 f-w-700">{{ element.nom }}</h6>
                   </div>

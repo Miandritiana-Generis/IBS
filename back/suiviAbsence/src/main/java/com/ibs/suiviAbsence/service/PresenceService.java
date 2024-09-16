@@ -80,8 +80,7 @@ public class PresenceService {
         Page<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false,pageable);
         return liste;
     }
-
-    
+    @Autowired
     DetailPresenceRepository detailPresenceRepository;
     
     public Presence recupererPresence(int idEdt){
@@ -95,6 +94,11 @@ public class PresenceService {
     }
     
     public void controlleInsertPrensence(int idPresence,int idClasseEtudiant){
+        Optional<ClasseEtudiant> etudiant =  this.classeEtudiant.findById(idClasseEtudiant);
+        if(etudiant.isEmpty()){
+            throw new PresenceException("L'etudiant n'est pas valide");
+        }
+        
         List<DetailPresence> detailPresence=detailPresenceRepository.findByIdPresenceAndIdClasseEtudiant(idPresence, idClasseEtudiant);
         if(!detailPresence.isEmpty()) throw new PresenceException("Pointage deja effectuer pour cette etudiant");
     }
