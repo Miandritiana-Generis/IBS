@@ -167,7 +167,7 @@ def addOnRedis(data_store):
 
 
 #mamafa anaty redis
-def dropDataRedis(data_store):
+def dropDataRedis():
     # Connect to Redis
     r = check_redis_connection()
     r.flushdb()
@@ -179,6 +179,7 @@ def drop_data_store():
     global data_store
     data_store = []  # Clear the data_store
     print(f"Data store after reset: {data_store}")  # Add this line to verify it's empty
+    print("data redis voafafa tsara daholoooooooooooooooooooooo")
     return jsonify({"message": "Data store dropped successfully"}), 200
 
 
@@ -288,32 +289,35 @@ def handle_frame(base64_image):
         else:
             # Handle the case where no faces were recognized
             best_match_index = None  # or any appropriate fallback value or logic
-
-        if matches[best_match_index] and face_distances[best_match_index] < 0.6:  # Adjust threshold as needed
-            id_classe_etudiant = known_ids[best_match_index]
-            prenom = fetch_prenom_from_api(id_classe_etudiant)
-            name = prenom if prenom else id_classe_etudiant
-
-            print(f"Match found: {prenom} for ID: {id_classe_etudiant}")
-
-            # Increase consecutive match counter
-            consecutive_matches += 1
             
-            # Check if we have reached 5 consecutive matches
-            if consecutive_matches >= 20:
+        if best_match_index is not None:
+            if matches[best_match_index] and face_distances[best_match_index] < 0.6:  # Adjust threshold as needed
+                id_classe_etudiant = known_ids[best_match_index]
+                prenom = fetch_prenom_from_api(id_classe_etudiant)
+                name = prenom if prenom else id_classe_etudiant
 
-                # Get the current time when the face is detected
-                detection_time = get_madagascar_time()
+                print(f"Match found: {prenom} for ID: {id_classe_etudiant}")
+
+                # Increase consecutive match counter
+                consecutive_matches += 1
                 
-                # Call the present function
-                present(session['id_edt'], id_classe_etudiant, detection_time)
-                
-                # Reset counter after calling present function
+                # Check if we have reached 5 consecutive matches
+                if consecutive_matches >= 5:
+
+                    # Get the current time when the face is detected
+                    detection_time = get_madagascar_time()
+                    
+                    # Call the present function
+                    present(session['id_edt'], id_classe_etudiant, detection_time)
+                    
+                    # Reset counter after calling present function
+                    consecutive_matches = 0
+
+            else:
+                # Reset counter if no match
                 consecutive_matches = 0
-
         else:
-            # Reset counter if no match
-            consecutive_matches = 0
+            print("No valid match index found.")
 
         detected_names.append(name)
 
