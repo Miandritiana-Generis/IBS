@@ -55,7 +55,7 @@
         </mat-chip-set>
 
               <div class="m-l-auto cursor-pointer">
-                <a (click)="sendFichePresenceData()" *ngIf="retourProf == 'ValideProf = 0'">
+                <a (click)="sendFichePresenceData()" *ngIf="!isLoading && retourProf == 'ValideProf = 0'">
                   <div class="bg-light-error text-error shadow-none icon-96">
                     <div class="icon-demo">
                       <div class="icon-demo-icon">
@@ -80,6 +80,15 @@
               </div>
 
         </mat-card-header>
+
+        <!-- loader -->
+        <div *ngIf="isLoading" class="d-flex justify-content-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+      
         <div class="table-responsive m-t-16">
           <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
             <!-- Nom Column -->

@@ -62,6 +62,7 @@ export class AppFichePresenceComponent {
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
   apiUrl: any;
+  isLoading: boolean = false; 
 
   constructor(private edtService: EdtService, private http: HttpClient ,private route:ActivatedRoute, private fichePresenceService : FichePresenceService) {
    this.route.queryParamMap.subscribe(params => {
@@ -135,12 +136,14 @@ export class AppFichePresenceComponent {
   }
 
   sendFichePresenceData(): void {
+    this.isLoading = true;
     const dataToSend = this.listeFichePresence;
     console.log("fdasdsgiulsag");
     this.edtService.sendFichePresenceDataService(dataToSend).subscribe(
       (response: any) => {
-        console.log('Data sent successfully:', response);
         window.location.href = 'http://127.0.0.1:5000/';
+        console.log('Data sent successfully:', response);
+        this.isLoading = false;
       },
       (error: any) => {
         alert("Tsy mety lasa le data");

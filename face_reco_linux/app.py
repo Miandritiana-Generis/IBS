@@ -18,7 +18,7 @@ import subprocess
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:4400"}}, methods=['GET', 'POST', 'OPTIONS'])
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:4400", "http://127.0.0.1:5000"]}}, methods=['GET', 'POST', 'OPTIONS'])
 
 data_store = {}
 consecutive_matches = 0
@@ -39,7 +39,6 @@ def check_redis_connection():
 @app.route('/api/fiche-presence', methods=['POST'])
 def fiche_presence():
     # known_faces, known_ids = load_known_faces_from_redis()  # Reload faces after adding new data to Redis
-    print("fiche-presence endpoint hittttttttttttttttttttttttttttt")
     global data_store
     data = request.get_json()  # Get the JSON data sent from Angular
     print(data)  # For debugging, print the received data
@@ -170,26 +169,12 @@ def addOnRedis(data_store):
 #mamafa anaty redis
 def dropDataRedis(data_store):
     # Connect to Redis
-    r = redis.Redis(host='localhost', port=6379, db=0)
-    
-    # Convert `data_store['date']` and `data_store['fin']` to datetime objects
-    data_date = datetime.datetime.strptime(data_store[0]['date'], "%Y-%m-%d")
-    data_fin = datetime.datetime.strptime(data_store[0]['fin'], "%H:%M:%S")
-    
-    # Get the current date and time
-    current_date_time = datetime.datetime.now()
-    
-    # Compare if both `data_store['date']` and `data_store['fin']` are greater than current time
-    if data_date > current_date_time and data_fin > current_date_time:
-        # If true, flush all data from Redis
-        r.flushdb()  # This will delete all keys from the current Redis database
-        print("All Redis data dropped (nofafana).")
-    else:
-        print("Mbola tsy depasse ny date fin edt")
+    r = check_redis_connection()
+    r.flushdb()
 
 
 #mamafa data store rhf miverina any fichePresence
-@app.route('/drop-data-store', methods=['POST'])
+@app.route('/api/drop-data-store', methods=['POST'])
 def drop_data_store():
     global data_store
     data_store = []  # Clear the data_store
@@ -297,7 +282,13 @@ def handle_frame(base64_image):
         
         # Check face match confidence
         face_distances = face_recognition.face_distance(known_faces, face_encoding)
-        best_match_index = np.argmin(face_distances)
+        if len(face_distances) > 0:
+            best_match_index = np.argmin(face_distances)
+            print(f"bessssssssssssssssssst{face_distances}")
+        else:
+            # Handle the case where no faces were recognized
+            best_match_index = None  # or any appropriate fallback value or logic
+
         if matches[best_match_index] and face_distances[best_match_index] < 0.6:  # Adjust threshold as needed
             id_classe_etudiant = known_ids[best_match_index]
             prenom = fetch_prenom_from_api(id_classe_etudiant)
@@ -309,7 +300,7 @@ def handle_frame(base64_image):
             consecutive_matches += 1
             
             # Check if we have reached 5 consecutive matches
-            if consecutive_matches >= 5:
+            if consecutive_matches >= 20:
 
                 # Get the current time when the face is detected
                 detection_time = get_madagascar_time()
