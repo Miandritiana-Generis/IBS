@@ -23,6 +23,9 @@ import {
   ApexResponsive,
   NgApexchartsModule,
 } from 'ng-apexcharts';
+import { DashService } from 'src/app/services/dash.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 interface month {
   value: string;
@@ -94,6 +97,11 @@ interface productcards {
   rprice: string;
 }
 
+export interface ClasseItem {
+  id: number;
+  classe: string;
+}
+
 const ELEMENT_DATA: productsData[] = [
   {
     id: 1,
@@ -147,6 +155,8 @@ const ELEMENT_DATA: productsData[] = [
     NgApexchartsModule,
     MatTableModule,
     CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
 })
 export class AppDashboardComponent {
@@ -156,6 +166,8 @@ export class AppDashboardComponent {
   public trafficChart!: Partial<trafficChart> | any;
   public salesChart!: Partial<salesChart> | any;
 
+  classeItems: ClasseItem[] = [];
+
   displayedColumns: string[] = ['profile', 'hrate', 'exclasses', 'status'];
   dataSource = ELEMENT_DATA;
 
@@ -163,13 +175,6 @@ export class AppDashboardComponent {
     { value: 'mar', viewValue: 'March 2023' },
     { value: 'apr', viewValue: 'April 2023' },
     { value: 'june', viewValue: 'June 2023' },
-  ];
-
-  classeItems = [
-    { label: 'L2MD1' },
-    { label: 'L2MD2' },
-    { label: 'L1A1' },
-    { label: 'L1A2' }
   ];
 
   niveauItems = [
@@ -254,7 +259,7 @@ export class AppDashboardComponent {
     },
   ];
 
-  constructor() {
+  constructor(private dashService: DashService) {
     // sales overview chart
     this.profitExpanceChart = {
       series: [
@@ -429,4 +434,23 @@ export class AppDashboardComponent {
       },
     };
   }
+
+  ngOnInit(){
+    this.getClasseList();
+  }
+  // Method to fetch class list and update classeItems
+  getClasseList(): void {
+    this.dashService.getListClasse().subscribe(
+      (data: any) => {
+        this.classeItems = data.map((item: any) => ({
+          id: item.id,
+          classe: item.classe
+        }));
+      },
+      (error) => {
+        console.error('Error fetching classes:', error);
+      }
+    );
+  }
+
 }

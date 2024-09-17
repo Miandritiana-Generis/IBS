@@ -33,3 +33,12 @@ ORDER BY
 
 CREATE VIEW v_absence AS
 SELECT
+
+
+
+
+
+create view v_classe_detail as
+select c.id id, c.nom classe, f.id id_filiere, f.nom filiere, n.id id_niveau, n.nom niveau from classe c 
+join filiere f on f.id = c.id_filiere
+join niveau n on n.id = c.id_niveau
