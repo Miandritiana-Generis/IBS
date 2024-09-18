@@ -103,6 +103,11 @@ export interface ClasseItem {
   classe: string;
 }
 
+export interface NiveauItem {
+  id: number;
+  nom: string;
+}
+
 const ELEMENT_DATA: productsData[] = [
   {
     id: 1,
@@ -167,8 +172,6 @@ export class AppDashboardComponent {
   public trafficChart!: Partial<trafficChart> | any;
   public salesChart!: Partial<salesChart> | any;
 
-  classeItems: ClasseItem[] = [];
-
   displayedColumns: string[] = ['profile', 'hrate', 'exclasses', 'status'];
   dataSource = ELEMENT_DATA;
 
@@ -176,13 +179,6 @@ export class AppDashboardComponent {
     { value: 'mar', viewValue: 'March 2023' },
     { value: 'apr', viewValue: 'April 2023' },
     { value: 'june', viewValue: 'June 2023' },
-  ];
-
-  niveauItems = [
-    { label: 'L1'},
-    { label: 'L2'},
-    { label: 'Master 1' },
-    { label: 'Master 2' },
   ];
 
   // recent transaction
@@ -260,6 +256,9 @@ export class AppDashboardComponent {
     },
   ];
 
+  classeItems: ClasseItem[] = [];
+  niveauItems: NiveauItem[] = [];
+
   totalAbsence: number | undefined;
   selectedDate: string | undefined;
   selectedClasseId: number | undefined = undefined;
@@ -270,13 +269,13 @@ export class AppDashboardComponent {
     this.profitExpanceChart = {
       series: [
         {
-          name: 'Eanings this month',
-          data: [9, 5, 3, 7, 5, 10, 3],
+          name: 'Taux d\'absence',
+          data: [1, 1, 1, 7, 1],
           color: '#0085db',
         },
         {
-          name: 'Expense this month',
-          data: [6, 3, 9, 5, 4, 6, 4],
+          name: 'Taux de présence',
+          data: [6, 3, 9, 5, 4],
           color: '#fb977d',
         },
       ],
@@ -289,7 +288,7 @@ export class AppDashboardComponent {
         bar: {
           horizontal: false,
           columnWidth: '30%',
-          borderRadius: 4,
+          borderRadius: 6,
           endingShape: "rounded",
         },
       },
@@ -306,7 +305,7 @@ export class AppDashboardComponent {
       legend: { show: false },
       xaxis: {
         type: 'category',
-        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        categories: ['Jan 2024', 'Fev 2024', 'Mars 2024', 'Avril 2024', 'Mai 2024'],
         axisTicks: {
           show: false,
         },
@@ -445,6 +444,7 @@ export class AppDashboardComponent {
     this.getClasseList();
     this.getTotalAbsence();
     this.selectedDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+    this.getNiveauList();
   }
   // Method to fetch class list and update classeItems
   getClasseList(): void {
@@ -484,6 +484,20 @@ export class AppDashboardComponent {
     this.selectedClasseId = item.id;
     this.selectedClasseName = item.classe;  // Update the displayed class name
     this.getTotalAbsence();  // Fetch the updated data
+  }
+
+  getNiveauList(): void {
+    this.dashService.getListNiveau().subscribe(
+      (data: any) => {
+        this.niveauItems = data.map((item: any) => ({
+          id: item.id,
+          nom: item.nom
+        }));
+      },
+      (error) => {
+        console.error('Error fetching classes:', error);
+      }
+    );
   }
 
 }

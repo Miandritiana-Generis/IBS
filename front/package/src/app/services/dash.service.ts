@@ -8,8 +8,9 @@ import { Constants } from '../util/constants';
 })
 export class DashService {
   
-  url: string = Constants.BASE_URL + '/liste-classe';
-  url2: string = Constants.BASE_URL + '/totalAbsence';
+  urlClasse: string = Constants.BASE_URL + '/liste-classe';
+  urlTotalAbs: string = Constants.BASE_URL + '/totalAbsence';
+  urlNiveau: string = Constants.BASE_URL + '/liste-niveau';
 
   constructor(private http: HttpClient) { }
 
@@ -17,7 +18,7 @@ export class DashService {
     return this.http.get<{
       id: string;
       classe: string;
-    }>(`${this.url}`);
+    }>(`${this.urlClasse}`);
   }
 
   getTotalAbsence(date?: string, idClasse?: number): Observable<number> {
@@ -31,7 +32,14 @@ export class DashService {
       params = params.set('idClasse', idClasse.toString());
     }
   
-    return this.http.get<number>(this.url2, { params });
+    return this.http.get<number>(this.urlTotalAbs, { params });
+  }
+
+  getListNiveau() : Observable<any> {
+    return this.http.get<{
+      id: string;
+      nom: string;
+    }>(`${this.urlNiveau}`);
   }
   
 }

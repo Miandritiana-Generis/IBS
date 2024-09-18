@@ -6,8 +6,11 @@
     <mat-card class="cardWithShadow">
       <mat-card-content class="p-24">
         <div class="d-flex w-100">
-          <mat-card-title>Taux d'absence / Taux de présence</mat-card-title>
-          <div class="m-l-auto">
+          <mat-card-title>
+            <div class="mb-2">Taux d'absence / Taux de présence</div>
+            <p class="mb-0 small text-muted">L1</p>
+          </mat-card-title>
+            <div class="m-l-auto">
 
             <button
               mat-flat-button
@@ -18,7 +21,7 @@
             </button>
             <mat-menu #classeMenu2="matMenu" xPosition="before">
               <button mat-menu-item *ngFor="let item of classeItems">
-                <a href="{{ item.id }}" class="text-decoration-none" style="color: black;"><span>{{ item.classe }}</span></a>
+                <span>{{ item.classe }}</span>
               </button>
             </mat-menu>
 
@@ -31,22 +34,14 @@
             </button>
             <mat-menu #menuNiv="matMenu" xPosition="before">
               <button mat-menu-item *ngFor="let item of niveauItems">
-                <span>{{ item.label }}</span>
+                <span>{{ item.nom }}</span>
               </button>
             </mat-menu>
 
-            <button
-              mat-flat-button
-              [matMenuTriggerFor]="monthMenu2"
-              matTooltip="Mois"
-            >
-              <i-tabler name="calendar-month"></i-tabler>
-            </button>
-            <mat-menu #monthMenu2="matMenu" xPosition="before">
-              <button mat-menu-item *ngFor="let item of months">
-                <span>{{ item.viewValue }}</span>
-              </button>
-            </mat-menu>
+            <mat-form-field appearance="outline">
+              <mat-label>Date</mat-label>
+              <input matInput type="month"/>
+            </mat-form-field>
 
           </div>
         </div>
