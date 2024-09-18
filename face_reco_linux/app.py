@@ -38,6 +38,7 @@ def check_redis_connection():
 #atsoin angular rhf adefa le data json
 @app.route('/api/fiche-presence', methods=['POST'])
 def fiche_presence():
+    dropDataRedis()
     # known_faces, known_ids = load_known_faces_from_redis()  # Reload faces after adding new data to Redis
     global data_store
     data = request.get_json()  # Get the JSON data sent from Angular
@@ -171,6 +172,7 @@ def dropDataRedis():
     # Connect to Redis
     r = check_redis_connection()
     r.flushdb()
+    print("vider na lou redis")
 
 
 #mamafa data store rhf miverina any fichePresence
@@ -290,7 +292,7 @@ def handle_frame(base64_image):
             # Handle the case where no faces were recognized
             best_match_index = None  # or any appropriate fallback value or logic
             
-        if best_match_index is not None:
+        if best_match_index is not None and len(matches) > 0 and matches[best_match_index]:
             if matches[best_match_index] and face_distances[best_match_index] < 0.6:  # Adjust threshold as needed
                 id_classe_etudiant = known_ids[best_match_index]
                 prenom = fetch_prenom_from_api(id_classe_etudiant)

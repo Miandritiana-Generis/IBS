@@ -26,6 +26,7 @@ import {
 import { DashService } from 'src/app/services/dash.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { formatDate } from '@angular/common';
 
 interface month {
   value: string;
@@ -259,6 +260,11 @@ export class AppDashboardComponent {
     },
   ];
 
+  totalAbsence: number | undefined;
+  selectedDate: string | undefined;
+  selectedClasseId: number | undefined = undefined;
+  selectedClasseName: string | undefined;
+
   constructor(private dashService: DashService) {
     // sales overview chart
     this.profitExpanceChart = {
@@ -437,6 +443,8 @@ export class AppDashboardComponent {
 
   ngOnInit(){
     this.getClasseList();
+    this.getTotalAbsence();
+    this.selectedDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
   }
   // Method to fetch class list and update classeItems
   getClasseList(): void {
@@ -451,6 +459,31 @@ export class AppDashboardComponent {
         console.error('Error fetching classes:', error);
       }
     );
+  }
+
+  getTotalAbsence(): void {
+    this.dashService.getTotalAbsence(this.selectedDate, this.selectedClasseId).subscribe(
+      (count: number) => {
+        console.log('API response:', count);
+        this.totalAbsence = count;
+      },
+      (error) => {
+        console.error('Error fetching total absence:', error);
+      }
+    );
+  }
+
+  // Called when the user changes the date
+  onDateChange(event: any): void {
+    this.selectedDate = event.target.value;
+    this.getTotalAbsence();  // Fetch the updated data
+  }
+
+  // Called when the user selects a class
+  onSelectClasse(item: any): void {
+    this.selectedClasseId = item.id;
+    this.selectedClasseName = item.classe;  // Update the displayed class name
+    this.getTotalAbsence();  // Fetch the updated data
   }
 
 }

@@ -80,10 +80,10 @@
           <mat-card-header class="d-flex w-100 p-x-24">
             <mat-card-title>
               <div class="fs-4 mb-2">Total nombre absent</div>
-              <p class="mb-3 small text-muted">L1M2</p>
+              <p class="mb-3 small text-muted">{{ selectedClasseName }}</p>
               <mat-form-field appearance="outline">
                 <mat-label>Date</mat-label>
-                <input matInput type="date" />
+                <input matInput type="date" [value]="selectedDate" (change)="onDateChange($event)"/>
               </mat-form-field>
             </mat-card-title>
 
@@ -103,15 +103,15 @@
                 <i-tabler name="briefcase"></i-tabler>
               </button>
               <mat-menu #classeMenu="matMenu" xPosition="before">
-                <button mat-menu-item *ngFor="let item of classeItems">
-                  <a href="{{ item.id }}" class="text-decoration-none" style="color: black;"><span>{{ item.classe }}</span></a>
+                <button mat-menu-item *ngFor="let item of classeItems" (click)="onSelectClasse(item)">
+                  <span>{{ item.classe }}</span>
                 </button>
               </mat-menu>
 
             </div>
           </mat-card-header>
           <mat-card-content class="m-b-32 p-x-24 p-y-16">
-            <h4 class="display-1 m-0">26</h4>
+            <h4 class="display-1 m-0">{{ totalAbsence }}</h4>
             <div class="d-flex align-items-center">
               <div class="mat-body-1">étudiants</div>
             </div>
