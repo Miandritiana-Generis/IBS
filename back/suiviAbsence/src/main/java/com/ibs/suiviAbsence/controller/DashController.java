@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ibs.suiviAbsence.modele.Niveau;
 import com.ibs.suiviAbsence.modele.ViewClasseDetail;
+import com.ibs.suiviAbsence.modele.ViewTauxAbsencePresence;
 import com.ibs.suiviAbsence.service.DashService;
 
 @RestController
@@ -34,5 +35,12 @@ public class DashController {
     public ResponseEntity<List<Niveau>> getListeNiveau(){
         List<Niveau> val = dashService.findNiveau();
         return ResponseEntity.ok(val);
+    }
+
+    @GetMapping("/taux-absence-presence")
+    public List<ViewTauxAbsencePresence> getReport(@RequestParam(required = false) String monthYear,
+                                                    @RequestParam(required = false) Integer idClasse,
+                                                    @RequestParam(required = false) Integer idNiveau) {
+        return dashService.getTauxAbsencePresence(monthYear, idClasse, idNiveau);
     }
 }
