@@ -38,9 +38,10 @@ public class DashController {
     }
 
     @GetMapping("/taux-absence-presence")
-    public List<ViewTauxAbsencePresence> getReport(@RequestParam(required = false) String monthYear,
-                                                    @RequestParam(required = false) Integer idClasse,
-                                                    @RequestParam(required = false) Integer idNiveau) {
+    public List<ViewTauxAbsencePresence> getTauxAbsencePresence(
+            @RequestParam(required = false) String monthYear,
+            @RequestParam(required = false) Integer idClasse,
+            @RequestParam(required = false) Integer idNiveau) {
         return dashService.getTauxAbsencePresence(monthYear, idClasse, idNiveau);
     }
 }

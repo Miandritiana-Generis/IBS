@@ -2,6 +2,7 @@ package com.ibs.suiviAbsence.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +53,36 @@ public class DashService {
     }
 
     public List<ViewTauxAbsencePresence> getTauxAbsencePresence(String monthYear, Integer idClasse, Integer idNiveau) {
-        // Default to current month if monthYear is not provided
-        if (monthYear == null) {
-            monthYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        }
+
+        // if (monthYear == null || monthYear.isEmpty()) {
+        //     monthYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        // } else {
+        //     // Validate and format monthYear to ensure it's in the correct format
+        //     try {
+        //         LocalDate.parse(monthYear, DateTimeFormatter.ofPattern("yyyy-MM")); // Validate format
+        //     } catch (DateTimeParseException e) {
+        //         // Handle invalid format (e.g., log the error and set to current month)
+        //         monthYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        //     }
+        // }
 
         return viewTauxAbsencePresenceRepository.findByFilters(monthYear, idClasse, idNiveau);
+    }
+
+    private String validateMonthYear(String monthYear) {
+        // If monthYear is null, return the current month in 'YYYY-MM' format
+        if (monthYear == null || monthYear.isEmpty()) {
+            return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        }
+
+        // Validate the format of the monthYear string
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            LocalDate.parse(monthYear, formatter);  // Try to parse the string
+            return monthYear;  // Return if valid
+        } catch (DateTimeParseException e) {
+            // Handle invalid format by returning the current month as default
+            return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        }
     }
 }
