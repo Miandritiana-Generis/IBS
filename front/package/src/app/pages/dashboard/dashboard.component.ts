@@ -486,6 +486,13 @@ export class AppDashboardComponent {
     this.getTotalAbsence();  // Fetch the updated data
   }
 
+  clearSelectedClasse(): void {
+    this.selectedClasseId = undefined;
+    this.selectedClasseName = '';
+    this.getTotalAbsence(); // Fetch total absence without idClasse
+  }
+  
+
   getNiveauList(): void {
     this.dashService.getListNiveau().subscribe(
       (data: any) => {

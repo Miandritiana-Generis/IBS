@@ -8,7 +8,9 @@
         <div class="d-flex w-100">
           <mat-card-title>
             <div class="mb-2">Taux d'absence / Taux de présence</div>
-            <p class="mb-0 small text-muted">L1</p>
+            <p class="mb-0 small text-muted">L1
+              <i-tabler name="X" class="cursor-pointer"></i-tabler>
+            </p>
           </mat-card-title>
             <div class="m-l-auto">
 
@@ -75,7 +77,10 @@
           <mat-card-header class="d-flex w-100 p-x-24">
             <mat-card-title>
               <div class="fs-4 mb-2">Total nombre absent</div>
-              <p class="mb-3 small text-muted">{{ selectedClasseName }}</p>
+              <p class="mb-3 small text-muted">
+                {{ selectedClasseName }}
+                <i-tabler *ngIf="selectedClasseName" name="X" class="cursor-pointer" (click)="clearSelectedClasse()"></i-tabler>
+              </p>
               <mat-form-field appearance="outline">
                 <mat-label>Date</mat-label>
                 <input matInput type="date" [value]="selectedDate" (change)="onDateChange($event)"/>
