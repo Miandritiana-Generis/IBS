@@ -104,6 +104,7 @@ export interface ProductsData {
   prenom: string;
   imagePath: string;
   classe: string;
+  matiere: string;
   totalH: Time;
   malus: number
 }
@@ -195,7 +196,7 @@ export class AppDashboardComponent {
   idNiveauTaux: number | undefined;
   monthYear: string = new Date().toISOString().slice(0, 7);
 
-  displayedColumns: string[] = ['etu', 'classe', 'totalH', 'malus'];
+  displayedColumns: string[] = ['etu', 'classe', 'matiere', 'totalH', 'malus'];
   dataSource: ProductsData[] = [];
 
   addOnBlur = true;
@@ -542,6 +543,17 @@ export class AppDashboardComponent {
     const year = date.getFullYear();
     return `${month} ${year}`;
   }
+
+  clearMonthYearTaux(): void {
+    this.monthYear = '';
+  }
   
+  clearDateTotal(): void {
+    this.selectedDate = ''; 
+  }
+
+  clearMonthYearList(): void {
+    // this.
+  }
 
 }
