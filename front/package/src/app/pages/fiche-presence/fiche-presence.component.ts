@@ -62,7 +62,9 @@ export class AppFichePresenceComponent {
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
   dataSource: ProductsData[] = [];
   apiUrl: any;
-  isLoading: boolean = false; 
+  isLoading: boolean = false;
+
+  isIdPatValid: boolean = true;
 
   constructor(private edtService: EdtService, private http: HttpClient ,private route:ActivatedRoute, private fichePresenceService : FichePresenceService) {
    this.route.queryParamMap.subscribe(params => {
@@ -76,6 +78,13 @@ export class AppFichePresenceComponent {
 
   ngOnInit() {
     this.checkIfAnnule(parseInt(this.id_edt));
+
+    const idPat = localStorage.getItem("idPat");
+    
+    // Check if idPat is not undefined and is not equal to "0"
+    if (idPat !== undefined && idPat !== "0") {
+      this.isIdPatValid = false; // Set flag to false to hide the button
+    }
   }
 
   getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string): void {

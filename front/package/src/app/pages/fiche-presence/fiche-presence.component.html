@@ -55,7 +55,7 @@
         </mat-chip-set>
 
               <div class="m-l-auto cursor-pointer">
-                <a (click)="sendFichePresenceData()" *ngIf="!isLoading && retourProf == 'ValideProf = 0' || estAnnule == false">
+                <a (click)="sendFichePresenceData()" *ngIf="!isLoading && retourProf == 'ValideProf = 0' || estAnnule == false && isIdPatValid">
                   <div class="bg-light-error text-error shadow-none icon-96">
                     <div class="icon-demo">
                       <div class="icon-demo-icon">
