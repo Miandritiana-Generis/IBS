@@ -114,6 +114,8 @@ export class AppListeAbsence {
       date_time_debut: dateDebut,
       date_time_fin: dateFin
     };
+
+    console.log ("liste :", justificationPayload);
   
     this.justificationService.justifierDelegue(justificationPayload).subscribe(
       response => {

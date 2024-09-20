@@ -10,6 +10,7 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -96,6 +97,7 @@ public class PresenceController {
             
         }
         else if(p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==1){
+            stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
             Time heureDebut = result.get(0).getDebut();
             Time heureFin = result.get(0).getFin();
             LocalTime debutLocalTime = heureDebut.toLocalTime();
@@ -176,14 +178,21 @@ public class PresenceController {
 
 
     @PutMapping("/validerProf")
-    public ResponseEntity<Map<String, String>> validerProf(@RequestParam int idEdt,@RequestHeader("Authorization") String tokenValue) {
-        presenceService.validerProf(idEdt,tokenValue);
-        
+    public ResponseEntity<Map<String, String>> validerProf(@RequestParam int idEdt, @RequestHeader("Authorization") String tokenValue) {
+        System.out.println("ID EDT reçu: " + idEdt);  // Vérifie si idEdt est bien reçu
+        System.out.println("Token reçu: " + tokenValue);  // Vérifie si le token est bien reçu
+    
+        // Logique de validation
+        presenceService.validerProf(idEdt, tokenValue);
+    
         Map<String, String> response = new HashMap<>();
         response.put("message", "Validation effectuée pour idEdt : " + idEdt);
-        
+    
         return ResponseEntity.ok(response);
     }
+    
+
+
 
     @PutMapping("/validerDelegue")
     public ResponseEntity<Map<String, String>> validerDelegue(

@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ibs.suiviAbsence.modele.JustificationAbsence;
 
-public interface JustificationAbsenceRepository  extends JpaRepository<JustificationAbsence, Integer>{
+public interface JustificationAbsenceRepository  extends JpaRepository<JustificationAbsence, Long>{
 
 }

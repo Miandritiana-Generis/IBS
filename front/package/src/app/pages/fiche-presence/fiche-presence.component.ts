@@ -125,9 +125,6 @@ export class AppFichePresenceComponent {
     );
   }
 
-  
-
-
   sendFichePresenceData(): void {
     const dataToSend = this.listeFichePresence;  // Assuming listeFichePresence contains the data you want to send
     withCredentials: true
@@ -145,7 +142,7 @@ export class AppFichePresenceComponent {
 
 
   validerProf(idEdt: string): void {
-    const tokenValue = localStorage.getItem('token') || '';  // Assurer que tokenValue n'est jamais null
+    const tokenValue = localStorage.getItem('token') || ''; // Assurer que tokenValue n'est jamais null
     const confirmed = confirm("Voulez-vous vraiment valider ce professeur ?");
     
     if (confirmed) {
@@ -156,14 +153,15 @@ export class AppFichePresenceComponent {
         },
         error => {
           console.error('Erreur capturée:', error);  // Afficher les détails de l'erreur dans la console
-
-          // Si l'erreur contient des erreurs spécifiques
+  
+          // Vérifier si l'erreur contient des erreurs spécifiques
           if (error.error && error.error.erreurs && error.error.erreurs.length > 0) {
-            this.message = error.error.erreurs[0].messageErreur;
+            const erreur = error.error.erreurs[0];  // Récupérer la première erreur
+            alert(`Erreur ${erreur.codeErreur}: ${erreur.messageErreur}`);
           } 
           // Gérer le cas où l'erreur HTTP est 400 (Bad Request)
           else if (error.status === 400) {
-            alert('Erreur 400: Requête invalide. Veuillez vérifier les données envoyées.');
+            alert('Vous êtes pas autorisé à faire cette action.');
           } 
           // Gérer d'autres types d'erreurs (401, 403, etc.)
           else if (error.status === 401) {
@@ -179,10 +177,9 @@ export class AppFichePresenceComponent {
       );
     }
   }
-
-
-
-
+  
+  
+  
 
   validerDelegue(idEdt: string): void {
     const tokenValue = localStorage.getItem('token') || '';  
