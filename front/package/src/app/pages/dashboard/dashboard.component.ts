@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Time } from '@angular/common';
 import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -28,6 +28,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { formatDate } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
+import { MaterialModule } from '../../material.module';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 interface month {
   value: string;
@@ -96,6 +99,19 @@ export interface TauxData {
   presentCount: number;
 }
 
+export interface ProductsData {
+  nom: string;
+  prenom: string;
+  imagePath: string;
+  classe: string;
+  totalH: Time;
+  malus: number
+}
+
+export interface Search{
+  name: string;
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -113,6 +129,7 @@ export interface TauxData {
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
+    MaterialModule,
   ],
 })
 export class AppDashboardComponent {
@@ -178,18 +195,63 @@ export class AppDashboardComponent {
   idNiveauTaux: number | undefined;
   monthYear: string = new Date().toISOString().slice(0, 7);
 
+  displayedColumns: string[] = ['etu', 'classe', 'totalH', 'malus'];
+  dataSource: ProductsData[] = [];
+
+  addOnBlur = true;
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+  searchs: Search[] = [{ name: 'Rakoto' }, { name: 'piera' }];
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our fruit
+    if (value) {
+      this.searchs.push({ name: value });
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+
+  remove(search: Search): void {
+    const index = this.searchs.indexOf(search);
+
+    if (index >= 0) {
+      this.searchs.splice(index, 1);
+    }
+  }
+
+  edit(search: Search, event: MatChipEditedEvent) {
+    const value = event.value.trim();
+
+    // Remove fruit if it no longer has a name
+    if (!value) {
+      this.remove(search);
+      return;
+    }
+
+    // Edit existing fruit
+    const index = this.searchs.indexOf(search);
+    if (index >= 0) {
+      this.searchs[index].name = value;
+    }
+
+  
+  }
+
   constructor(private dashService: DashService) {
 
     this.profitExpanceChart = {
       series: [
         {
           name: 'Taux d\'absence',
-          data: [1, 1, 1, 7, 1],
+          data: [0, 0, 0, 0, 0],
           color: '#0085db',
         },
         {
           name: 'Taux de présence',
-          data: [6, 3, 9, 5, 4],
+          data: [0, 0, 0, 0, 0],
           color: '#fb977d',
         },
       ],
@@ -218,8 +280,8 @@ export class AppDashboardComponent {
       markers: { size: 0 },
       legend: { show: false },
       xaxis: {
-        type: 'category',
-        categories: ['Jan 2024', 'Fev 2024', 'Mars 2024', 'Avril 2024', 'Mai 2024'],
+        type: 'category', 
+        categories: ['', '', '', '', ''],
         axisTicks: {
           show: false,
         },
