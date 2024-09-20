@@ -176,7 +176,7 @@ export class AppDashboardComponent {
   idClasseTaux: number | undefined;
   selectedNiveauTaux: string = '';
   idNiveauTaux: number | undefined;
-  monthYear: string = '';
+  monthYear: string = new Date().toISOString().slice(0, 7);
 
   constructor(private dashService: DashService) {
 

@@ -47,23 +47,19 @@ export class DashService {
 
   getTaux(idClasse?: number, idNiveau?: number, monthYear?: string): Observable<any> {
     let params = new HttpParams();
-  
+    
     if (idClasse) {
-      params = params.set('id_classe', idClasse.toString());
+      params = params.set('idClasse', idClasse.toString());  // Use 'idClasse' instead of 'id_classe'
     }
     if (idNiveau) {
-      params = params.set('id_niveau', idNiveau.toString());
+      params = params.set('idNiveau', idNiveau.toString());  // Use 'idNiveau' instead of 'id_niveau'
     }
     if (monthYear) {
-      params = params.set('month_year', monthYear);
+      params = params.set('monthYear', monthYear);  // Use 'monthYear' instead of 'month_year'
     }
-
-    // console.log("classe > "+idClasse);
-    // console.log("niveau > "+idNiveau);
-    // console.log("monthY > "+monthYear);
-    
-    console.log(this.urlTaux, { params });
   
+    console.log(this.urlTaux, params.toString());  // Will print the full URL with query parameters
+    
     return this.http.get<{
       monthYear: string;
       absentCount: number;
