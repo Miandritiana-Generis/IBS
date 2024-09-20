@@ -51,6 +51,7 @@ export class AppListsComponent {
         (error: any) => {
           alert("Tsy mety lasa le id salle");
           console.error('Error sending data:', error);
+          window.location.href = 'http://localhost:4400';
         }
       );
       

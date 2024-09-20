@@ -96,6 +96,7 @@ public class PresenceController {
             
         }
         else if(p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==1){
+            stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
             Time heureDebut = result.get(0).getDebut();
             Time heureFin = result.get(0).getFin();
             LocalTime debutLocalTime = heureDebut.toLocalTime();

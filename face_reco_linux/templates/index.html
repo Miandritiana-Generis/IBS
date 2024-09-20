@@ -169,8 +169,8 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // Redirect to the fiche presence page after dropping data_store
-                window.location.href = 'http://localhost:4400/fiche-presence';
+                const id_edt = '{{ listeFichePresence[0].id_edt }}';
+                window.location.href = 'http://localhost:4400/fiche-presence?id_edt=' + id_edt;
             })
             .catch((error) => {
                 console.error('Error:', error);

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Time } from '@angular/common';
 import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,6 +23,14 @@ import {
   ApexResponsive,
   NgApexchartsModule,
 } from 'ng-apexcharts';
+import { DashService } from 'src/app/services/dash.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { formatDate } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
+import { MaterialModule } from '../../material.module';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 interface month {
   value: string;
@@ -75,63 +83,35 @@ interface stats {
   link?: string;
 }
 
-export interface productsData {
+export interface ClasseItem {
   id: number;
+  classe: string;
+}
+
+export interface NiveauItem {
+  id: number;
+  nom: string;
+}
+
+export interface TauxData {
+  monthYear: string;
+  absentCount: number;
+  presentCount: number;
+}
+
+export interface ProductsData {
+  nom: string;
+  prenom: string;
   imagePath: string;
-  uname: string;
-  position: string;
-  hourRate: number;
-  classes: number;
-  priority: string;
+  classe: string;
+  matiere: string;
+  totalH: Time;
+  malus: number
 }
 
-// ecommerce card
-interface productcards {
-  id: number;
-  imgSrc: string;
-  title: string;
-  price: string;
-  rprice: string;
+export interface Search{
+  name: string;
 }
-
-const ELEMENT_DATA: productsData[] = [
-  {
-    id: 1,
-    imagePath: 'assets/images/profile/user-1.jpg',
-    uname: 'Mark J. Freeman',
-    position: 'English',
-    hourRate: 150,
-    classes: 53,
-    priority: 'Available',
-  },
-  {
-    id: 2,
-    imagePath: 'assets/images/profile/user-2.jpg',
-    uname: 'Andrew McDownland',
-    position: 'Project Manager',
-    hourRate: 150,
-    classes: 68,
-    priority: 'In Class',
-  },
-  {
-    id: 3,
-    imagePath: 'assets/images/profile/user-3.jpg',
-    uname: 'Christopher Jamil',
-    position: 'Project Manager',
-    hourRate: 150,
-    classes: 94,
-    priority: 'Absent',
-  },
-  {
-    id: 4,
-    imagePath: 'assets/images/profile/user-4.jpg',
-    uname: 'Nirav Joshi',
-    position: 'Frontend Engineer',
-    hourRate: 150,
-    classes: 27,
-    priority: 'On Leave',
-  },
-];
 
 @Component({
   selector: 'app-dashboard',
@@ -147,37 +127,17 @@ const ELEMENT_DATA: productsData[] = [
     NgApexchartsModule,
     MatTableModule,
     CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MaterialModule,
   ],
 })
 export class AppDashboardComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);
 
   public profitExpanceChart!: Partial<profitExpanceChart> | any;
-  public trafficChart!: Partial<trafficChart> | any;
   public salesChart!: Partial<salesChart> | any;
-
-  displayedColumns: string[] = ['profile', 'hrate', 'exclasses', 'status'];
-  dataSource = ELEMENT_DATA;
-
-  months: month[] = [
-    { value: 'mar', viewValue: 'March 2023' },
-    { value: 'apr', viewValue: 'April 2023' },
-    { value: 'june', viewValue: 'June 2023' },
-  ];
-
-  classeItems = [
-    { label: 'L2MD1' },
-    { label: 'L2MD2' },
-    { label: 'L1A1' },
-    { label: 'L1A2' }
-  ];
-
-  niveauItems = [
-    { label: 'L1'},
-    { label: 'L2'},
-    { label: 'Master 1' },
-    { label: 'Master 2' },
-  ];
 
   // recent transaction
   stats: stats[] = [
@@ -222,50 +182,77 @@ export class AppDashboardComponent {
     },
   ];
 
-  // ecommerce card
-  productcards: productcards[] = [
-    {
-      id: 1,
-      imgSrc: '/assets/images/products/p1.jpg',
-      title: 'Boat Headphone',
-      price: '285',
-      rprice: '375',
-    },
-    {
-      id: 2,
-      imgSrc: '/assets/images/products/p2.jpg',
-      title: 'MacBook Air Pro',
-      price: '285',
-      rprice: '375',
-    },
-    {
-      id: 3,
-      imgSrc: '/assets/images/products/p3.jpg',
-      title: 'Red Valvet Dress',
-      price: '285',
-      rprice: '375',
-    },
-    {
-      id: 4,
-      imgSrc: '/assets/images/products/p4.jpg',
-      title: 'Cute Soft Teddybear',
-      price: '285',
-      rprice: '375',
-    },
-  ];
+  classeItems: ClasseItem[] = [];
+  niveauItems: NiveauItem[] = [];
 
-  constructor() {
-    // sales overview chart
+  totalAbsence: number | undefined;
+  selectedDate: string | undefined;
+  selectedClasseId: number | undefined = undefined;
+  selectedClasseName: string | undefined;
+
+  selectedClasseTaux: string = '';
+  idClasseTaux: number | undefined;
+  selectedNiveauTaux: string = '';
+  idNiveauTaux: number | undefined;
+  monthYear: string = new Date().toISOString().slice(0, 7);
+
+  displayedColumns: string[] = ['etu', 'classe', 'matiere', 'totalH', 'malus'];
+  dataSource: ProductsData[] = [];
+
+  addOnBlur = true;
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+  searchs: Search[] = [{ name: 'Rakoto' }, { name: 'piera' }];
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our fruit
+    if (value) {
+      this.searchs.push({ name: value });
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+
+  remove(search: Search): void {
+    const index = this.searchs.indexOf(search);
+
+    if (index >= 0) {
+      this.searchs.splice(index, 1);
+    }
+  }
+
+  edit(search: Search, event: MatChipEditedEvent) {
+    const value = event.value.trim();
+
+    // Remove fruit if it no longer has a name
+    if (!value) {
+      this.remove(search);
+      return;
+    }
+
+    // Edit existing fruit
+    const index = this.searchs.indexOf(search);
+    if (index >= 0) {
+      this.searchs[index].name = value;
+    }
+
+  
+  }
+
+  constructor(private dashService: DashService) {
+
     this.profitExpanceChart = {
       series: [
         {
-          name: 'Eanings this month',
-          data: [9, 5, 3, 7, 5, 10, 3],
+          name: 'Taux d\'absence',
+          data: [0, 0, 0, 0, 0],
           color: '#0085db',
         },
         {
-          name: 'Expense this month',
-          data: [6, 3, 9, 5, 4, 6, 4],
+          name: 'Taux de présence',
+          data: [0, 0, 0, 0, 0],
           color: '#fb977d',
         },
       ],
@@ -278,7 +265,7 @@ export class AppDashboardComponent {
         bar: {
           horizontal: false,
           columnWidth: '30%',
-          borderRadius: 4,
+          borderRadius: 6,
           endingShape: "rounded",
         },
       },
@@ -294,8 +281,8 @@ export class AppDashboardComponent {
       markers: { size: 0 },
       legend: { show: false },
       xaxis: {
-        type: 'category',
-        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        type: 'category', 
+        categories: ['', '', '', '', ''],
         axisTicks: {
           show: false,
         },
@@ -326,66 +313,7 @@ export class AppDashboardComponent {
         },
       ],
     };
-
-    // yearly breakup chart
-    this.trafficChart = {
-      series: [5368, 3500, 4106],
-      labels: ['5368', 'Refferal Traffic', 'Oragnic Traffic'],
-      chart: {
-        type: 'donut',
-        fontFamily: "'Plus Jakarta Sans', sans-serif;",
-        foreColor: '#adb0bb',
-        toolbar: {
-          show: false,
-        },
-        height: 160,
-      },
-      colors: ['#e7ecf0', '#fb977d', '#0085db'],
-      plotOptions: {
-        pie: {
-          donut: {
-            size: '80%',
-            background: 'none',
-            labels: {
-              show: true,
-              name: {
-                show: true,
-                fontSize: '12px',
-                color: undefined,
-                offsetY: 5,
-              },
-              value: {
-                show: false,
-                color: '#98aab4',
-              },
-            },
-          },
-        },
-      },
-      stroke: {
-        show: false,
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        show: false,
-      },
-      responsive: [
-        {
-          breakpoint: 991,
-          options: {
-            chart: {
-              width: 120,
-            },
-          },
-        },
-      ],
-      tooltip: {
-        enabled: false,
-      },
-    };
-
+    
     // mohtly earnings chart
     this.salesChart = {
       series: [
@@ -429,4 +357,203 @@ export class AppDashboardComponent {
       },
     };
   }
+
+  ngOnInit(){
+    this.monthYear = this.monthYear || '';
+    this.getClasseList();
+    this.getTotalAbsence();
+    this.selectedDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+    this.getNiveauList();
+    this.getTaux();
+  }
+  // Method to fetch class list and update classeItems
+  getClasseList(): void {
+    this.dashService.getListClasse().subscribe(
+      (data: any) => {
+        this.classeItems = data.map((item: any) => ({
+          id: item.id,
+          classe: item.classe
+        }));
+      },
+      (error) => {
+        console.error('Error fetching classes:', error);
+      }
+    );
+  }
+
+  getTotalAbsence(): void {
+    this.dashService.getTotalAbsence(this.selectedDate, this.selectedClasseId).subscribe(
+      (count: number) => {
+        console.log('API response total abs:', count);
+        this.totalAbsence = count;
+      },
+      (error) => {
+        console.error('Error fetching total absence:', error);
+      }
+    );
+  }
+
+  // Called when the user changes the date
+  onDateChange(event: any): void {
+    this.selectedDate = event.target.value;
+    this.getTotalAbsence();
+  }
+
+  // Called when the user selects a class
+  onSelectClasse(item: any): void {
+    this.selectedClasseId = item.id;
+    this.selectedClasseName = item.classe;
+    this.getTotalAbsence();
+  }
+
+  clearSelectedClasse(): void {
+    this.selectedClasseId = undefined;
+    this.selectedClasseName = '';
+    this.getTotalAbsence(); // Fetch total absence without idClasse
+  }
+  
+
+  getNiveauList(): void {
+    this.dashService.getListNiveau().subscribe(
+      (data: any) => {
+        this.niveauItems = data.map((item: any) => ({
+          id: item.id,
+          nom: item.nom
+        }));
+      },
+      (error) => {
+        console.error('Error fetching classes:', error);
+      }
+    );
+  }
+
+
+  getTaux() {
+    console.log('Request Parameters:');
+    console.log('ID Classe:', this.idClasseTaux);
+    console.log('ID Niveau:', this.idNiveauTaux);
+    console.log('Month Year:', this.monthYear);
+    this.dashService.getTaux(
+      this.selectedClasseTaux ? this.idClasseTaux : undefined,
+      this.selectedNiveauTaux ? this.idNiveauTaux : undefined,
+      this.monthYear
+    ).subscribe(response => {
+      console.log('API Response:', response);
+      this.updateTaux(response);
+    }, error => {
+      console.error('Error fetching taux data:', error);
+    });
+  }
+  
+  updateTaux(data: TauxData[]) {
+    console.log('Data for Chart:', data);
+    this.profitExpanceChart = {
+      series: [
+        {
+          name: 'Nombre d\'absence',
+          data: data.map(d => d.absentCount),
+          color: '#fb977d',
+        },
+        {
+          name: 'Nombre de présence',
+          data: data.map(d => d.presentCount),
+          color: '#0085db',
+        },
+      ],
+      grid: {
+        borderColor: 'rgba(0,0,0,0.1)',
+        strokeDashArray: 3,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: '30%',
+          borderRadius: 6,
+          endingShape: "rounded",
+        },
+      },
+      chart: {
+        type: 'bar',
+        height: 390,
+        offsetY: 10,
+        foreColor: '#adb0bb',
+        fontFamily: 'inherit',
+        toolbar: { show: false },
+      },
+      dataLabels: { enabled: false },
+      markers: { size: 0 },
+      legend: { show: false },
+      xaxis: {
+        type: 'category',
+        categories: data.map(d => this.formatMonthYear(d.monthYear)),
+        axisTicks: { show: false },
+        axisBorder: { show: false },
+        labels: { style: { cssClass: 'grey--text lighten-2--text fill-color' } },
+      },
+      stroke: {
+        show: true,
+        width: 5,
+        colors: ['transparent'],
+      },
+      tooltip: { theme: 'light' },
+      responsive: [
+        {
+          breakpoint: 600,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 3,
+              },
+            },
+          },
+        },
+      ],
+    };
+  }
+  
+
+  onClassSelectTaux(classe: any) {
+    this.selectedClasseTaux = classe.classe;
+    this.idClasseTaux = classe.id;
+    this.getTaux();
+  }
+
+  onNiveauSelectTaux(niveau: any) {
+    this.selectedNiveauTaux = niveau.nom;
+    this.idNiveauTaux = niveau.id;
+    this.getTaux();
+  }
+
+  onMonthChange(value: string) {
+    this.monthYear = value;
+    this.getTaux();
+  }  
+
+  clearSelection() {
+    this.selectedClasseTaux = '';
+    this.selectedNiveauTaux = '';
+    this.idClasseTaux = undefined;
+    this.idNiveauTaux = undefined;
+    this.getTaux();
+  }
+  
+  formatMonthYear(monthYear: string): string {
+    const date = new Date(monthYear);
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+    return `${month} ${year}`;
+  }
+
+  clearMonthYearTaux(): void {
+    this.monthYear = '';
+  }
+  
+  clearDateTotal(): void {
+    this.selectedDate = ''; 
+  }
+
+  clearMonthYearList(): void {
+    // this.
+  }
+
 }

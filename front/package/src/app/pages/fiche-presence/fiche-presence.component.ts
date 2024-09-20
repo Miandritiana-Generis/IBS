@@ -199,7 +199,7 @@ export class AppFichePresenceComponent {
       this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
         next: () => {
           alert('Validation réussie.');
-          window.location.reload();  
+          window.location.reload();
         },
         error: (err) => {
           console.error('Erreur lors de la validation du délégué:', err);  // Log pour plus de détails
@@ -223,18 +223,37 @@ export class AppFichePresenceComponent {
     }
   }
   
-checkIfAnnule(idEdt: number): void {
-  this.fichePresenceService.estAnnule(idEdt).subscribe(
-    (response: any) => {
-      this.estAnnule = response.estAnnule;
-    },
-    (error) => {
-      console.error('Erreur lors de la vérification:', error);
-    }
-  );
-}
+  checkIfAnnule(idEdt: number): void {
+    this.fichePresenceService.estAnnule(idEdt).subscribe(
+      (response: any) => {
+        this.estAnnule = response.estAnnule;
+      },
+      (error) => {
+        console.error('Erreur lors de la vérification:', error);
+      }
+    );
+  }
 
+
+  presenceManuelle(idEdt: number, idClasseEtudiant: number): void {
+    const confirmAction = confirm("Êtes-vous sûr de vouloir marquer cet étudiant comme présent?");
     
+    if (confirmAction) {
+      const tempsArriver = new Date().toLocaleTimeString('en-GB'); // Current time in HH:mm:ss format
+
+      this.fichePresenceService.presence(idEdt, idClasseEtudiant, tempsArriver).subscribe(
+        (response) => {
+          console.log('Success:', response);
+          alert('Présence enregistrée avec succès!');
+          window.location.reload();
+        },
+        (error) => {
+          console.error('Error:', error);
+          alert('Échec de l\'enregistrement de la présence.');
+        }
+      );
+    }
+  }
 
 
 }

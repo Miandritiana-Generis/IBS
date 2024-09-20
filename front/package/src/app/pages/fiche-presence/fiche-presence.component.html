@@ -140,7 +140,7 @@
                   </span>
                 </ng-template>
                 <ng-template [ngIf]="element.status == 'Absent'">
-                  <span class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14">
+                  <span class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14 cursor-pointer" (click)="presenceManuelle(listeFichePresence[0].id_edt, element.id_classe_etudiant)">
                     {{ element.status | titlecase }}
                   </span>
                 </ng-template>
