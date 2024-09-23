@@ -55,8 +55,8 @@ export class AppFichePresenceComponent {
   message: string = ''; 
   retour : any;
   estAnnule: boolean | null = null;
-  estValideProf: boolean | null = null;
-  estValideDelegue: boolean | null = null;
+  estValideProf: boolean | null = false;
+  estValideDelegue: boolean | null  = null;
   retourDelegue : string = '';
   retourProf : string = '';
 
@@ -73,6 +73,7 @@ export class AppFichePresenceComponent {
       console.log(params.get("id_edt"));
       this.id_edt = params.get('id_edt')!;
       this.getListFichePresence(this.id_salle ,this.heure, this.date,this.id_edt);
+      
     });
     
   }
@@ -80,6 +81,9 @@ export class AppFichePresenceComponent {
 
   ngOnInit() {
     this.checkIfAnnule(parseInt(this.id_edt));
+    this.checkIfEsrValideProf(parseInt(this.id_edt));
+    this.checkIfEsrValideDelegue(parseInt(this.id_edt));
+    console.log("V1 :", this.estValideProf);
 
     const idPat = localStorage.getItem("idPat");
     
@@ -245,6 +249,28 @@ export class AppFichePresenceComponent {
     );
   }
 
+  public checkIfEsrValideProf(idEdt: number): void {
+    this.fichePresenceService.estValiderProf(idEdt).subscribe(
+      (response: any) => {
+        this.estValideProf = response.prof;
+        console.log("V :",this.estValideProf);
+      },
+      (error) => {
+        console.error('Erreur lors de la vérification:', error);
+      }
+    );
+  }
+
+  private checkIfEsrValideDelegue(idEdt: number): void {
+    this.fichePresenceService.estValiderDelegue(idEdt).subscribe(
+      (response: any) => {
+        this.estValideDelegue = response.delegue;
+      },
+      (error) => {
+        console.error('Erreur lors de la vérification:', error);
+      }
+    );
+  }
 
   presenceManuelle(idEdt: number, idClasseEtudiant: number): void {
     const confirmAction = confirm("Êtes-vous sûr de vouloir marquer cet étudiant comme présent?");

@@ -50,6 +50,30 @@ validerDelegue(idEdt: string, tokenValue: string): Observable<any> {
   );
 }
 
+estValiderProf(idEdt: number): Observable<any> {
+  const params = new HttpParams().set('idEdt', idEdt.toString());
+
+  return this.http.get(`${this.urlEstValideProf}`, { params: params }).pipe(
+    catchError((error: any) => {
+      console.error('Error during API call:', error);
+      throw error;
+    })
+  );
+}
+
+
+estValiderDelegue(idEdt: number): Observable<any> {
+  const params = new HttpParams().set('idEdt', idEdt.toString());
+
+  return this.http.get(`${this.urlEstValideDelegue}`, { params: params }).pipe(
+    catchError((error: any) => {
+      console.error('Error during API call:', error);
+      throw error;
+    })
+  );
+}
+
+
 estAnnule(idEdt: number): Observable<any> {
   const params = new HttpParams().set('idEdt', idEdt.toString());
 

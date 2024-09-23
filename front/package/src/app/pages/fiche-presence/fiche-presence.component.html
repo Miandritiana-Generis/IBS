@@ -55,7 +55,7 @@
         </mat-chip-set>
 
               <div class="m-l-auto cursor-pointer">
-                <a (click)="sendFichePresenceData()" *ngIf="!isLoading && retourProf == 'ValideProf = 0' || estAnnule == false || estValideProf == false || estValideDelegue == false">
+                <a (click)="sendFichePresenceData()" *ngIf="!isLoading && retourProf === 'ValideProf = 0' || estAnnule === false || !estValideProf || !estValideDelegue">
                   <div class="bg-light-error text-error shadow-none icon-96">
                     <div class="icon-demo">
                       <div class="icon-demo-icon">
@@ -167,7 +167,7 @@
 
     <div class="row">
       <div class="col-6">
-        <a *ngIf="retourProf == 'ValideProf = 0' || estAnnule == false || estValideProf == false"
+        <a *ngIf="retourProf === 'ValideProf = 0' || estAnnule === false || estValideProf === false"
           mat-flat-button
           color="primary"
           
@@ -179,7 +179,7 @@
         </a>
       </div>
       <div class="col-6">
-        <a *ngIf="retourDelegue == 'ValideDelegue = 0' || estAnnule == false || estValideDelegue == false"
+        <a *ngIf="retourDelegue === 'ValideDelegue = 0' || estAnnule === false || estValideDelegue === false"
           mat-flat-button
           color="warn"
           
@@ -191,5 +191,6 @@
         </a>
       </div>
     </div>
+
 
 </div>

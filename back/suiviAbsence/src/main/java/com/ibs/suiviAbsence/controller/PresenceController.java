@@ -110,7 +110,8 @@ public class PresenceController {
             
         }
 
-    } else if (idSalle != null) {
+    } 
+    else if (idSalle != null) {
         if (date == null || date.isEmpty()) {
             date = null;
         }
@@ -118,6 +119,18 @@ public class PresenceController {
             heure = null;
         }
         result = edtService.getInfoFichePresence(idSalle, heure, date);
+        p =  presenceRepository.findByIdEdt(result.get(0).getId_edt());
+        if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==0){
+            retour = true;
+            stringRetour = "ValideProf = 1;" + "ValideDelegue = 0";
+        }
+        else if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==1){
+            retour = true;
+            stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
+        }
+    }
+    else if (idSalle != null && idEdt != null) {
+        result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
         p =  presenceRepository.findByIdEdt(result.get(0).getId_edt());
         if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==0){
             retour = true;
