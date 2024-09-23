@@ -127,7 +127,8 @@ public class PresenceController {
             retour = true;
             stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
         }
-    } else {
+    }
+    else {
         return ResponseEntity.badRequest().body(null); // Si ni id_salle ni id_edt n'est fourni
     }
     Map<String, Object> response = new HashMap<>();
@@ -140,10 +141,36 @@ public class PresenceController {
     @GetMapping("/estAnnule")
     public ResponseEntity<Map<String, Boolean>> estAnnule(@RequestParam Integer idEdt) {
         boolean estAnnule = edtService.estAnnule(idEdt);
-
         // Préparer la réponse en format JSON
         Map<String, Boolean> response = new HashMap<>();
         response.put("estAnnule", estAnnule);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/estValideProf")
+    public ResponseEntity<Map<String, Boolean>> estValideProf(@RequestParam Integer idEdt) {
+        
+        Optional<Presence> p = presenceRepository.findByIdEdt(idEdt);
+        boolean retour = false;
+        if(p.get().getValideProf() == 1){
+            retour = true;
+        }
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("prof", retour);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/estValideDelegue")
+    public ResponseEntity<Map<String, Boolean>> estValideDelegue(@RequestParam Integer idEdt) {
+        Optional<Presence> p = presenceRepository.findByIdEdt(idEdt);
+        boolean retour = false;
+        if(p.get().getValideDelegue() == 1){
+            retour = true;
+        }
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("delegue", retour);
 
         return ResponseEntity.ok(response);
     }

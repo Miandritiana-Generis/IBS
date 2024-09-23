@@ -11,6 +11,8 @@ export class FichePresenceService {
   private urlValiderProf = Constants.BASE_URL+'/presences/validerProf';
   private urlValiderDelegue = Constants.BASE_URL+'/presences/validerDelegue';
   private urlCoursEstAnnule = Constants.BASE_URL+'/presences/estAnnule';
+  private urlEstValideProf = Constants.BASE_URL+'/presences/estValideProf';
+  private urlEstValideDelegue = Constants.BASE_URL+'/presences/estValideDelegue';
   private urlEstProf = Constants.BASE_URL+'/presences/estProf';
   private urlPresence = Constants.BASE_URL+'/presences';
 

@@ -1,8 +1,9 @@
 import { Component, TemplateRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PresenceService } from 'src/app/services/presence.service';
 import { Absence } from 'src/app/modeles/Absence';
 import { JustificationAbsenceService } from 'src/app/services/justification-absence.service';
+import { AbstractControl } from '@angular/forms';
 
 export interface productsData {
   id: number;
@@ -74,8 +75,9 @@ export class AppListeAbsence {
 
   // Ajout des variables pour les champs du formulaire
   description: string = ''; 
-  dateDebut: any;
-  dateFin: any;
+  dateDebut: string = ''; 
+  dateFin: string = '';
+
 
   constructor(
     public dialog: MatDialog,
@@ -93,6 +95,7 @@ export class AppListeAbsence {
   
   openModal(templateRef: TemplateRef<any>, absenceId: number): void {
     this.selectedAbsence = absenceId; 
+    console.log("idAbsence :", absenceId);
     const dialogRef = this.dialog.open(templateRef, {
       width: '800px' 
     });
@@ -101,29 +104,55 @@ export class AppListeAbsence {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.submitJustification( this.description, this.dateDebut, this.dateFin);
+        this.closeModal(dialogRef);
       }
     });
   }
 
+  closeModal(dialogRef: MatDialogRef<any>): void {
+    dialogRef.close();
+  }
+
+
   
-  submitJustification( description: string, dateDebut: Date, dateFin: Date) {
-    const absenceId = this.selectedAbsence.id
+  submitJustification(description: string, dateDebut: string, dateFin: string) {
+    const absenceId = this.selectedAbsence;
+  
+    // Formater les dates pour ne garder que la partie "date"
+    const formattedDateDebut = dateDebut ? new Date(dateDebut).toISOString().split('T')[0] : null;
+    const formattedDateFin = dateFin ? new Date(dateFin).toISOString().split('T')[0] : null;
+  
     const justificationPayload = {
-      id_classe_etudiant: absenceId,  
+      id_classe_etudiant: absenceId,
       description: description,
-      date_time_debut: dateDebut,
-      date_time_fin: dateFin
+      date_time_debut: formattedDateDebut,
+      date_time_fin: formattedDateFin
     };
+  
+    console.log("justificationPayload: ", justificationPayload);
   
     this.justificationService.justifierDelegue(justificationPayload).subscribe(
       response => {
         console.log('Justification envoyée avec succès', response);
+        close();
       },
       error => {
         console.error('Erreur lors de l\'envoi de la justification', error);
+        close();
       }
     );
   }
+  
+  onDateChange(type: string, event: any) {
+    if (type === 'debut') {
+      this.dateDebut = event.target.value;
+      console.log('Date début mise à jour :', this.dateDebut);
+    } else if (type === 'fin') {
+      this.dateFin = event.target.value;
+      console.log('Date fin mise à jour :', this.dateFin);
+    }
+  }
+  
   
   
   public getAbsence() {
