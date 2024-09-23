@@ -164,7 +164,7 @@ export class AppFichePresenceComponent {
 
   validerProf(idEdt: string): void {
     const tokenValue = localStorage.getItem('token') || '';  // Assurer que tokenValue n'est jamais null
-    const confirmed = confirm("Voulez-vous vraiment valider ce professeur ?");
+    const confirmed = confirm("Voulez-vous vraiment valider ce fiche de présence ?");
     
     if (confirmed) {
       this.fichePresenceService.validerProf(idEdt, tokenValue).subscribe(

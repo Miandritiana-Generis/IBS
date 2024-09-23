@@ -84,6 +84,7 @@ public class PresenceController {
         result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
         p = presenceRepository.findByIdEdt(idEdt);
         if(p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==0){
+            stringRetour = "ValideProf = 1;" + "ValideDelegue = 0";
             Time heureDebut = result.get(0).getDebut();
             Time heureFin = result.get(0).getFin();
             LocalTime debutLocalTime = heureDebut.toLocalTime();

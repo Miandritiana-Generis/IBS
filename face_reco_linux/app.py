@@ -251,6 +251,8 @@ def get_madagascar_time():
 
 # Load known faces
 known_faces, known_ids = load_known_faces_from_redis()
+print(f"Known faces loaded: {len(known_faces)}")
+print(f"Known IDs loaded: {len(known_ids)}")
 
 @socketio.on('frame')
 def handle_frame(base64_image):
@@ -304,7 +306,7 @@ def handle_frame(base64_image):
                 consecutive_matches += 1
                 
                 # Check if we have reached 5 consecutive matches
-                if consecutive_matches >= 7:
+                if consecutive_matches >= 20:
 
                     # Get the current time when the face is detected
                     detection_time = get_madagascar_time()
