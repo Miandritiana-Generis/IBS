@@ -69,6 +69,7 @@ export class AuthService {
   
 
   logout(): void {
+    var classe=localStorage.getItem('salle');
     // this.loaderService.show();
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.getToken()}`
@@ -77,12 +78,15 @@ export class AuthService {
       .pipe(
         map(response => {
           // this.loaderService.hide();
-          localStorage.clear()
+          localStorage.clear();
+          localStorage.setItem('idPat',`${classe}`);
           return true; // Ajouté pour indiquer un succès
         }),
         catchError(error => {
           // this.loaderService.hide();
           localStorage.clear()
+          
+          localStorage.setItem('idPat',`${classe}`);
           return throwError(() => new Error(error.error.erreurs[0].messageErreur));
         })
       )
