@@ -79,14 +79,14 @@ export class AuthService {
         map(response => {
           // this.loaderService.hide();
           localStorage.clear();
-          localStorage.setItem('idPat',`${classe}`);
+          localStorage.setItem('salle',`${classe}`);
           return true; // Ajouté pour indiquer un succès
         }),
         catchError(error => {
           // this.loaderService.hide();
           localStorage.clear()
           
-          localStorage.setItem('idPat',`${classe}`);
+          localStorage.setItem('salle',`${classe}`);
           return throwError(() => new Error(error.error.erreurs[0].messageErreur));
         })
       )
