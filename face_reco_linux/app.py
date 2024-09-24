@@ -33,7 +33,7 @@ try:
 except redis.ConnectionError:
     print("Could not connect to Redis")
 
-    
+
 #fanombohana...................................................................
 #cree connection amn Redis
 def check_redis_connection():

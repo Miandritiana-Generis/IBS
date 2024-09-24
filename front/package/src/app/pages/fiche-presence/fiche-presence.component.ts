@@ -295,5 +295,14 @@ export class AppFichePresenceComponent {
     }
   }
 
+  isCurrentTimeWithinRange(date: string, debut: string, fin: string): boolean {
+    const currentDateTime = new Date();
+    const startTime = new Date(`${date}T${debut}`);
+    const endTime = new Date(`${date}T${fin}`);
+
+    console.log(`Current: ${currentDateTime}, Start: ${startTime}, End: ${endTime}`);
+    return currentDateTime >= startTime && currentDateTime <= endTime;
+  }
+
 
 }

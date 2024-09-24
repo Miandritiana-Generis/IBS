@@ -33,6 +33,8 @@ import com.ibs.suiviAbsence.service.PresenceService;
 import java.sql.Date;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/presences")
@@ -132,9 +134,14 @@ public class PresenceController {
     else {
         return ResponseEntity.badRequest().body(null); // Si ni id_salle ni id_edt n'est fourni
     }
+
+    LocalDateTime currentTime = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     Map<String, Object> response = new HashMap<>();
     response.put("data", result);
     response.put("retour", stringRetour);
+    response.put("currentTime", currentTime.format(formatter));
 
     return ResponseEntity.ok(response);
     }

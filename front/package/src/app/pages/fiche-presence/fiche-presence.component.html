@@ -51,7 +51,7 @@
           <div class="m-l-auto cursor-pointer">
             <a
               (click)="sendFichePresenceData()"
-              *ngIf="!isLoading && retourProf == 'ValideProf = 0'"
+              *ngIf="!isLoading || retourProf === 'ValideProf = 0' || isCurrentTimeWithinRange(listeFichePresence[0].date, listeFichePresence[0].debut, listeFichePresence[0].fin)"
             >
               <div class="bg-light-error text-error shadow-none icon-96">
                 <div class="icon-demo">
@@ -86,6 +86,7 @@
               </div>
             </a>
           </div>
+          
         </mat-card-header>
 
         <!-- loader -->
