@@ -1,88 +1,99 @@
 <div class="container">
   <div class="row">
     <mat-card class="cardWithShadow w-100">
-        <mat-card-content class="p-32">
-          <mat-chip
-              class="example-box f-s-14"
-              cdkDrag
-              *ngIf="estAnnule == true"
-              [ngStyle]="{ 'background-color': '#fa896b', 'color': 'white' }"
-            >
-             cours annulé
-          </mat-chip>
-            <mat-card-header>
-              <mat-card-title>Fiche de presence</mat-card-title>
-              
-              <mat-chip-set
-                class="example-chip"
-                cdkDropList
-                cdkDropListOrientation="horizontal"
-                style="margin-left: 15%;"
-              >
-
-              <mat-chip
-              class="example-box f-s-14"
-              cdkDrag
-              *ngIf="listeFichePresence.length > 0"
-              
-            >
-
-            Salle : {{ listeFichePresence[0].salle }}
-          </mat-chip>
-          <mat-chip
+      <mat-card-content class="p-32">
+        <mat-chip
+          class="example-box f-s-14"
+          cdkDrag
+          *ngIf="estAnnule == true"
+          [ngStyle]="{ 'background-color': '#fa896b', 'color': 'white' }"
+        >
+          cours annulé
+        </mat-chip>
+        <mat-card-header>
+          <mat-card-title>Fiche de presence</mat-card-title>
+          <mat-chip-set
+            class="example-chip"
+            cdkDropList
+            cdkDropListOrientation="horizontal"
+            style="margin-left: 15%; "
+          >
+            <mat-chip
               class="example-box f-s-14"
               cdkDrag
               *ngIf="listeFichePresence.length > 0"
             >
-
-            Classe : {{ listeFichePresence[0].classe }}
-          </mat-chip>
-          <mat-chip
+              Salle : {{ listeFichePresence[0].salle }}
+            </mat-chip>
+            <mat-chip
               class="example-box f-s-14"
               cdkDrag
               *ngIf="listeFichePresence.length > 0"
             >
-
-             {{ listeFichePresence[0].enseignant }}
-          </mat-chip>
-          <mat-chip
+              Classe : {{ listeFichePresence[0].classe }}
+            </mat-chip>
+            <mat-chip
               class="example-box f-s-14"
               cdkDrag
               *ngIf="listeFichePresence.length > 0"
             >
-           {{ listeFichePresence[0].matiere }}
-          </mat-chip>
-        </mat-chip-set>
+              {{ listeFichePresence[0].enseignant }}
+            </mat-chip>
+            <mat-chip
+              class="example-box f-s-14"
+              cdkDrag
+              *ngIf="listeFichePresence.length > 0"
+            >
+              {{ listeFichePresence[0].matiere }}
+            </mat-chip>
+          </mat-chip-set>
 
-              <div class="m-l-auto cursor-pointer">
-                <a (click)="sendFichePresenceData()" *ngIf="!isLoading && retourProf === 'ValideProf = 0'">
-                  <div class="bg-light-error text-error shadow-none icon-96">
-                    <div class="icon-demo">
-                      <div class="icon-demo-icon">
-                        <span class="icon-tada icon-demo-size-32 icon-demo-stroke-150">
-                          <span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-face-id">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                              <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
-                              <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-                              <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-                              <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
-                              <path d="M9 10l.01 0" />
-                              <path d="M15 10l.01 0" />
-                              <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
-                            </svg>
-                          </span>
-                        </span>
-                      </div>
-                    </div>
+          <div class="m-l-auto cursor-pointer">
+            <a
+              (click)="sendFichePresenceData()"
+              *ngIf="!isLoading && retourProf == 'ValideProf = 0'"
+            >
+              <div class="bg-light-error text-error shadow-none icon-96">
+                <div class="icon-demo">
+                  <div class="icon-demo-icon">
+                    <span class="icon-tada icon-demo-size-32 icon-demo-stroke-150">
+                      <span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="48"
+                          height="48"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="icon icon-tabler icons-tabler-outline icon-tabler-face-id"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                          <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                          <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                          <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                          <path d="M9 10l.01 0" />
+                          <path d="M15 10l.01 0" />
+                          <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+                        </svg>
+                      </span>
+                    </span>
                   </div>
-                </a>
+                </div>
               </div>
-
+            </a>
+          </div>
         </mat-card-header>
 
         <!-- loader -->
-        <div *ngIf="isLoading" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); z-index: 9999;">
+        <div
+          *ngIf="isLoading"
+          class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+          style="background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); z-index: 9999;"
+        >
           <div class="demo-inline-spacing">
             <div class="spinner-grow text-primary" role="status">
               <span class="visually-hidden">Loading...</span>
@@ -96,17 +107,19 @@
           </div>
         </div>
 
-      
         <div class="table-responsive m-t-16">
           <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
             <!-- Nom Column -->
             <ng-container matColumnDef="nom">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
-                Nom
-              </th>
+              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Nom </th>
               <td mat-cell *matCellDef="let element" style="width: 40%;">
                 <div class="d-flex align-items-center">
-                  <img [src]="element.imagePath" alt="profile pic" width="10%" class="rounded-circle" />
+                  <img
+                    [src]="element.imagePath"
+                    alt="profile pic"
+                    width="10%"
+                    class="rounded-circle"
+                  />
                   <div class="m-l-16">
                     <h6 class="mat-subtitle-1 f-s-14 f-w-700">{{ element.nom }}</h6>
                   </div>
@@ -116,9 +129,7 @@
 
             <!-- Prenom Column -->
             <ng-container matColumnDef="prenom">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
-                Prénom
-              </th>
+              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Prénom </th>
               <td mat-cell *matCellDef="let element">
                 <div class="d-flex align-items-center">
                   <div class="m-l-16">
@@ -130,9 +141,7 @@
 
             <!-- Status Column -->
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
-                Status
-              </th>
+              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Status </th>
               <td mat-cell *matCellDef="let element">
                 <ng-template [ngIf]="element.status == 'Present'">
                   <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
@@ -140,7 +149,10 @@
                   </span>
                 </ng-template>
                 <ng-template [ngIf]="element.status == 'Absent'">
-                  <span class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14 cursor-pointer" (click)="presenceManuelle(listeFichePresence[0].id_edt, element.id_classe_etudiant)">
+                  <span
+                    class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14 cursor-pointer"
+                    (click)="presenceManuelle(listeFichePresence[0].id_edt, element.id_classe_etudiant)"
+                  >
                     {{ element.status | titlecase }}
                   </span>
                 </ng-template>
@@ -149,9 +161,7 @@
 
             <!-- Heure d'arriver Column -->
             <ng-container matColumnDef="hArriver">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
-                Heure d'arriver
-              </th>
+              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Heure d'arriver </th>
               <td mat-cell *matCellDef="let element" class="mat-body-1 f-w-500">
                 {{ element.hourRate }}
               </td>
@@ -165,32 +175,30 @@
     </mat-card>
   </div>
 
-    <div class="row">
-      <div class="col-6">
-        <a *ngIf="retourProf === 'ValideProf = 0'"
-          mat-flat-button
-          color="primary"
-          
-          target="_blank"
-          class="d-flex justify-content-center w-100"
-          (click) = "validerProf(listeFichePresence[0].id_edt)"
-        >
+  <div class="row">
+    <div class="col-6">
+      <a
+        *ngIf="retourProf == 'ValideProf = 0'"
+        mat-flat-button
+        color="primary"
+        target="_blank"
+        class="d-flex justify-content-center w-100"
+        (click)="validerProf(listeFichePresence[0].id_edt)"
+      >
         Valider Enseignant
-        </a>
-      </div>
-      <div class="col-6">
-        <a *ngIf="retourDelegue === 'ValideDelegue = 0'"
-          mat-flat-button
-          color="warn"
-          
-          target="_blank"
-          class="d-flex justify-content-center w-100"
-          (click) = "validerDelegue(listeFichePresence[0].id_edt)"
-        >
-        Valider Délégué de classe
-        </a>
-      </div>
+      </a>
     </div>
-
-
+    <div class="col-6">
+      <a
+        *ngIf="retourDelegue == 'ValideDelegue = 0'"
+        mat-flat-button
+        color="warn"
+        target="_blank"
+        class="d-flex justify-content-center w-100"
+        (click)="validerDelegue(listeFichePresence[0].id_edt)"
+      >
+        Valider Délégué de classe
+      </a>
+    </div>
+  </div>
 </div>

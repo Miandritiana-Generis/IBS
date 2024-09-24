@@ -129,18 +129,6 @@ public class PresenceController {
             stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
         }
     }
-    else if (idSalle != null && idEdt != null) {
-        result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
-        p =  presenceRepository.findByIdEdt(result.get(0).getId_edt());
-        if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==0){
-            retour = true;
-            stringRetour = "ValideProf = 1;" + "ValideDelegue = 0";
-        }
-        else if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==1){
-            retour = true;
-            stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
-        }
-    }
     else {
         return ResponseEntity.badRequest().body(null); // Si ni id_salle ni id_edt n'est fourni
     }

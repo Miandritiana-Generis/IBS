@@ -55,8 +55,8 @@ export class AppFichePresenceComponent {
   message: string = ''; 
   retour : any;
   estAnnule: boolean | null = null;
-  //estValideProf: boolean | null = false;
-  //estValideDelegue: boolean | null  = null;
+  estValideProf: boolean = false;
+  estValideDelegue: boolean = false;
   retourDelegue : string = '';
   retourProf : string = '';
 
