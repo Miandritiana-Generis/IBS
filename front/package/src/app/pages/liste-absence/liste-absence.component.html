@@ -64,7 +64,7 @@
               Justification
             </th>
             <td mat-cell *matCellDef="let element">
-              <ng-template [ngIf]="element.status == 'Justifié'">
+              <!-- <ng-template [ngIf]="element.status == 'Justifié'">
                 <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
                   {{ element.status | titlecase }}
                 </span>
@@ -73,7 +73,8 @@
                 <span class="bg-light-error text-warning rounded f-w-600 p-y-6 p-x-16 f-s-14">
                   {{ element.status | titlecase }}
                 </span>
-              </ng-template>
+              </ng-template> -->
+              {{ element.description }}
             </td>
           </ng-container>
 
@@ -85,7 +86,7 @@
                 mat-fab
                 class="shadow-none icon-48 rounded-circle"
                 style="background-color: #fa896b; border: none;"
-                (click)="openModal(modalContent, element.id)"
+                (click)="openModal(modalContent, element.id, element.idEdt)"
               >
                 <i-tabler name="pencil-minus" class="text-white"></i-tabler>
               </button>
@@ -121,33 +122,26 @@
       <div class="col-6">
         <mat-form-field class="w-100" appearance="outline">
           <mat-label>Date début</mat-label>
-          <input matInput type="date" [(ngModel)]="dateDebut"  />
+          <input matInput type="date" [(ngModel)]="dateDebut" required />
         </mat-form-field>
       </div>
       <div class="col-6">
         <mat-form-field class="w-100" appearance="outline">
           <mat-label>Date fin</mat-label>
-          <input matInput type="date" [(ngModel)]="dateFin"  />
+          <input matInput type="date" [(ngModel)]="dateFin" required />
         </mat-form-field>
       </div>
     </div>
     <div class="mb-3">
       <mat-form-field class="w-100" appearance="outline">
         <mat-label>Description</mat-label>
-        <textarea matInput rows="4" [(ngModel)]="description"></textarea>
+        <textarea matInput rows="4" [(ngModel)]="description" required></textarea>
       </mat-form-field>
     </div>
   </div>
   <div class="modal-footer d-flex justify-content-center m-0 mb-4">
     <button 
-      class="btn btn-secondary btn-lg me-3" 
-      style="background-color: #fa896b; color: white; border-color: #fa896b;"
-      (click)="close()"
-    >
-      Annuler
-    </button>
-    <button 
-      class="btn btn-primary btn-lg" 
+      class="btn btn-primary w-100 m-l-32 m-r-32" 
       style="background-color: #0085db; border-color: #0085db;"
       (click)="submitJustification(description, dateDebut, dateFin)"
     >

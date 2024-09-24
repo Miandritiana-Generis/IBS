@@ -71,6 +71,7 @@ export class AppListeAbsence {
   page = 1;
   date: string;
   selectedAbsence: any;
+  idEdt = 0;
 
 
   // Ajout des variables pour les champs du formulaire
@@ -93,8 +94,9 @@ export class AppListeAbsence {
   dataSource = ELEMENT_DATA;
 
   
-  openModal(templateRef: TemplateRef<any>, absenceId: number): void {
-    this.selectedAbsence = absenceId; 
+  openModal(templateRef: TemplateRef<any>, absenceId: number, idEdt: number): void {
+    this.selectedAbsence = absenceId;
+    this.idEdt = idEdt;
     console.log("idAbsence :", absenceId);
     const dialogRef = this.dialog.open(templateRef, {
       width: '800px' 
@@ -116,13 +118,21 @@ export class AppListeAbsence {
 
   
   submitJustification(description: string, dateDebut: string, dateFin: string) {
-    const absenceId = this.selectedAbsence;
   
+    if (!description || !dateDebut || !dateFin) {
+      alert('Tous les champs sont obligatoires. Veuillez remplir la description, la date de début et la date de fin.');
+      return; // Exit the function if validation fails
+    }
+
+    const absenceId = this.selectedAbsence;
+    const idEdt = this.idEdt;
+
     // Formater les dates pour ne garder que la partie "date"
     const formattedDateDebut = dateDebut ? new Date(dateDebut).toISOString().split('T')[0] : null;
     const formattedDateFin = dateFin ? new Date(dateFin).toISOString().split('T')[0] : null;
   
     const justificationPayload = {
+      id_edt : idEdt,
       id_classe_etudiant: absenceId,
       description: description,
       date_time_debut: formattedDateDebut,
@@ -134,6 +144,7 @@ export class AppListeAbsence {
     this.justificationService.justifierDelegue(justificationPayload).subscribe(
       response => {
         console.log('Justification envoyée avec succès', response);
+        window.location.reload();
         close();
       },
       error => {

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,7 +57,12 @@ public class ViewPresenceAbsence {
     private String salle ;
     @Column
     private String photo ;
-
+    @Column
+    private String description ;
+    @Column
+    Timestamp dateTimeDebut;
+    @Column
+    Timestamp dateTimeFin;
 
 
 }

@@ -23,6 +23,8 @@ public class JustificationAbsence {
     private Integer id;
 
     @Column
+    int id_edt;
+    @Column
     int id_classe_etudiant;
     @Column
     String description;

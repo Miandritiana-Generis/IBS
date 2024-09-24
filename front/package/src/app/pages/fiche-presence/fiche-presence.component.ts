@@ -206,7 +206,7 @@ export class AppFichePresenceComponent {
 
 
   validerDelegue(idEdt: string): void {
-    const tokenValue = localStorage.getItem('token') || '';  
+    const tokenValue = localStorage.getItem('token') || '';
     if (tokenValue && confirm("Voulez-vous vraiment valider ?")) {
       this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
         next: () => {
@@ -270,22 +270,28 @@ export class AppFichePresenceComponent {
   // }
 
   presenceManuelle(idEdt: number, idClasseEtudiant: number): void {
-    const confirmAction = confirm("Êtes-vous sûr de vouloir marquer cet étudiant comme présent?");
+    const idPat = localStorage.getItem('idPat');
     
-    if (confirmAction) {
-      const tempsArriver = new Date().toLocaleTimeString('en-GB'); // Current time in HH:mm:ss format
-
-      this.fichePresenceService.presence(idEdt, idClasseEtudiant, tempsArriver).subscribe(
-        (response) => {
-          console.log('Success:', response);
-          alert('Présence enregistrée avec succès!');
-          window.location.reload();
-        },
-        (error) => {
-          console.error('Error:', error);
-          alert('Échec de l\'enregistrement de la présence.');
-        }
-      );
+    if(idPat && idPat !== '0') {
+      const confirmAction = confirm("Êtes-vous sûr de vouloir marquer cet étudiant comme présent?");
+    
+      if (confirmAction) {
+        const tempsArriver = new Date().toLocaleTimeString('en-GB'); // Current time in HH:mm:ss format
+  
+        this.fichePresenceService.presence(idEdt, idClasseEtudiant, tempsArriver).subscribe(
+          (response) => {
+            console.log('Success:', response);
+            alert('Présence enregistrée avec succès!');
+            window.location.reload();
+          },
+          (error) => {
+            console.error('Error:', error);
+            alert('Échec de l\'enregistrement de la présence.');
+          }
+        );
+      }
+    }else{
+      alert('Vous n\'êtes pas autoriser à faire la presence manuellement');
     }
   }
 
