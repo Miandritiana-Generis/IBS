@@ -20,10 +20,20 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 CORS(app, resources={r"/api/*": {"origins": ["http://localhost:4400", "http://127.0.0.1:5000"]}}, methods=['GET', 'POST', 'OPTIONS'])
 
+# Read Redis configuration from environment variables
+redis_host = os.getenv('REDIS_HOST', 'localhost')
+redis_port = int(os.getenv('REDIS_PORT', 6379))
+
 data_store = {}
 consecutive_matches = 0
 
+# Initialize Redis client
+try:
+    redis_client = redis.StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
+except redis.ConnectionError:
+    print("Could not connect to Redis")
 
+    
 #fanombohana...................................................................
 #cree connection amn Redis
 def check_redis_connection():

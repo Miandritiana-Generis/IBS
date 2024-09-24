@@ -95,6 +95,25 @@
   </div>
   
   <br /><br /><br />
+
+        <!-- loader -->
+        <div
+          *ngIf="isLoading"
+          class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+          style="background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); z-index: 9999;"
+        >
+          <div class="demo-inline-spacing">
+            <div class="spinner-grow text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-warning" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="spinner-grow text-danger" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
   
   <ng-template #modalContent let-close="close">
     <div class="modal-header m-1 mt-0">
@@ -105,7 +124,6 @@
     </div>
     
     <div class="modal-body m-3 mt-2 mb-2">
-
         <!-- cours annule message -->
       <span *ngIf="modalData?.event?.detail?.estAnnule"
           class="badge w-100 mt-0"
@@ -113,11 +131,19 @@
       Cours annulé
       </span>
 
-      <div class="mt-2">
-        <h6 class="mb-3">Matière: {{ modalData?.event?.detail?.matiere }}</h6>
-        <h6 class="mb-3">Classe: {{ modalData?.event?.detail?.classe }}</h6>
-        <h6 class="mb-3">Salle: {{ modalData?.event?.detail?.salle }}</h6>
-        <h6>Enseignant: {{ modalData?.event?.detail?.enseignant }}</h6>
+      <div class="m-l-auto mt-2 d-flex justify-content-between">
+
+        <div>
+          <h6 class="mb-3">Matière: {{ modalData?.event?.detail?.matiere }}</h6>
+          <h6 class="mb-3">Classe: {{ modalData?.event?.detail?.classe }}</h6>
+          <h6 class="mb-3">Salle: {{ modalData?.event?.detail?.salle }}</h6>
+          <h6>Enseignant: {{ modalData?.event?.detail?.enseignant }}</h6>
+        </div>
+
+        <div class="text-right">
+          <h6>{{ modalData?.event?.detail?.debut }} - {{ modalData?.event?.detail?.fin }}</h6>
+        </div>
+
       </div>
       
     </div>

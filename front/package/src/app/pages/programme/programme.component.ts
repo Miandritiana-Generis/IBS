@@ -48,9 +48,9 @@
       primary: '#f8c076',
       secondary: '#fff6ea',
     },
-    green: {
-      primary: '#4bd08b',
-      secondary: '#dffff3',
+    violet: { 
+        primary: 'rgb(187 129 240)',
+        secondary: '#e6e6fa',
     },
   };
 
@@ -122,9 +122,17 @@
     activeDayIsOpen: boolean = true;
   EventColor: any;
 
+  isLoading: boolean = false;
+
     constructor(private modal: NgbModal ,private edtService: EdtService , private router:Router) {
       this.setEmployeDuTemps();
     }
+
+    private getRandomColorKey(): string {
+      const colorKeys = Object.keys(colors); // Get all color keys
+      const randomIndex = Math.floor(Math.random() * colorKeys.length); // Generate a random index
+      return colorKeys[randomIndex]; // Return a random color key
+  }
 
     dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
       if (isSameMonth(date, this.viewDate)) {
@@ -179,15 +187,12 @@
     
       const currentTime = new Date();
     
-      // Check if the event date is in the past
       if (isBefore(event.start, currentTime) && !isSameDay(event.start, currentTime)) {
         return true;
       }
     
-      // Calculate the difference in hours between the event start time and the current time
       const hoursDifference = differenceInHours(event.start, currentTime);
     
-      // Return true if the event is within the next 48 hours
       return hoursDifference <= 48;
     }
 
@@ -221,41 +226,46 @@
 
     private setEmployeDuTemps(){
       this.message="";
+      this.isLoading = true;
       this.edtService.getEdt(this.minDate,this.maxDate).subscribe(
-        (      data: any)=> {
-        this.events =[];
-        for(let item of data){
-          this.events.push(
-            {
-              start:new Date(`${item.date}T${item.debut}`),  // Specific date and time: January 1, 2024, 07:00 AM
-              end:new Date(`${item.date}T${item.fin}`),    // Specific date and time: January 1, 2024, 09:00 AM
-              title: `${item.salle} - ${item.matiere}` ,
-              color: { ...colors['red'] },
-              actions: this.actions,
-              allDay: false,  // Change to false if you want to specify the time
-              resizable: {
-                beforeStart: false, // tsy afaka ovaina ny start anle programme
-                afterEnd: false,
-              },
-              draggable: false,
-                detail:{
-                  "matiere":item.matiere,
-                  "enseignant":item.enseignant,
-                  "salle":item.salle,
-                  "classe":item.classe,
-                  "idSalle":item.idSalle,
-                  "id": item.id,
-                  "estAnnule":item.estAnnule
+        (data: any)=> {
+          this.events =[];
+          for(let item of data){
+            const randomColorKey = this.getRandomColorKey(); // Get a random color key
+            const randomColor = colors[randomColorKey];
+            this.events.push(
+              {
+                start:new Date(`${item.date}T${item.debut}`),  // Specific date and time: January 1, 2024, 07:00 AM
+                end:new Date(`${item.date}T${item.fin}`),    // Specific date and time: January 1, 2024, 09:00 AM
+                title: `${item.salle} - ${item.matiere}` ,
+                color: { ...randomColor },
+                actions: this.actions,
+                allDay: false,  // Change to false if you want to specify the time
+                resizable: {
+                  beforeStart: false, // tsy afaka ovaina ny start anle programme
+                  afterEnd: false,
+                },
+                draggable: false,
+                  detail:{
+                    "matiere":item.matiere,
+                    "enseignant":item.enseignant,
+                    "salle":item.salle,
+                    "classe":item.classe,
+                    "idSalle":item.idSalle,
+                    "id": item.id,
+                    "estAnnule":item.estAnnule,
+                    "debut": item.debut,
+                    "fin": item.fin
+                }
               }
-            }
-          );
-          this.refresh.next();
-        }
-        //  this.loader.hide();
+            );
+            this.refresh.next();
+          }
+          this.isLoading = false;
         },
         (      error: any) => {
           console.log(error);
-          // this.loader.hide();
+          this.isLoading = false;
         }
       );
     }
