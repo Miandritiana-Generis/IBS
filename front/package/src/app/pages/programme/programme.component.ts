@@ -263,8 +263,12 @@
           }
           this.isLoading = false;
         },
-        (      error: any) => {
+        (error: any) => {
           console.log(error);
+          this.isLoading = false;
+        },
+        () => {
+          // `finally` callback to ensure `isLoading` is set to false
           this.isLoading = false;
         }
       );
