@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ibs.suiviAbsence.modele.Salle;
-import com.ibs.suiviAbsence.modele.ViewClasseEtudiantAllInfo;
 import com.ibs.suiviAbsence.modele.ViewEdt;
 import com.ibs.suiviAbsence.modele.ViewEdtAllInfo;
-import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import com.ibs.suiviAbsence.repository.SalleRepository;
 import com.ibs.suiviAbsence.repository.ViewEdtRepository;
 import com.ibs.suiviAbsence.service.EdtService;

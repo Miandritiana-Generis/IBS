@@ -34,6 +34,7 @@
   import { EdtService } from 'src/app/services/edt.service';
   import { CustomCalendarEvent } from 'src/app/modeles/CustomCalendarEvent ';
   import { Router } from '@angular/router';
+import { LoaderService } from 'src/app/services/loader.service';
 
   const colors: Record<string, EventColor> = {
     red: {
@@ -122,9 +123,8 @@
     activeDayIsOpen: boolean = true;
   EventColor: any;
 
-  isLoading: boolean = false;
 
-    constructor(private modal: NgbModal ,private edtService: EdtService , private router:Router) {
+    constructor(private modal: NgbModal ,private edtService: EdtService , private router:Router,private loader:LoaderService) {
       this.setEmployeDuTemps();
     }
 
@@ -226,9 +226,10 @@
 
     private setEmployeDuTemps(){
       this.message="";
-      this.isLoading = true;
+      this.loader.show();
       this.edtService.getEdt(this.minDate,this.maxDate).subscribe(
         (data: any)=> {
+          this.loader.hide();
           this.events =[];
           for(let item of data){
             const randomColorKey = this.getRandomColorKey(); // Get a random color key
@@ -261,15 +262,14 @@
             );
             this.refresh.next();
           }
-          this.isLoading = false;
         },
         (error: any) => {
-          console.log(error);
-          this.isLoading = false;
+          this.loader.hide();
         },
         () => {
           // `finally` callback to ensure `isLoading` is set to false
-          this.isLoading = false;
+          
+          this.loader.hide();
         }
       );
     }
