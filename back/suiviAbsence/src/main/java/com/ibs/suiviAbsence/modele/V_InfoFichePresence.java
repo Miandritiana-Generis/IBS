@@ -50,5 +50,7 @@ public class V_InfoFichePresence {
     private Time fin;
     @Column
     private int id_salle;
+    @Column
+    private int id_personne;
 
 }

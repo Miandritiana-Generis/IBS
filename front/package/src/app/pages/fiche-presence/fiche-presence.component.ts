@@ -27,7 +27,8 @@ export interface ProductsData {
   id_edt : string;
   id_classe_etudiant : string;
   date : Date;
-  fin : Time
+  fin : Time;
+  id_personne : number
 }
 
 @Component({
@@ -95,6 +96,8 @@ export class AppFichePresenceComponent {
     const salle = localStorage.getItem("salle");
     id_salle = parseInt(salle || "0", 10);
 
+    const id_personne = parseInt(localStorage.getItem("id")|| "0", 10);
+
     this.edtService.getInfoFichePresence(id_salle, heure, date, idEdt).subscribe(
       (response: { data: any[]; retour: boolean }) => {
         // Vérification que 'data' est bien un tableau
@@ -125,7 +128,8 @@ export class AppFichePresenceComponent {
             id_edt: item.id_edt,
             id_classe_etudiant : item.id_classe_etudiant,
             date : item.date,
-            fin : item.fin
+            fin : item.fin,
+            id_personne : item.id_personne
           }));
         } else {
           // Si la réponse n'est pas un tableau, afficher un message d'erreur
@@ -134,11 +138,16 @@ export class AppFichePresenceComponent {
         }
 
         // Mettre à jour la source de données pour la table
-        this.dataSource = this.listeFichePresence;
-        console.log("Données transformées:", this.listeFichePresence);
-        this.listeFichePresence.forEach(item => {
-          console.log(item.imagePath);
-        });
+        if (this.dataSource.some(item => item.id_personne === id_personne)) {
+          this.dataSource = this.listeFichePresence;
+          console.log("Données transformées:", this.listeFichePresence);
+          this.listeFichePresence.forEach(item => {
+            console.log(item.imagePath);
+          });
+          
+        }else{
+          this.listeFichePresence = [];
+        }
         
       },
       (error: any) => {
@@ -150,7 +159,6 @@ export class AppFichePresenceComponent {
   sendFichePresenceData(): void {
     this.isLoading = true;
     const dataToSend = this.listeFichePresence;
-    console.log("fdasdsgiulsag");
     this.edtService.sendFichePresenceDataService(dataToSend).subscribe(
       (response: any) => {
         window.location.href = 'http://127.0.0.1:5000/';
