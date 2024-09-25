@@ -96,7 +96,9 @@ export class AppFichePresenceComponent {
     const salle = localStorage.getItem("salle");
     id_salle = parseInt(salle || "0", 10);
 
-    const id_personne = parseInt(localStorage.getItem("id")|| "0", 10);
+    const personne = parseInt(localStorage.getItem("id")|| "0", 10);
+    console.log(personne);
+    
 
     this.edtService.getInfoFichePresence(id_salle, heure, date, idEdt).subscribe(
       (response: { data: any[]; retour: boolean }) => {
@@ -135,19 +137,20 @@ export class AppFichePresenceComponent {
           // Si la réponse n'est pas un tableau, afficher un message d'erreur
           console.error("La réponse n'est pas un tableau valide:", response);
           this.listeFichePresence = [];
-        }
+        }        
 
-        // Mettre à jour la source de données pour la table
-        if (this.dataSource.some(item => item.id_personne === id_personne)) {
-          this.dataSource = this.listeFichePresence;
-          console.log("Données transformées:", this.listeFichePresence);
-          this.listeFichePresence.forEach(item => {
-            console.log(item.imagePath);
-          });
+        // if (this.listeFichePresence.some(item => item.id_personne === personne)) {
+        //   this.dataSource = this.listeFichePresence;
+        //   console.log("Données transformées:", this.listeFichePresence);
+        //   this.listeFichePresence.forEach(item => {
+        //     console.log(item.imagePath);
+        //   });
           
-        }else{
-          this.listeFichePresence = [];
-        }
+        // }else{
+        //   this.listeFichePresence = [];
+        //   console.log("tsy io token io");
+          
+        // }
         
       },
       (error: any) => {
