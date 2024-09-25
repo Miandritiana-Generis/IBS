@@ -77,6 +77,8 @@
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
+      [dayStartHour]="7"
+      [dayEndHour]="22"
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)"
       aria-hidden="false" aria-modal="true"
@@ -90,6 +92,8 @@
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)"
       aria-hidden="false" aria-modal="true"
+      [dayStartHour]="7"
+      [dayEndHour]="dayEndHour"
     >
     </mwl-calendar-day-view>
   </div>

@@ -23,12 +23,14 @@
     CalendarEventAction,
     CalendarEventTimesChangedEvent,
     CalendarView,
+    CalendarModule,
+    DateAdapter
   } from 'angular-calendar';
   import { EventColor } from 'calendar-utils';
   import { CommonModule } from '@angular/common';
   import { FormsModule } from '@angular/forms';
 
-  import { CalendarModule } from 'angular-calendar';
+  import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
   import { FlatpickrModule } from 'angularx-flatpickr';
   import { EdtService } from 'src/app/services/edt.service';
@@ -54,7 +56,7 @@ import { LoaderService } from 'src/app/services/loader.service';
         secondary: '#e6e6fa',
     },
   };
-
+  CalendarModule
   @Component({
     selector: 'app-programme',
     standalone: true,
@@ -62,7 +64,8 @@ import { LoaderService } from 'src/app/services/loader.service';
       CommonModule,
       FormsModule,
       CalendarModule,
-      FlatpickrModule
+      FlatpickrModule,
+      CalendarModule
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
     styles: [
@@ -85,7 +88,7 @@ import { LoaderService } from 'src/app/services/loader.service';
 
     @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any> | undefined;
 
-    view: CalendarView = CalendarView.Week;
+    view: CalendarView = CalendarView.Day;
 
     CalendarView = CalendarView;
 
@@ -122,6 +125,9 @@ import { LoaderService } from 'src/app/services/loader.service';
 
     activeDayIsOpen: boolean = true;
   EventColor: any;
+
+  dayStartHour = 6;
+  dayEndHour = 23;
 
 
     constructor(private modal: NgbModal ,private edtService: EdtService , private router:Router,private loader:LoaderService) {

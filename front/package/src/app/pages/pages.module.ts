@@ -25,7 +25,7 @@ import { ComponentType } from '@angular/cdk/portal';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 
-
+import { AppComponent } from '../app.component';
 
 @NgModule({
   imports: [
@@ -47,11 +47,12 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    PaginationModule 
+    PaginationModule
   ],
   exports: [TablerIconsModule],
   declarations: [
     AppListeAbsence
   ],
+  bootstrap: [AppComponent],
 })
 export class PagesModule {}
