@@ -65,6 +65,8 @@ public class PresenceService {
     private ViewPresenceAbsenceRepository viewPresenceAbsenceRepository;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private ClasseEtudiantRepository classeEtudiantRepository;
 
 
      public List<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2){
@@ -178,10 +180,11 @@ public class PresenceService {
      * @return
      */
     public void validerDelegue(Integer idEdt, String tokenValue) {
-        Optional<Presence> presence = presenceRepository.findById(idEdt);
+        Optional<Presence> presence = presenceRepository.findByIdEdt(idEdt);
     
       
         if (presence.isEmpty()) {
+            System.out.println("aaaaaa");
             throw new PresenceException("La fiche de présence avec l'ID fourni n'existe pas.");
         }
     
@@ -190,29 +193,56 @@ public class PresenceService {
     
         
         if (presenceObj.getValideProf() == 1 && this.estDelegue(tokenValue)) {
+            System.out.println("bbbbbbbb");
             presenceRepository.validerFichePresenceDelegue(idEdt);
     
             
             if (nbAbsent > 0) {
+                System.out.println("cccccccc");
                 String contenu = "Absence de " + nbAbsent + " étudiants.";
                 this.notificationService.genererNotification(idEdt, contenu, Constante.coursAnnule);
             }
         } else {
-            throw new PresenceException("Vous ne pouvez pas encore valider la fiche de présence.");
+            System.out.println("ddddddd");
+            throw new PresenceException("Vous ne pouvez pas valider la fiche de présence.");
         }
     }
     
 
+    // public boolean estDelegue(String tokenValue) {
+    //     Token tok = token.findByToken(tokenValue);
+    //     Optional<Personne> p = personneRepo.findById(tok.getId_personne());
+    //     Etudiant et = etudiantRepo.findByIdPersonne(p.get().getId());
+    //     ClasseEtudiant classe = classeEtudiant.findByIdEtudiant(et.getId());
+    //     if(classe.getEst_delegue() == 1) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
+
     public boolean estDelegue(String tokenValue) {
-        Token tok = token.findByToken(tokenValue);
-        Optional<Personne> p = personneRepo.findById(tok.getId_personne());
-        Etudiant et = etudiantRepo.findByIdPersonne(p.get().getId());
-        ClasseEtudiant classe = classeEtudiant.findByIdEtudiant(et.getId());
-        if(classe.getEst_delegue() == 1) {
-            return true;
+        //System.out.println("id: "+ String.valueOf(tokenValue));
+        boolean retour = false;
+        ViewLogin v = loginRepository.findLoginByToken(tokenValue);
+        
+    
+        
+        if (v == null) {
+            System.out.println("Le token n'a pas été trouvé.");
+            return false;  
         }
-        return false;
+    
+        if (v.getIdEtudiant() != 0) {
+            ClasseEtudiant cl = classeEtudiantRepository.findByIdEtudiant(v.getIdEtudiant());
+            if(cl.getEst_delegue()==1){
+                retour = true;
+            }
+            
+        }
+
+        return retour;
     }
+
 
     public boolean estProf(String tokenValue) {
         boolean retour = false;

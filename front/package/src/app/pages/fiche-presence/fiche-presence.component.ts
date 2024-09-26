@@ -93,70 +93,80 @@ export class AppFichePresenceComponent {
 
   getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string): void {
 
-    const salle = localStorage.getItem("salle");
-    id_salle = parseInt(salle || "0", 10);
+    if(idEdt != null){
 
-    const personne = parseInt(localStorage.getItem("id")|| "0", 10);
-    console.log(personne);
-    
+      const salle = localStorage.getItem("salle");
+      id_salle = parseInt(salle || "0", 10);
 
-    this.edtService.getInfoFichePresence(id_salle, heure, date, idEdt).subscribe(
-      (response: { data: any[]; retour: boolean }) => {
-        // Vérification que 'data' est bien un tableau
-        const data = response.data;
-        this.retour = response.retour;
-        const l= this.retour.split(";");
-        this.retourProf = l[0];
-        this.retourDelegue = l[1];
+      const personne = parseInt(localStorage.getItem("id")|| "0", 10);
+      console.log(personne);
+      
+      const idPat = localStorage.getItem("idPat");
 
-        if (Array.isArray(data)) {
-          // Si 'data' est un tableau, le mapper pour créer listeFichePresence
-          this.listeFichePresence = data.map(item => ({
-            id: item.id,
-            // If the photo exists, format it correctly to ensure it's treated as an absolute URL
-            imagePath: 'http:\\'+item.photo,
-            // ? item.photo
-            //     .replace('\\\\192.168.1.8\\bevazaha$', 'http://192.168.1.8/bevazaha$')
-            //     .replace(/\\/g, '/') // Ensure backslashes are converted to forward slashes
-            // : 'assets/images/profile/default-user.jpg',        
-            nom: item.nom,
-            prenom: item.prenom,
-            hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
-            status: item.status ? (item.status === true ? 'Present' : 'Absent') : 'Absent',
-            salle: item.salle,
-            matiere: item.matiere,
-            enseignant: item.enseignant,
-            classe: item.classe,
-            id_edt: item.id_edt,
-            id_classe_etudiant : item.id_classe_etudiant,
-            date : item.date,
-            fin : item.fin,
-            id_personne : item.id_personne
-          }));
-        } else {
-          // Si la réponse n'est pas un tableau, afficher un message d'erreur
-          console.error("La réponse n'est pas un tableau valide:", response);
-          this.listeFichePresence = [];
-        }        
+      this.edtService.getInfoFichePresence(id_salle, heure, date, idEdt).subscribe(
+        (response: { data: any[]; retour: boolean }) => {
+          // Vérification que 'data' est bien un tableau
+          const data = response.data;
+          this.retour = response.retour;
+          const l= this.retour.split(";");
+          this.retourProf = l[0];
+          this.retourDelegue = l[1];
 
-        // if (this.listeFichePresence.some(item => item.id_personne === personne)) {
-        //   this.dataSource = this.listeFichePresence;
-        //   console.log("Données transformées:", this.listeFichePresence);
-        //   this.listeFichePresence.forEach(item => {
-        //     console.log(item.imagePath);
-        //   });
+          if (Array.isArray(data)) {
+            // Si 'data' est un tableau, le mapper pour créer listeFichePresence
+            this.listeFichePresence = data.map(item => ({
+              id: item.id,
+              // If the photo exists, format it correctly to ensure it's treated as an absolute URL
+              imagePath: 'http:\\'+item.photo,
+              // ? item.photo
+              //     .replace('\\\\192.168.1.8\\bevazaha$', 'http://192.168.1.8/bevazaha$')
+              //     .replace(/\\/g, '/') // Ensure backslashes are converted to forward slashes
+              // : 'assets/images/profile/default-user.jpg',        
+              nom: item.nom,
+              prenom: item.prenom,
+              hourRate: item.heure_arrive ? item.heure_arrive : 'N/A', // Garder hourRate comme chaîne
+              status: item.status ? (item.status === true ? 'Present' : 'Absent') : 'Absent',
+              salle: item.salle,
+              matiere: item.matiere,
+              enseignant: item.enseignant,
+              classe: item.classe,
+              id_edt: item.id_edt,
+              id_classe_etudiant : item.id_classe_etudiant,
+              date : item.date,
+              fin : item.fin,
+              id_personne : item.id_personne
+            }));
+          } else {
+            // Si la réponse n'est pas un tableau, afficher un message d'erreur
+            console.error("La réponse n'est pas un tableau valide:", response);
+            this.listeFichePresence = [];
+          }        
+
+          console.log(this.dataSource);
+          // this.dataSource = this.listeFichePresence;
           
-        // }else{
-        //   this.listeFichePresence = [];
-        //   console.log("tsy io token io");
+
+          if (this.listeFichePresence.some(item => item.id_personne === personne) || idPat) {
+            this.dataSource = this.listeFichePresence;
+            console.log("Données transformées:", this.listeFichePresence);
+            this.listeFichePresence.forEach(item => {
+              console.log(item.imagePath);
+            });
+            
+          }else{
+            this.listeFichePresence = [];
+            console.log("tsy io token io");
+            
+          }
           
-        // }
-        
-      },
-      (error: any) => {
-        console.error("Erreur lors de l'appel à l'API:", error);
-      }
-    );
+        },
+        (error: any) => {
+          console.error("Erreur lors de l'appel à l'API:", error);
+        }
+      );
+    }else{
+      window.location.href = 'http://localhost:4400/programme';
+    }
   }
 
   sendFichePresenceData(): void {

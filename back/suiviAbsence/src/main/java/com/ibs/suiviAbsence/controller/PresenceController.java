@@ -24,6 +24,7 @@ import com.ibs.suiviAbsence.dto.PresenceInsertDTO;
 import com.ibs.suiviAbsence.modele.DetailPresence;
 import com.ibs.suiviAbsence.modele.V_InfoFichePresence;
 import com.ibs.suiviAbsence.service.ViewEdtService;
+import com.ibs.suiviAbsence.utilitaire.FonctionUtil;
 import com.ibs.suiviAbsence.modele.Presence;
 import com.ibs.suiviAbsence.modele.ViewPresenceAbsence;
 import com.ibs.suiviAbsence.repository.DetailPresenceRepository;
@@ -226,8 +227,9 @@ public class PresenceController {
     public ResponseEntity<Map<String, String>> validerDelegue(
             @RequestParam int idEdt, 
             @RequestHeader("Authorization") String tokenValue) {
+                 String token= FonctionUtil.getBearerToken(tokenValue);
     
-        presenceService.validerDelegue(idEdt, tokenValue);
+        presenceService.validerDelegue(idEdt, token);
     
         Map<String, String> response = new HashMap<>();
         response.put("message", "Validation effectuée pour idEdt : " + idEdt);
