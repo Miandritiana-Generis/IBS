@@ -101,7 +101,7 @@
           [totalItems]="totalElements"
           [itemsPerPage]="totalPages"
           [(ngModel)]="page"
-          (pageChanged)="getAbsence()"
+          (pageChanged)="changerPage($event)"
           previousText="Précédent"
           nextText="Suivant"
           class="mt-3 mb-0"

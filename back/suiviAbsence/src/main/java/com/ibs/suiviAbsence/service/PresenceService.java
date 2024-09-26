@@ -75,8 +75,8 @@ public class PresenceService {
      }
      
     
-    public Page<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2,int page){
-        int nombreParPage=25;
+    public Page<ViewPresenceAbsence> listeEtudiantAbsent(Date date1,Date date2,int page,int nombreParPage){
+        
         Sort sort = Sort.by(Sort.Order.desc("date"));
         Pageable pageable = PageRequest.of(page-1, nombreParPage,sort);
         Page<ViewPresenceAbsence> liste=this.viewPresenceAbsenceRepository.findByDateBetweenAndIsPresent(date1, date2,false,pageable);

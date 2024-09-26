@@ -36,6 +36,7 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @RestController
 @RequestMapping("/presences")
@@ -241,8 +242,9 @@ public class PresenceController {
     public ResponseEntity getEtudiantAbsent(@RequestHeader(value = "Authorization", required = true)String authorizationHeader,
         @RequestParam(name = "dateDebut")  Date dateDebut, 
         @RequestParam(name = "dateFin")  Date datefin,
-        @RequestParam(value = "page", required = false ,defaultValue = "1")   int page){
-        Page<ViewPresenceAbsence>liste=this.presenceService.listeEtudiantAbsent(dateDebut,datefin,page);
+        @RequestParam(value = "page", required = false ,defaultValue = "1")   int page,
+        @RequestParam(value ="size" , required =false , defaultValue="25") int size){
+        Page<ViewPresenceAbsence>liste=this.presenceService.listeEtudiantAbsent(dateDebut,datefin,page,size);
         return ResponseEntity.ok(liste);
     }
 

@@ -157,21 +157,22 @@ export class AppListeAbsence {
   onDateChange(type: string, event: any) {
     if (type === 'debut') {
       this.dateDebut = event.target.value;
-      console.log('Date début mise à jour :', this.dateDebut);
     } else if (type === 'fin') {
       this.dateFin = event.target.value;
-      console.log('Date fin mise à jour :', this.dateFin);
     }
   }
   
-  
+  public changerPage(event: any){
+    this.page = event.page;
+    this.getAbsence();
+}
   
   public getAbsence() {
     this.presenceService.getAbsent(this.date, this.date, this.page).subscribe(
       success => {
         this.absents = success.content;
         this.totalElements = success.totalElements;
-        this.totalPages = success.totalPages;
+        this.totalPages = success.size;
       },
       error => {
         
