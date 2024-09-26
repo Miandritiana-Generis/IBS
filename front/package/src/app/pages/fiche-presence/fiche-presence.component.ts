@@ -28,6 +28,7 @@ export interface ProductsData {
   id_classe_etudiant : string;
   date : Date;
   fin : Time;
+  debut : Time;
   id_personne : number
 }
 
@@ -134,6 +135,7 @@ export class AppFichePresenceComponent {
               id_classe_etudiant : item.id_classe_etudiant,
               date : item.date,
               fin : item.fin,
+              debut : item.debut,
               id_personne : item.id_personne
             }));
           } else {
