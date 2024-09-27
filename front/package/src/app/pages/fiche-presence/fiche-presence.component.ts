@@ -144,11 +144,12 @@ export class AppFichePresenceComponent {
             this.listeFichePresence = [];
           }        
 
-          console.log(this.dataSource);
           // this.dataSource = this.listeFichePresence;
           
 
           if (this.listeFichePresence.some(item => item.id_personne === personne) || idPat) {
+            console.log("etooooooooooooooooooooo");
+            
             this.dataSource = this.listeFichePresence;
             console.log("Données transformées:", this.listeFichePresence);
             this.listeFichePresence.forEach(item => {
@@ -156,11 +157,12 @@ export class AppFichePresenceComponent {
             });
             
           }else{
+            console.log("sdfdsijl");
             this.listeFichePresence = [];
-            console.log("tsy io token io");
-            
           }
           
+          this.dataSource = this.listeFichePresence;
+
         },
         (error: any) => {
           console.error("Erreur lors de l'appel à l'API:", error);
@@ -319,11 +321,11 @@ export class AppFichePresenceComponent {
   }
 
   isCurrentTimeWithinRange(date: string, debut: string, fin: string): boolean {
+    
     const currentDateTime = new Date();
     const startTime = new Date(`${date}T${debut}`);
     const endTime = new Date(`${date}T${fin}`);
 
-    console.log(`Current: ${currentDateTime}, Start: ${startTime}, End: ${endTime}`);
     return currentDateTime >= startTime && currentDateTime <= endTime;
   }
 

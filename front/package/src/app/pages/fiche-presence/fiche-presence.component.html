@@ -48,7 +48,7 @@
             </mat-chip>
           </mat-chip-set>
 
-          <div class="m-l-auto cursor-pointer" *ngIf="isCurrentTimeWithinRange(listeFichePresence[0].date, listeFichePresence[0].debut, listeFichePresence[0].fin)">
+          <div class="m-l-auto cursor-pointer" *ngIf="isCurrentTimeWithinRange(listeFichePresence[0]?.date, listeFichePresence[0]?.debut, listeFichePresence[0]?.fin)">
             <a
               (click)="sendFichePresenceData()"
               *ngIf="!isLoading || retourProf === 'ValideProf = 0'"
@@ -177,9 +177,9 @@
   </div>
 
   <div class="row">
-    <div class="col-6">
+    <div class="col-6" *ngIf="retourProf == 'ValideProf = 0'">
       <a
-        *ngIf="retourProf == 'ValideProf = 0' || listeFichePresence.length > 0"
+        *ngIf="listeFichePresence.length > 0"
         mat-flat-button
         color="primary"
         target="_blank"

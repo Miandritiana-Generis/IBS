@@ -4,8 +4,21 @@
     <div class="col-6">
       <mat-card class="b-1 shadow-none">
         <mat-card-header class="mb-2">
-          <mat-card-title>Choisir une salle</mat-card-title>
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <mat-card-title>Choisir une salle</mat-card-title>
+            <a href="/programme">
+              <button
+                type="submit"
+                mat-flat-button
+                color="primary"
+                matTooltip="Home"
+              >
+                Retour
+              </button>
+            </a>
+          </div>
         </mat-card-header>
+        
         <mat-card-content class="b-t-1">
           <mat-selection-list #shoes2 [multiple]="false">
             <mat-list-option *ngFor="let shoe of listeSalle" [value]="shoe">

@@ -27,6 +27,10 @@ redis_port = int(os.getenv('REDIS_PORT', 6379))
 data_store = {}
 consecutive_matches = 0
 
+is_picture_loaded = False
+known_faces = []
+known_ids = []
+
 # Initialize Redis client
 try:
     redis_client = redis.StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
@@ -173,6 +177,10 @@ def addOnRedis(data_store):
 
         print("NETY TSARA NY REDIS")
 
+        # Load known faces
+        load_known_faces_from_redis()
+
+
     except redis.RedisError as e:
         print(f"Redis tsy mety: {e}")
 
@@ -201,6 +209,9 @@ def drop_data_store():
 consecutive_matches = 0
 
 def load_known_faces_from_redis():
+    global known_faces
+    global known_ids
+
     print("Connecting to Redis...")
     r = check_redis_connection()
     if not r:
@@ -209,8 +220,7 @@ def load_known_faces_from_redis():
     else:
         print("Connected to Redis.")
 
-    known_faces = []
-    known_ids = []
+
 
     # Get all keys from Redis
     keys = r.keys()
@@ -236,8 +246,9 @@ def load_known_faces_from_redis():
             known_ids.append(key.decode('utf-8'))  # Store id_classe_etudiant as a string
         else:
             print(f"No face found in image for ID: {key.decode('utf-8')}")
+        print(f"Known faces loaded: {len(known_faces)}")
+        print(f"Known IDs loaded: {len(known_ids)}")
 
-    return known_faces, known_ids
 
 # Sharpen the image to improve details
 def sharpen_image(image):
@@ -259,13 +270,13 @@ def get_madagascar_time():
     # Format the time as HH:MM:SS
     return madagascar_time.strftime("%H:%M:%S")
 
-# Load known faces
-known_faces, known_ids = load_known_faces_from_redis()
-print(f"Known faces loaded: {len(known_faces)}")
-print(f"Known IDs loaded: {len(known_ids)}")
+
 
 @socketio.on('frame')
 def handle_frame(base64_image):
+
+    global known_faces
+    global known_ids
     global consecutive_matches
     
     # Decode the base64 image
@@ -316,7 +327,7 @@ def handle_frame(base64_image):
                 consecutive_matches += 1
                 
                 # Check if we have reached 5 consecutive matches
-                if consecutive_matches >= 20:
+                if consecutive_matches >= 25:
 
                     # Get the current time when the face is detected
                     detection_time = get_madagascar_time()
