@@ -310,7 +310,6 @@ def handle_frame(base64_image):
         face_distances = face_recognition.face_distance(known_faces, face_encoding)
         if len(face_distances) > 0:
             best_match_index = np.argmin(face_distances)
-            print(f"bessssssssssssssssssst{face_distances}")
         else:
             # Handle the case where no faces were recognized
             best_match_index = None  # or any appropriate fallback value or logic
@@ -349,7 +348,7 @@ def handle_frame(base64_image):
         # Draw a rectangle around the face and label it
         cv2.rectangle(open_cv_image, (left, top), (right, bottom), (0, 255, 0), 2)
         font = cv2.FONT_HERSHEY_DUPLEX
-        cv2.putText(open_cv_image, name, (left + 6, bottom - 6), font, 0.5, (0, 0, 0), 1)
+        cv2.putText(open_cv_image, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
 
     # Encode frame as JPEG
     _, buffer = cv2.imencode('.jpg', open_cv_image)
