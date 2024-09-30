@@ -201,11 +201,12 @@ export class AppFichePresenceComponent {
           window.location.reload();
         },
         error => {
-          console.error('Erreur capturée:', error);  // Afficher les détails de l'erreur dans la console
+          console.log(JSON.parse(error.error).erreurs[0].messageErreur);  // Afficher les détails de l'erreur dans la console
 
           // Si l'erreur contient des erreurs spécifiques
-          if (error.error && error.error.erreurs && error.error.erreurs.length > 0) {
-            this.message = error.error.erreurs[0].messageErreur;
+          if (JSON.parse(error.error) && JSON.parse(error.error).erreurs && JSON.parse(error.error).erreurs.length > 0) {
+            this.message = JSON.parse(error.error).erreurs[0].messageErreur;
+            alert(this.message);
           } 
           // Gérer le cas où l'erreur HTTP est 400 (Bad Request)
           else if (error.status === 400) {
@@ -238,20 +239,20 @@ export class AppFichePresenceComponent {
           alert('Validation réussie.');
           window.location.reload();
         },
-        error: (err) => {
-          console.error('Erreur lors de la validation du délégué:', err);  // Log pour plus de détails
+        error: (error) => {
+          console.log(JSON.parse(error.error).erreurs[0]);  // Log pour plus de détails
   
           // Gestion des erreurs en fonction du code HTTP
-          if (err.status === 400) {
-            alert('Erreur 400: Requête invalide. Vérifiez les données envoyées.');
-          } else if (err.status === 401) {
-            alert('Erreur 401: Non autorisé. Veuillez vous reconnecter.');
-          } else if (err.status === 403) {
-            alert('Erreur 403: Accès refusé. Vous n\'avez pas les droits pour cette action.');
-          } else if (err.status === 404) {
-            alert('Erreur 404: La fiche de présence est introuvable.');
+          if (error.status === 400) {
+            alert(JSON.parse(error.error).erreurs[0].messageErreur);
+          } else if (error.status === 401) {
+            alert(JSON.parse(error.error).erreurs[0].messageErreur);
+          } else if (error.status === 403) {
+            alert(JSON.parse(error.error).erreurs[0].messageErreur);
+          } else if (error.status === 404) {
+            alert(JSON.parse(error.error).erreurs[0].messageErreur);
           } else {
-            alert(`Une erreur est survenue: ${err.message}`);
+            alert(JSON.parse(error.error).erreurs[0].messageErreur);
           }
         }
       });
@@ -295,9 +296,10 @@ export class AppFichePresenceComponent {
   // }
 
   presenceManuelle(idEdt: number, idClasseEtudiant: number): void {
+    const idEnseignant = localStorage.getItem('idEnseignant');
     const idPat = localStorage.getItem('idPat');
     
-    if(idPat && idPat !== '0') {
+    if(idEnseignant && idEnseignant !== '0' || idPat && idPat !== '0') {
       const confirmAction = confirm("Êtes-vous sûr de vouloir marquer cet étudiant comme présent?");
     
       if (confirmAction) {

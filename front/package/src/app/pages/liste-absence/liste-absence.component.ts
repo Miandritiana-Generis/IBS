@@ -4,6 +4,8 @@ import { PresenceService } from 'src/app/services/presence.service';
 import { Absence } from 'src/app/modeles/Absence';
 import { JustificationAbsenceService } from 'src/app/services/justification-absence.service';
 import { AbstractControl } from '@angular/forms';
+import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 export interface productsData {
   id: number;
@@ -14,6 +16,10 @@ export interface productsData {
   classe: string;
   enseignant: string;
   status: string;
+}
+
+export interface Search{
+  name: string;
 }
 
 const ELEMENT_DATA: productsData[] = [
@@ -79,6 +85,47 @@ export class AppListeAbsence {
   dateDebut: string = ''; 
   dateFin: string = '';
 
+  addOnBlur = true;
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+  searchs: Search[] = [{ name: 'Rakoto' }, { name: 'piera' }];
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our fruit
+    if (value) {
+      this.searchs.push({ name: value });
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+
+  remove(search: Search): void {
+    const index = this.searchs.indexOf(search);
+
+    if (index >= 0) {
+      this.searchs.splice(index, 1);
+    }
+  }
+
+  edit(search: Search, event: MatChipEditedEvent) {
+    const value = event.value.trim();
+
+    // Remove fruit if it no longer has a name
+    if (!value) {
+      this.remove(search);
+      return;
+    }
+
+    // Edit existing fruit
+    const index = this.searchs.indexOf(search);
+    if (index >= 0) {
+      this.searchs[index].name = value;
+    }
+
+  
+  }
 
   constructor(
     public dialog: MatDialog,
@@ -165,7 +212,7 @@ export class AppListeAbsence {
   public changerPage(event: any){
     this.page = event.page;
     this.getAbsence();
-}
+  }
   
   public getAbsence() {
     this.presenceService.getAbsent(this.date, this.date, this.page).subscribe(
