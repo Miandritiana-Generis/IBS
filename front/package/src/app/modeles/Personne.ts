@@ -7,4 +7,5 @@ export class Personne {
     "login": string
     "token": string
     "idPat":number
+    "idEnseignant":string
 }

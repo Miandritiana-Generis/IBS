@@ -60,6 +60,7 @@ export class AuthService {
         localStorage.setItem('mail',data.mail);
         localStorage.setItem('contact',data.contact);
         localStorage.setItem('idPat',`${data.idPat}`);
+        localStorage.setItem('idEnseignant',`${data.idEnseignant}`);
       }
     );
   }
@@ -85,7 +86,6 @@ export class AuthService {
         catchError(error => {
           // this.loaderService.hide();
           localStorage.clear()
-          
           localStorage.setItem('salle',`${classe}`);
           return throwError(() => new Error(error.error.erreurs[0].messageErreur));
         })
