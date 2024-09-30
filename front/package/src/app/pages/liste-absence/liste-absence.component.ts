@@ -78,6 +78,7 @@ export class AppListeAbsence {
   date: string;
   selectedAbsence: any;
   idEdt = 0;
+  allAbsents: Absence[] = [];
 
 
   // Ajout des variables pour les champs du formulaire
@@ -87,17 +88,16 @@ export class AppListeAbsence {
 
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  searchs: Search[] = [{ name: 'Rakoto' }, { name: 'piera' }];
+  searchs: Search[] = [];
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our fruit
     if (value) {
       this.searchs.push({ name: value });
+      this.applySearchFilter();
     }
 
-    // Clear the input value
     event.chipInput!.clear();
   }
 
@@ -106,25 +106,9 @@ export class AppListeAbsence {
 
     if (index >= 0) {
       this.searchs.splice(index, 1);
+      this.absents = [...this.absents];
+      this.applySearchFilter();
     }
-  }
-
-  edit(search: Search, event: MatChipEditedEvent) {
-    const value = event.value.trim();
-
-    // Remove fruit if it no longer has a name
-    if (!value) {
-      this.remove(search);
-      return;
-    }
-
-    // Edit existing fruit
-    const index = this.searchs.indexOf(search);
-    if (index >= 0) {
-      this.searchs[index].name = value;
-    }
-
-  
   }
 
   constructor(
@@ -217,9 +201,12 @@ export class AppListeAbsence {
   public getAbsence() {
     this.presenceService.getAbsent(this.date, this.date, this.page).subscribe(
       success => {
-        this.absents = success.content;
+        this.allAbsents = success.content;
+        this.absents = [...this.allAbsents];
         this.totalElements = success.totalElements;
         this.totalPages = success.size;
+        // this.applySearchFilter();
+
       },
       error => {
         
@@ -227,8 +214,28 @@ export class AppListeAbsence {
     );
   }
 
- 
   onEnter() {
     this.getAbsence();
   }
+
+  applySearchFilter() {
+    // Start from the original data
+    let filteredAbsents = [...this.allAbsents];
+  
+    // Apply the search terms if any
+    if (this.searchs.length > 0) {
+      const searchTerms = this.searchs.map(search => search.name.toLowerCase());
+      filteredAbsents = filteredAbsents.filter(absent =>
+        searchTerms.some(term =>
+          absent.nom?.toLowerCase().includes(term) || absent.prenom?.toLowerCase().includes(term)
+        )
+      );
+    }
+  
+    // Update the displayed list of absents
+    this.absents = filteredAbsents;
+  }
+  
+  
+  
 }

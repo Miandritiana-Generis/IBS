@@ -6,13 +6,12 @@
         <div class="row m-l-auto">
           <div class="col-sm-6">
             <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Recherche</mat-label>
+              <mat-label>Recherche nom ou prénom</mat-label>
               <mat-chip-grid #chipGrid aria-label="nom ou etudiant">
                 <mat-chip-row
                   *ngFor="let item of searchs"
                   (removed)="remove(item)"
                   [editable]="true"
-                  (edited)="edit(item, $event)"
                   [aria-description]="'press enter to edit ' + item.name" class="f-s-14"
                 >
                   {{ item.name }}
@@ -38,7 +37,12 @@
           <div class="col-sm-6">
             <mat-form-field class="w-100" appearance="outline">
               <mat-label>Date</mat-label>
-              <input matInput type="date" rows="4" [(ngModel)]="date" (keydown.enter)="onEnter()"/>
+                <div class="d-flex">
+                <input matInput type="date" rows="4" [(ngModel)]="date" (keydown.enter)="onEnter()"/>
+                <mat-icon class="cursor-pointer">
+                  <i-tabler name="X" class="m-0"></i-tabler>
+                </mat-icon>
+              </div>
             </mat-form-field>
           </div>
         </div>
