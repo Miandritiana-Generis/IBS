@@ -22,7 +22,6 @@ export class AppSideLoginComponent {
   login(): void {
     const identifiant = this.myForm.get('identifiant')?.value;
     const password = this.myForm.get('password')?.value;
-    console.log(this.myForm.value);
     this.authentificationService.login(identifiant,password,this.idApplication).subscribe(
       success=>{
           if (!success) {

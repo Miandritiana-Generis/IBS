@@ -34,9 +34,7 @@ export class AuthService {
               localStorage.setItem('id', `${response.token.idPersonne}`);
               const token = response.token.token;
               this.getInfo(token);
-              this.router.navigate(['/']).then(() => {
-                window.location.reload(); // Recharger la page après la redirection
-              });
+              
             return true;
 
           } else {
@@ -61,6 +59,9 @@ export class AuthService {
         localStorage.setItem('contact',data.contact);
         localStorage.setItem('idPat',`${data.idPat}`);
         localStorage.setItem('idEnseignant',`${data.idEnseignant}`);
+        this.router.navigate(['/']).then(() => {
+          window.location.reload(); // Recharger la page après la redirection
+        });
       }
     );
   }
