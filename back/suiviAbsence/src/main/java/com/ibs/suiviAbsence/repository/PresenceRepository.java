@@ -24,5 +24,5 @@ public interface PresenceRepository extends JpaRepository<Presence, Integer>{
     @Query("UPDATE Presence p SET p.valideDelegue = 1 WHERE p.idEdt = :idEdt")
     public void validerFichePresenceDelegue(@Param("idEdt") int idEdt);
 
-    public Optional<Presence> findByIdEdt(Integer idEdt);
+    public List<Presence> findByIdEdt(Integer idEdt);
 }

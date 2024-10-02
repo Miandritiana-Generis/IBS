@@ -81,13 +81,13 @@ public class PresenceController {
 
     List<V_InfoFichePresence> result;
     boolean retour = false;
-    Optional<Presence> p;
+    List<Presence> p;
     String stringRetour = "ValideProf = 0;" + "ValideDelegue = 0";
 
     if (idEdt != null) {
         result = v_InfoFichePresence.getInfoFichePresenceWithEdt(idEdt);
         p = presenceRepository.findByIdEdt(idEdt);
-        if(p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==0){
+        if(!p.isEmpty() && p.getFirst().getValideProf()==1 && p.getFirst().getValideDelegue()==0){
             stringRetour = "ValideProf = 1;" + "ValideDelegue = 0";
             Time heureDebut = result.get(0).getDebut();
             Time heureFin = result.get(0).getFin();
@@ -100,7 +100,7 @@ public class PresenceController {
             }
             
         }
-        else if(p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==1){
+        else if(!p.isEmpty() && p.getFirst().getValideProf()==1 && p.getFirst().getValideDelegue()==1){
             stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
             Time heureDebut = result.get(0).getDebut();
             Time heureFin = result.get(0).getFin();
@@ -124,11 +124,11 @@ public class PresenceController {
         }
         result = edtService.getInfoFichePresence(idSalle, heure, date);
         p =  presenceRepository.findByIdEdt(result.get(0).getId_edt());
-        if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==0){
+        if (!p.isEmpty() && p.getFirst().getValideProf()==1 && p.getFirst().getValideDelegue()==0){
             retour = true;
             stringRetour = "ValideProf = 1;" + "ValideDelegue = 0";
         }
-        else if (p.isPresent() && p.get().getValideProf()==1 && p.get().getValideDelegue()==1){
+        else if (!p.isEmpty() && p.getFirst().getValideProf()==1 && p.getFirst().getValideDelegue()==1){
             retour = true;
             stringRetour = "ValideProf = 1;" + "ValideDelegue = 1";
         }
@@ -161,9 +161,9 @@ public class PresenceController {
     @GetMapping("/estValideProf")
     public ResponseEntity<Map<String, Boolean>> estValideProf(@RequestParam Integer idEdt) {
         
-        Optional<Presence> p = presenceRepository.findByIdEdt(idEdt);
+        List<Presence> p = presenceRepository.findByIdEdt(idEdt);
         boolean retour = false;
-        if(p.get().getValideProf() == 1){
+        if(!p.isEmpty()&&  p.getFirst().getValideProf() == 1){
             retour = true;
         }
         Map<String, Boolean> response = new HashMap<>();
@@ -174,9 +174,9 @@ public class PresenceController {
 
     @GetMapping("/estValideDelegue")
     public ResponseEntity<Map<String, Boolean>> estValideDelegue(@RequestParam Integer idEdt) {
-        Optional<Presence> p = presenceRepository.findByIdEdt(idEdt);
+        List<Presence> p = presenceRepository.findByIdEdt(idEdt);
         boolean retour = false;
-        if(p.get().getValideDelegue() == 1){
+        if(!p.isEmpty() && p.getFirst().getValideDelegue() == 1){
             retour = true;
         }
         Map<String, Boolean> response = new HashMap<>();

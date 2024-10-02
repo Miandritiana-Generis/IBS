@@ -181,7 +181,7 @@ public class PresenceService {
      * @return
      */
     public void validerDelegue(Integer idEdt, String tokenValue) {
-        Optional<Presence> presence = presenceRepository.findByIdEdt(idEdt);
+        List<Presence> presence = presenceRepository.findByIdEdt(idEdt);
     
       
         if (presence.isEmpty()) {
@@ -189,7 +189,7 @@ public class PresenceService {
             throw new PresenceException("La fiche de présence avec l'ID fourni n'existe pas.");
         }
     
-        Presence presenceObj = presence.get();
+        Presence presenceObj = presence.getFirst();
         int nbAbsent = viewPresenceAbsenceRepository.countAbsence(idEdt);
     
         

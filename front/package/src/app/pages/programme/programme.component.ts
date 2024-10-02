@@ -289,6 +289,9 @@ import { LoaderService } from 'src/app/services/loader.service';
       "id":number,
       "estAnnule":boolean
   }){
+    if(localStorage.getItem('idPat')!=="0"){
+      return true;
+    }
       if(edt.estAnnule){
         return false;
       }
