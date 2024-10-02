@@ -237,8 +237,8 @@ public class PresenceService {
         }
     
         if (v.getIdEtudiant() != 0) {
-            ClasseEtudiant cl = classeEtudiantRepository.findByIdEtudiant(v.getIdEtudiant());
-            if(cl.getEst_delegue()==1){
+            List<ClasseEtudiant> cl = classeEtudiantRepository.findByIdEtudiant(v.getIdEtudiant());
+            if(cl.getLast().getEst_delegue()==1){
                 retour = true;
             }
             

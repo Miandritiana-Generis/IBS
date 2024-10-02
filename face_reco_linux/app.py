@@ -250,15 +250,15 @@ def load_known_faces_from_redis():
         print(f"Known IDs loaded: {len(known_ids)}")
 
 
-# Sharpen the image to improve details
-def sharpen_image(image):
-    kernel = np.array([[0, -1, 0], [-1, 5,-1], [0, -1, 0]])
-    sharpened = cv2.filter2D(image, -1, kernel)
-    return sharpened
+# # Sharpen the image to improve details
+# def sharpen_image(image):
+#     kernel = np.array([[0, -1, 0], [-1, 5,-1], [0, -1, 0]])
+#     sharpened = cv2.filter2D(image, -1, kernel)
+#     return sharpened
 
-# Denoise the image to reduce noise in low-quality images
-def denoise_image(image):
-    return cv2.fastNlMeansDenoisingColored(image, None, 10, 10, 7, 21)
+# # Denoise the image to reduce noise in low-quality images
+# def denoise_image(image):
+#     return cv2.fastNlMeansDenoisingColored(image, None, 10, 10, 7, 21)
 
 def get_madagascar_time():
     # Get the current UTC time
@@ -291,10 +291,10 @@ def handle_frame(base64_image):
     open_cv_image = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
 
     # Step 1: Denoise the image
-    open_cv_image = denoise_image(open_cv_image)
+    # open_cv_image = denoise_image(open_cv_image)
 
     # Step 2: Sharpen the image
-    open_cv_image = sharpen_image(open_cv_image)
+    # open_cv_image = sharpen_image(open_cv_image)
 
     # Find all face locations and encodings in the current frame
     face_locations = face_recognition.face_locations(open_cv_image)
@@ -326,7 +326,7 @@ def handle_frame(base64_image):
                 consecutive_matches += 1
                 
                 # Check if we have reached 5 consecutive matches
-                if consecutive_matches >= 25:
+                if consecutive_matches >= 27:
 
                     # Get the current time when the face is detected
                     detection_time = get_madagascar_time()
