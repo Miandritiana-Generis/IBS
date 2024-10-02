@@ -9,9 +9,10 @@ import org.springframework.data.repository.query.Param;
 import com.ibs.suiviAbsence.modele.Presence;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 
 public interface PresenceRepository extends JpaRepository<Presence, Integer>{
-    public Presence findAllByIdEdt(int edt);
+    public List<Presence> findAllByIdEdt(int edt);
 
     @Modifying
     @Transactional

@@ -86,7 +86,8 @@ public class PresenceService {
     DetailPresenceRepository detailPresenceRepository;
     
     public Presence recupererPresence(int idEdt){
-        Presence presence=presenceRepository.findAllByIdEdt(idEdt);
+        List<Presence> listePresences= presenceRepository.findAllByIdEdt(idEdt);
+        Presence presence=listePresences.getFirst();
         if(presence==null){
             presence=new Presence();
             presence.setIdEdt(idEdt);
