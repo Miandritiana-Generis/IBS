@@ -87,11 +87,14 @@ public class PresenceService {
     
     public Presence recupererPresence(int idEdt){
         List<Presence> listePresences= presenceRepository.findAllByIdEdt(idEdt);
-        Presence presence=null;
+        Presence presence;
         if(listePresences.isEmpty()){
             presence=new Presence();
             presence.setIdEdt(idEdt);
             presence=presenceRepository.save(presence);
+        }
+        else{
+            presence=listePresences.getFirst();
         }
         return presence;
     }
