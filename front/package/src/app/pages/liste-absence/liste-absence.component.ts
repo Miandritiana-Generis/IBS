@@ -85,15 +85,15 @@ export class AppListeAbsence {
     this.getAbsence();
   }
   
-  displayedColumns: string[] = ['Etudiant', 'Cours', 'Classe', 'Enseignant', 'Justification', 'Modifier'];
+  displayedColumns: string[] = ['Etudiant', 'Classe', 'Cours & Enseignant',  'Justification', 'Modifier'];
   dataSource = ELEMENT_DATA;
 
   
-  openModal(templateRef: TemplateRef<any>, id_justi:number, absenceId: number, idEdt: number, dateTimeDebut?: string, dateTimeFin?: string, description?: string): void {
+  openModal(templateRef: TemplateRef<any>, id_justi:number, date:Date, absenceId: number, idEdt: number, dateTimeDebut?: string, dateTimeFin?: string, description?: string): void {
     this.selectedAbsence = absenceId;
     this.idEdt = idEdt;
-    this.dateTimeDebut = dateTimeDebut ? new Date(dateTimeDebut).toISOString().slice(0, 10) : '';
-    this.dateTimeFin = dateTimeFin ? new Date(dateTimeFin).toISOString().slice(0, 10) : '';
+    this.dateTimeDebut = dateTimeDebut ? new Date(dateTimeDebut).toISOString().slice(0, 10) : new Date(date).toISOString().slice(0, 10);
+    this.dateTimeFin = dateTimeFin ? new Date(dateTimeFin).toISOString().slice(0, 10) : new Date(date).toISOString().slice(0, 10);
     this.description = description || '';
     this.id_justification = id_justi;
 
@@ -106,7 +106,7 @@ export class AppListeAbsence {
     
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.submitJustification( this.description, this.dateTimeDebut, this.dateTimeFin);
+        this.submitJustification( this.description, this.dateTimeDebut);
         this.closeModal(dialogRef);
       }
     });
@@ -118,9 +118,9 @@ export class AppListeAbsence {
 
 
   
-  submitJustification(description: string, dateTimeDebut: string, dateTimeFin: string) {
+  submitJustification(description: string, dateTimeDebut: string) {
   
-    if (!description || !dateTimeDebut || !dateTimeFin) {
+    if (!description || !dateTimeDebut) {
       alert('Tous les champs sont obligatoires. Veuillez remplir la description, la date de début et la date de fin.');
       return; // Exit the function if validation fails
     }
@@ -131,15 +131,13 @@ export class AppListeAbsence {
 
     // Formater les dates pour ne garder que la partie "date"
     const formatteddateTimeDebut = dateTimeDebut ? new Date(dateTimeDebut).toISOString().split('T')[0] : null;
-    const formatteddateTimeFin = dateTimeFin ? new Date(dateTimeFin).toISOString().split('T')[0] : null;
   
     const justificationPayload = {
       id : id_justification,
       id_edt : idEdt,
       id_classe_etudiant: absenceId,
       description: description,
-      date_time_debut: formatteddateTimeDebut,
-      date_time_fin: formatteddateTimeFin
+      date_time_debut: formatteddateTimeDebut
     };
   
     console.log("justificationPayload: ", justificationPayload);
