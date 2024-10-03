@@ -292,6 +292,11 @@ import { LoaderService } from 'src/app/services/loader.service';
     if(localStorage.getItem('idPat')!=="0"){
       return true;
     }
+
+    if(localStorage.getItem('idEnseignant')!=="0"){
+      return true;
+    }
+    
       if(edt.estAnnule){
         return false;
       }

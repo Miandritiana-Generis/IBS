@@ -29,7 +29,8 @@ export interface ProductsData {
   date : Date;
   fin : Time;
   debut : Time;
-  id_personne : number
+  id_personne : number;
+  id_salle : number;
 }
 
 @Component({
@@ -136,7 +137,8 @@ export class AppFichePresenceComponent {
               date : item.date,
               fin : item.fin,
               debut : item.debut,
-              id_personne : item.id_personne
+              id_personne : item.id_personne,
+              id_salle : id_salle
             }));
           } else {
             // Si la réponse n'est pas un tableau, afficher un message d'erreur
@@ -323,13 +325,19 @@ export class AppFichePresenceComponent {
     }
   }
 
-  isCurrentTimeWithinRange(date: string, debut: string, fin: string): boolean {
-    
+  isCurrentTimeWithinRange(date: string, debut: string, fin: string, id_salle: number): boolean {
+
+    const salle = localStorage.getItem('salle');    
     const currentDateTime = new Date();
     const startTime = new Date(`${date}T${debut}`);
     const endTime = new Date(`${date}T${fin}`);
 
-    return currentDateTime >= startTime && currentDateTime <= endTime;
+    if (salle !== id_salle.toString() || currentDateTime < startTime || currentDateTime > endTime) {
+      return false;
+    }
+  
+    return true;
+
   }
 
 
