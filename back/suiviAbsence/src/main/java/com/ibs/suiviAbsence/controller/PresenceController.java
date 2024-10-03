@@ -228,9 +228,9 @@ public class PresenceController {
     public ResponseEntity<Map<String, String>> validerDelegue(
             @RequestParam int idEdt, 
             @RequestHeader("Authorization") String tokenValue) {
-                 String token= FonctionUtil.getBearerToken(tokenValue);
+                 //String token= FonctionUtil.getBearerToken(tokenValue);
     
-        presenceService.validerDelegue(idEdt, token);
+        presenceService.validerDelegue(idEdt, tokenValue);
     
         Map<String, String> response = new HashMap<>();
         response.put("message", "Validation effectuée pour idEdt : " + idEdt);

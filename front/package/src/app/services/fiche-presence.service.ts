@@ -35,6 +35,8 @@ export class FichePresenceService {
 
   
 validerDelegue(idEdt: string, tokenValue: string): Observable<any> {
+  console.log(tokenValue);
+  
   return this.http.put(
       `${this.urlValiderDelegue}`,
       null,

@@ -233,6 +233,7 @@ export class AppFichePresenceComponent {
 
   validerDelegue(idEdt: string): void {
     const tokenValue = localStorage.getItem('token') || '';
+    
     if (tokenValue && confirm("Voulez-vous vraiment valider ?")) {
       this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
         next: () => {
