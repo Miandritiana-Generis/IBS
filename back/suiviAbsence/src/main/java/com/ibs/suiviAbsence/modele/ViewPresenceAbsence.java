@@ -57,11 +57,13 @@ public class ViewPresenceAbsence {
     private String salle ;
     @Column
     private String photo ;
-    @Column
+    @Column(name = "id_justification", nullable = true)
+    private Integer id_justification;
+    @Column(nullable = true)
     private String description ;
-    @Column
+    @Column(nullable = true)
     Timestamp dateTimeDebut;
-    @Column
+    @Column(nullable = true)
     Timestamp dateTimeFin;
 
 

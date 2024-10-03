@@ -27,6 +27,7 @@ public class JustificationAbsenceController {
 
     @PostMapping
     public ResponseEntity<?> justify(@RequestBody JustificationAbsence justification) {
+        
         justificationAbsenceRepository.save(justification);
         Map<String, String> response = new HashMap<>();
         String message = "justification saved";

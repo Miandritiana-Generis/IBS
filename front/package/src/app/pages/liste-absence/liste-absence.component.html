@@ -123,7 +123,7 @@
                 mat-fab
                 class="shadow-none icon-48 rounded-circle"
                 style="background-color: #fa896b; border: none;"
-                (click)="openModal(modalContent, element.id, element.idEdt)"
+                (click)="openModal(modalContent, element.id_justification, element.id, element.idEdt, element.dateTimeDebut, element.dateTimeFin, element.description)"
               >
                 <i-tabler name="pencil-minus" class="text-white"></i-tabler>
               </button>
@@ -159,13 +159,13 @@
       <div class="col-6">
         <mat-form-field class="w-100" appearance="outline">
           <mat-label>Date début</mat-label>
-          <input matInput type="date" [(ngModel)]="dateDebut" required />
+          <input matInput type="date" [(ngModel)]="dateTimeDebut" required />
         </mat-form-field>
       </div>
       <div class="col-6">
         <mat-form-field class="w-100" appearance="outline">
           <mat-label>Date fin</mat-label>
-          <input matInput type="date" [(ngModel)]="dateFin" required />
+          <input matInput type="date" [(ngModel)]="dateTimeFin" required />
         </mat-form-field>
       </div>
     </div>
@@ -180,7 +180,7 @@
     <button 
       class="btn btn-primary w-100 m-l-32 m-r-32" 
       style="background-color: #0085db; border-color: #0085db;"
-      (click)="submitJustification(description, dateDebut, dateFin)"
+      (click)="submitJustification(description, dateTimeDebut, dateTimeFin)"
     >
       Valider
     </button>

@@ -16,54 +16,17 @@ export interface productsData {
   classe: string;
   enseignant: string;
   status: string;
+  id_justification: number;
+  dateTimeDebut: Date;
+  dateTimeFin: Date;
+  description: string;
 }
 
 export interface Search{
   name: string;
 }
 
-const ELEMENT_DATA: productsData[] = [
-  {
-    id: 1,
-    imagePath: 'assets/images/profile/user-1.jpg',
-    nom: 'Mark J. Freeman',
-    prenom: 'English',
-    cours: 'Management',
-    classe: 'L2MDE',
-    enseignant: 'Donald Hagenes',
-    status: 'Justifié',
-  },
-  {
-    id: 2,
-    imagePath: 'assets/images/profile/user-2.jpg',
-    nom: 'Andrew McDownland',
-    prenom: 'Project Manager',
-    cours: 'Management',
-    classe: 'L2MDE',
-    enseignant: 'Donald Hagenes',
-    status: 'Non justifié',
-  },
-  {
-    id: 3,
-    imagePath: 'assets/images/profile/user-3.jpg',
-    nom: 'Christopher Jamil',
-    prenom: 'Project Manager',
-    cours: 'Management',
-    classe: 'L2MDE',
-    enseignant: 'Donald Hagenes',
-    status: 'Non justifié',
-  },
-  {
-    id: 4,
-    imagePath: 'assets/images/profile/user-4.jpg',
-    nom: 'Nirav Joshi',
-    prenom: 'Frontend Engineer',
-    cours: 'Management',
-    classe: 'L2MDE',
-    enseignant: 'Donald Hagenes',
-    status: 'Justifié',
-  },
-];
+const ELEMENT_DATA: productsData[] = [];
 
 @Component({
   selector: 'app-liste-absence',
@@ -78,13 +41,14 @@ export class AppListeAbsence {
   date: string;
   selectedAbsence: any;
   idEdt = 0;
+  id_justification = 0;
   allAbsents: Absence[] = [];
 
 
   // Ajout des variables pour les champs du formulaire
   description: string = ''; 
-  dateDebut: string = ''; 
-  dateFin: string = '';
+  dateTimeDebut: string = ''; 
+  dateTimeFin: string = '';
 
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
@@ -120,15 +84,21 @@ export class AppListeAbsence {
     this.date = today.toISOString().split('T')[0];
     this.getAbsence();
   }
-
+  
   displayedColumns: string[] = ['Etudiant', 'Cours', 'Classe', 'Enseignant', 'Justification', 'Modifier'];
   dataSource = ELEMENT_DATA;
 
   
-  openModal(templateRef: TemplateRef<any>, absenceId: number, idEdt: number): void {
+  openModal(templateRef: TemplateRef<any>, id_justi:number, absenceId: number, idEdt: number, dateTimeDebut?: string, dateTimeFin?: string, description?: string): void {
     this.selectedAbsence = absenceId;
     this.idEdt = idEdt;
+    this.dateTimeDebut = dateTimeDebut ? new Date(dateTimeDebut).toISOString().slice(0, 10) : '';
+    this.dateTimeFin = dateTimeFin ? new Date(dateTimeFin).toISOString().slice(0, 10) : '';
+    this.description = description || '';
+    this.id_justification = id_justi;
+
     console.log("idAbsence :", absenceId);
+
     const dialogRef = this.dialog.open(templateRef, {
       width: '800px' 
     });
@@ -136,7 +106,7 @@ export class AppListeAbsence {
     
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.submitJustification( this.description, this.dateDebut, this.dateFin);
+        this.submitJustification( this.description, this.dateTimeDebut, this.dateTimeFin);
         this.closeModal(dialogRef);
       }
     });
@@ -148,26 +118,28 @@ export class AppListeAbsence {
 
 
   
-  submitJustification(description: string, dateDebut: string, dateFin: string) {
+  submitJustification(description: string, dateTimeDebut: string, dateTimeFin: string) {
   
-    if (!description || !dateDebut || !dateFin) {
+    if (!description || !dateTimeDebut || !dateTimeFin) {
       alert('Tous les champs sont obligatoires. Veuillez remplir la description, la date de début et la date de fin.');
       return; // Exit the function if validation fails
     }
 
     const absenceId = this.selectedAbsence;
     const idEdt = this.idEdt;
+    const id_justification = this.id_justification;
 
     // Formater les dates pour ne garder que la partie "date"
-    const formattedDateDebut = dateDebut ? new Date(dateDebut).toISOString().split('T')[0] : null;
-    const formattedDateFin = dateFin ? new Date(dateFin).toISOString().split('T')[0] : null;
+    const formatteddateTimeDebut = dateTimeDebut ? new Date(dateTimeDebut).toISOString().split('T')[0] : null;
+    const formatteddateTimeFin = dateTimeFin ? new Date(dateTimeFin).toISOString().split('T')[0] : null;
   
     const justificationPayload = {
+      id : id_justification,
       id_edt : idEdt,
       id_classe_etudiant: absenceId,
       description: description,
-      date_time_debut: formattedDateDebut,
-      date_time_fin: formattedDateFin
+      date_time_debut: formatteddateTimeDebut,
+      date_time_fin: formatteddateTimeFin
     };
   
     console.log("justificationPayload: ", justificationPayload);
@@ -187,9 +159,9 @@ export class AppListeAbsence {
   
   onDateChange(type: string, event: any) {
     if (type === 'debut') {
-      this.dateDebut = event.target.value;
+      this.dateTimeDebut = event.target.value;
     } else if (type === 'fin') {
-      this.dateFin = event.target.value;
+      this.dateTimeFin = event.target.value;
     }
   }
   
