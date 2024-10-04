@@ -42,7 +42,7 @@ validerDelegue(idEdt: string, tokenValue: string): Observable<any> {
       null,
       {
           params: { idEdt: idEdt.toString() },
-          headers: { 'Authorization': tokenValue },
+          headers: { 'Authorization': `Bearer ${tokenValue}`},
           responseType: 'text'  // <-- Ajout du responseType
       }
   ).pipe(

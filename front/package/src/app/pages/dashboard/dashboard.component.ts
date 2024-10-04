@@ -201,7 +201,7 @@ export class AppDashboardComponent {
 
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  searchs: Search[] = [{ name: 'Rakoto' }, { name: 'piera' }];
+  searchs: Search[] = [{ name: 'Rakoto' }];
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
