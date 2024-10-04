@@ -310,9 +310,13 @@ export class AppFichePresenceComponent {
   
         this.fichePresenceService.presence(idEdt, idClasseEtudiant, tempsArriver).subscribe(
           (response) => {
-            console.log('Success:', response);
+            console.log(response);
             alert('Présence enregistrée avec succès!');
-            window.location.reload();
+            var index = this.listeFichePresence.findIndex(student => student.id_classe_etudiant === idClasseEtudiant);
+            this.listeFichePresence[index].status = 'Present';
+            this.listeFichePresence[index].hourRate = response.tempsArriver;
+            
+
           },
           (error) => {
             console.error('Error:', error);
