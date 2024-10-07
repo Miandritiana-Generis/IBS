@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.ibs.suiviAbsence.modele.Niveau;
 import com.ibs.suiviAbsence.modele.ViewClasseDetail;
+import com.ibs.suiviAbsence.modele.ViewListeAbsentTotalH;
 import com.ibs.suiviAbsence.modele.ViewTauxAbsencePresence;
 import com.ibs.suiviAbsence.repository.NiveauRepository;
 import com.ibs.suiviAbsence.repository.TotalAbsenceRepository;
 import com.ibs.suiviAbsence.repository.ViewClasseDetailRepository;
+import com.ibs.suiviAbsence.repository.ViewListeAbsentTotalHRepository;
 import com.ibs.suiviAbsence.repository.ViewTauxAbsencePresenceRepository;
 
 /**
@@ -34,6 +36,9 @@ public class DashService {
 
     @Autowired
     private ViewTauxAbsencePresenceRepository viewTauxAbsencePresenceRepository;
+
+    @Autowired
+    private ViewListeAbsentTotalHRepository viewListeAbsentTotalHRepository;
     
     public List<ViewClasseDetail> findViewClasseDetails(){
         List<ViewClasseDetail> liste=viewClasseDetailRepository.findAll();
@@ -83,6 +88,14 @@ public class DashService {
         } catch (DateTimeParseException e) {
             // Handle invalid format by returning the current month as default
             return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        }
+    }
+
+    public List<ViewListeAbsentTotalH> getAbsentTotalH(String monthYear) {
+        if (monthYear != null) {
+            return viewListeAbsentTotalHRepository.findByFilters(monthYear);
+        } else {
+            return viewListeAbsentTotalHRepository.findAll();  // Return all records if no monthYear is provided
         }
     }
 }

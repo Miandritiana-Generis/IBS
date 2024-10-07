@@ -10,8 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ibs.suiviAbsence.modele.Niveau;
 import com.ibs.suiviAbsence.modele.ViewClasseDetail;
+import com.ibs.suiviAbsence.modele.ViewListeAbsentTotalH;
 import com.ibs.suiviAbsence.modele.ViewTauxAbsencePresence;
 import com.ibs.suiviAbsence.service.DashService;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 public class DashController {
@@ -43,5 +47,19 @@ public class DashController {
             @RequestParam(required = false) Integer idClasse,
             @RequestParam(required = false) Integer idNiveau) {
         return dashService.getTauxAbsencePresence(monthYear, idClasse, idNiveau);
+    }
+
+    @GetMapping("/total-heure-absence")
+    public List<ViewListeAbsentTotalH> getAbsentTotalH(
+        @RequestParam(required = false) String monthYear
+    ) {
+        // Check if monthYear is null
+        if (monthYear == null) {
+            // Get current month and year in 'YYYY-MM' format
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            monthYear = LocalDate.now().format(formatter);
+        }
+        
+        return dashService.getAbsentTotalH(monthYear);
     }
 }

@@ -12,6 +12,7 @@ export class DashService {
   urlTotalAbs: string = Constants.BASE_URL + '/totalAbsence';
   urlNiveau: string = Constants.BASE_URL + '/liste-niveau';
   urlTaux: string = Constants.BASE_URL + '/taux-absence-presence';
+  urlTotalHAbs: string = Constants.BASE_URL + '/total-heure-absence';
 
   constructor(private http: HttpClient) { }
 
@@ -66,5 +67,16 @@ export class DashService {
       presentCount: number;
     }>(`${this.urlTaux}`, { params });
   }
+
+  getAbsentTotalH(monthYear?: string): Observable<any> {
+    let params = new HttpParams();
+
+    if (monthYear) {
+      params = params.set('monthYear', monthYear);
+    }
+
+    return this.http.get<any>(this.urlTotalHAbs, { params });
+  }
+  
   
 }

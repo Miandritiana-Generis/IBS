@@ -105,8 +105,7 @@ export interface ProductsData {
   imagePath: string;
   classe: string;
   matiere: string;
-  totalH: Time;
-  malus: number
+  totalH: Time
 }
 
 export interface Search{
@@ -195,8 +194,9 @@ export class AppDashboardComponent {
   selectedNiveauTaux: string = '';
   idNiveauTaux: number | undefined;
   monthYear: string = new Date().toISOString().slice(0, 7);
+  monthYear2: string = new Date().toISOString().slice(0, 7);
 
-  displayedColumns: string[] = ['etu', 'classe', 'matiere', 'totalH', 'malus'];
+  displayedColumns: string[] = ['etu', 'classe', 'matiere', 'totalH'];
   dataSource: ProductsData[] = [];
 
   addOnBlur = true;
@@ -242,6 +242,8 @@ export class AppDashboardComponent {
   }
 
   constructor(private dashService: DashService) {
+
+    this.loadAbsentTotalH();
 
     this.profitExpanceChart = {
       series: [
@@ -555,5 +557,23 @@ export class AppDashboardComponent {
   clearMonthYearList(): void {
     // this.
   }
+
+  onMonthChangeTotalH(value: string) {
+    this.monthYear2 = value;
+    console.log(value);
+    
+    // this.loadAbsentTotalH(this.monthYear2);
+  } 
+
+  loadAbsentTotalH(monthYear?: string) {
+    if(monthYear != null )
+    {
+      monthYear = this.monthYear2;
+    }
+    this.dashService.getAbsentTotalH(monthYear).subscribe((data) => {
+      this.dataSource = data;
+    });
+  }
+  
 
 }

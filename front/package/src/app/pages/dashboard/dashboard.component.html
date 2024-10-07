@@ -183,7 +183,7 @@
               <mat-form-field class="w-100" appearance="outline">
                 <mat-label>Mois / Année</mat-label>
                 <div class="d-flex">
-                  <input matInput type="month" [(ngModel)]="monthYear" (ngModelChange)="onMonthChange($event)"/>
+                  <input matInput type="month" [(ngModel)]="monthYear" (ngModelChange)="onMonthChangeTotalH($event)"/>
                   <mat-icon (click)="clearMonthYearList()" class="cursor-pointer" *ngIf="monthYear">
                     <i-tabler name="X" class="m-0"></i-tabler>
                   </mat-icon>
@@ -201,7 +201,7 @@
               </th>
               <td mat-cell *matCellDef="let element" style="width: 40%;">
                 <div class="d-flex align-items-center">
-                  <img [src]="element.imagePath" alt="profile pic" width="10%" class="rounded-circle" />
+                  <img [src]="element.photo" alt="profile pic" width="10%" class="rounded-circle" />
                   <div class="m-l-16">
                     <h6 class="mat-subtitle-1 f-s-14 f-w-700">{{ element.prenom }}</h6>
                     <h6 class="mat-subtitle-1 f-s-12 f-w-700">{{ element.nom }}</h6>
@@ -243,13 +243,13 @@
               <td mat-cell *matCellDef="let element">
                 <div class="d-flex align-items-center">
                   <div class="m-l-16">
-                    <span class="mat-body-1 f-s-14">{{ element.totalH }}heures</span>
+                    <span class="mat-body-1 f-s-14">{{ element.totalHeureAbsence }}</span>
                   </div>
                 </div>
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="malus">
+            <!-- <ng-container matColumnDef="malus">
               <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14">
                 Malus
               </th>
@@ -260,7 +260,10 @@
                   </div>
                 </div>
               </td>
-            </ng-container>
+            </ng-container> -->
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
           </table>
         </div>
