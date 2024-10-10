@@ -75,6 +75,9 @@ export class DashService {
       params = params.set('monthYear', monthYear);
     }
 
+    console.log(this.urlTotalHAbs, { params });
+    
+
     return this.http.get<any>(this.urlTotalHAbs, { params });
   }
   

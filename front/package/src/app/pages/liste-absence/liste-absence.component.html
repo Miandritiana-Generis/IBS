@@ -7,7 +7,7 @@
           <div class="col-sm-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Recherche nom ou prénom</mat-label>
-              <mat-chip-grid #chipGrid aria-label="nom ou etudiant">
+              <mat-chip-grid #chipGrid aria-label="nom etudiant">
                 <mat-chip-row
                   *ngFor="let item of searchs"
                   (removed)="remove(item)"

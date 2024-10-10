@@ -99,13 +99,13 @@ export interface TauxData {
   presentCount: number;
 }
 
-export interface ProductsData {
+export interface ListAbsentTotalH {
   nom: string;
   prenom: string;
   imagePath: string;
   classe: string;
   matiere: string;
-  totalH: Time
+  totalH: string
 }
 
 export interface Search{
@@ -194,25 +194,27 @@ export class AppDashboardComponent {
   selectedNiveauTaux: string = '';
   idNiveauTaux: number | undefined;
   monthYear: string = new Date().toISOString().slice(0, 7);
-  monthYear2: string = new Date().toISOString().slice(0, 7);
 
   displayedColumns: string[] = ['etu', 'classe', 'matiere', 'totalH'];
-  dataSource: ProductsData[] = [];
+  dataSource: any[] = [];
+  AlldataSource: any[] = [];
 
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  searchs: Search[] = [{ name: 'Rakoto' }];
+  searchs: Search[] = [];
+
+  selectedMonthYearListAbsent: string | undefined;
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our fruit
     if (value) {
       this.searchs.push({ name: value });
+      this.applySearchFilter();
     }
 
-    // Clear the input value
     event.chipInput!.clear();
+    this.loadAbsentTotalH();
   }
 
   remove(search: Search): void {
@@ -220,6 +222,9 @@ export class AppDashboardComponent {
 
     if (index >= 0) {
       this.searchs.splice(index, 1);
+      this.dataSource = [...this.dataSource];
+      this.applySearchFilter();
+      this.loadAbsentTotalH();
     }
   }
 
@@ -365,6 +370,7 @@ export class AppDashboardComponent {
     this.getClasseList();
     this.getTotalAbsence();
     this.selectedDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+    this.selectedMonthYearListAbsent = new Date().toISOString().slice(0, 7);
     this.getNiveauList();
     this.getTaux();
   }
@@ -431,16 +437,11 @@ export class AppDashboardComponent {
 
 
   getTaux() {
-    console.log('Request Parameters:');
-    console.log('ID Classe:', this.idClasseTaux);
-    console.log('ID Niveau:', this.idNiveauTaux);
-    console.log('Month Year:', this.monthYear);
     this.dashService.getTaux(
       this.selectedClasseTaux ? this.idClasseTaux : undefined,
       this.selectedNiveauTaux ? this.idNiveauTaux : undefined,
       this.monthYear
     ).subscribe(response => {
-      console.log('API Response:', response);
       this.updateTaux(response);
     }, error => {
       console.error('Error fetching taux data:', error);
@@ -448,7 +449,6 @@ export class AppDashboardComponent {
   }
   
   updateTaux(data: TauxData[]) {
-    console.log('Data for Chart:', data);
     this.profitExpanceChart = {
       series: [
         {
@@ -555,25 +555,56 @@ export class AppDashboardComponent {
   }
 
   clearMonthYearList(): void {
-    // this.
+    this.selectedMonthYearListAbsent = ''; 
+    this.loadAbsentTotalH();
   }
 
-  onMonthChangeTotalH(value: string) {
-    this.monthYear2 = value;
-    console.log(value);
+  onMonthChangeTotalH(event: any): void {
+    this.selectedMonthYearListAbsent = event.target.value;
     
-    // this.loadAbsentTotalH(this.monthYear2);
+    this.loadAbsentTotalH();
   } 
 
-  loadAbsentTotalH(monthYear?: string) {
-    if(monthYear != null )
-    {
-      monthYear = this.monthYear2;
-    }
-    this.dashService.getAbsentTotalH(monthYear).subscribe((data) => {
-      this.dataSource = data;
+  loadAbsentTotalH(): void {
+    this.dashService.getAbsentTotalH(this.selectedMonthYearListAbsent).subscribe(
+      (data: any[]) => {
+      this.dataSource = data.map(item => ({
+        nom: item.nom,
+        prenom: item.prenom,
+        photo: 'http:\\'+item.photo,
+        classe: item.classe,
+        matiere: item.matiere,
+        totalHeureAbsence: item.totalHeureAbsence
+      }));
+      this.applySearchFilter();
+      console.log(this.dataSource);
     });
+    
   }
   
+
+  
+  applySearchFilter() {
+    let filteredList = [...this.dataSource]; // Use this.dataSource
+  
+    if (this.searchs.length > 0) {
+      const searchTerms = this.searchs.map(search => search.name.toLowerCase());
+  
+      filteredList = filteredList.filter(item => {
+        const nom = item.nom?.toLowerCase() || '';
+        const prenom = item.prenom?.toLowerCase() || '';
+  
+        return searchTerms.some(term =>
+          nom.includes(term) || prenom.includes(term)
+        );
+      });
+    }
+  
+    // Update the filtered data source
+    this.dataSource = filteredList; // Assuming you have this property to hold results
+  }
+  
+  
+
 
 }

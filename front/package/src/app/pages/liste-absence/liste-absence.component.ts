@@ -99,6 +99,8 @@ export class AppListeAbsence {
 
     console.log("idAbsence :", absenceId);
 
+    this.date = new Date(date).toISOString().slice(0, 10);
+
     const dialogRef = this.dialog.open(templateRef, {
       width: '800px' 
     });
@@ -145,7 +147,9 @@ export class AppListeAbsence {
     this.justificationService.justifierDelegue(justificationPayload).subscribe(
       response => {
         console.log('Justification envoyée avec succès', response);
-        window.location.reload();
+        // window.location.reload();
+        this.getAbsence();
+        this.dialog.closeAll();
         close();
       },
       error => {

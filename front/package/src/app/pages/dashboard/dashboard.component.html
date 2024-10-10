@@ -150,13 +150,12 @@
           <div class="row m-l-auto">
             <div class="col-sm-6">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Recherche</mat-label>
-                <mat-chip-grid #chipGrid aria-label="nom ou etudiant">
+                <mat-label>Recherche nom ou prénom</mat-label>
+                <mat-chip-grid #chipGrid aria-label="nom etudiant">
                   <mat-chip-row
                     *ngFor="let item of searchs"
                     (removed)="remove(item)"
                     [editable]="true"
-                    (edited)="edit(item, $event)"
                     [aria-description]="'press enter to edit ' + item.name" class="f-s-14"
                   >
                     {{ item.name }}
@@ -183,8 +182,8 @@
               <mat-form-field class="w-100" appearance="outline">
                 <mat-label>Mois / Année</mat-label>
                 <div class="d-flex">
-                  <input matInput type="month" [(ngModel)]="monthYear" (ngModelChange)="onMonthChangeTotalH($event)"/>
-                  <mat-icon (click)="clearMonthYearList()" class="cursor-pointer" *ngIf="monthYear">
+                  <input matInput type="month" [value]="selectedMonthYearListAbsent" (change)="onMonthChangeTotalH($event)"/>
+                  <mat-icon (click)="clearMonthYearList()" class="cursor-pointer" *ngIf="selectedMonthYearListAbsent">
                     <i-tabler name="X" class="m-0"></i-tabler>
                   </mat-icon>
                 </div>
@@ -204,7 +203,7 @@
                   <img [src]="element.photo" alt="profile pic" width="10%" class="rounded-circle" />
                   <div class="m-l-16">
                     <h6 class="mat-subtitle-1 f-s-14 f-w-700">{{ element.prenom }}</h6>
-                    <h6 class="mat-subtitle-1 f-s-12 f-w-700">{{ element.nom }}</h6>
+                    <h6 class="mat-subtitle-1 f-s-12 f-w-500">{{ element.nom }}</h6>
                   </div>
                 </div>
               </td>
