@@ -51,9 +51,9 @@
           <div class="m-l-auto cursor-pointer" *ngIf="isCurrentTimeWithinRange(listeFichePresence[0]?.date, listeFichePresence[0]?.debut, listeFichePresence[0]?.fin, listeFichePresence[0].id_salle)">
             <a
               (click)="sendFichePresenceData()"
-              *ngIf="!isLoading || retourProf === 'ValideProf = 0'"
+              *ngIf="!isLoading"
             >
-              <div class="bg-light-error text-error shadow-none icon-96">
+              <div *ngIf="retourProf === 'ValideProf = 0' || retourDelegue == 'ValideDelegue = 0'" class="bg-light-error text-error shadow-none icon-96">
                 <div class="icon-demo">
                   <div class="icon-demo-icon">
                     <span class="icon-tada icon-demo-size-32 icon-demo-stroke-150">

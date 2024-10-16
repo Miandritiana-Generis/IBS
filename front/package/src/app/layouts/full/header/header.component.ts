@@ -29,6 +29,7 @@ export class HeaderComponent {
 
   showFiller = false;
   nom="My profil";
+  prenom="";
   count=0;
   page =0;
   notification:Notification[]=[];
@@ -37,6 +38,7 @@ export class HeaderComponent {
     private notificationService:NotificationEdtService
   ) {
     this.nom=localStorage.getItem("nom")|| "My Profil";
+    this.prenom=localStorage.getItem("prenom")|| "";
     this.setNotification();
   }
   public charger(event: MouseEvent){

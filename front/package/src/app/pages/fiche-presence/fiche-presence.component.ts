@@ -114,6 +114,10 @@ export class AppFichePresenceComponent {
           this.retourProf = l[0];
           this.retourDelegue = l[1];
 
+          console.log(this.retourProf);
+          console.log(this.retourDelegue);
+          
+
           if (Array.isArray(data)) {
             // Si 'data' est un tableau, le mapper pour créer listeFichePresence
             this.listeFichePresence = data.map(item => ({
@@ -156,6 +160,7 @@ export class AppFichePresenceComponent {
             console.log("Données transformées:", this.listeFichePresence);
             this.listeFichePresence.forEach(item => {
               console.log(item.imagePath);
+              console.log(item.retour);
             });
             
           }else{
