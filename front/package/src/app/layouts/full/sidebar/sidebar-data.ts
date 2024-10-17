@@ -28,12 +28,7 @@ export const navItemsPAT: NavItem[] = [
     displayName: 'Liste Absence',
     iconName: 'user-x',
     route: '/liste-absence',
-  },
-  {
-    displayName: 'Salle',
-    iconName: 'clipboard-list',
-    route: '/salle/lists',
-  },
+  }
 ];
 
 

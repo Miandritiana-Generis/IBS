@@ -12,6 +12,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClientModule, HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FichePresenceService } from 'src/app/services/fiche-presence.service';
+import Swal from 'sweetalert2';
 
 export interface ProductsData {
   id: number;
@@ -65,6 +66,7 @@ export class AppFichePresenceComponent {
 
 
   displayedColumns: string[] = ['nom', 'prenom', 'hArriver', 'status'];
+  displayedColumnsAnnuler: string[] = ['nom', 'prenom', 'hArriver'];
   dataSource: ProductsData[] = [];
   apiUrl: any;
   isLoading: boolean = false;
@@ -84,13 +86,6 @@ export class AppFichePresenceComponent {
 
   ngOnInit() {
     this.checkIfAnnule(parseInt(this.id_edt));
-
-    const idPat = localStorage.getItem("idPat");
-    
-    // Check if idPat is not undefined and is not equal to "0"
-    if (idPat !== undefined && idPat !== "0") {
-      this.isIdPatValid = false; // Set flag to false to hide the button
-    }
   }
 
   getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string): void {
@@ -144,6 +139,7 @@ export class AppFichePresenceComponent {
               id_personne : item.id_personne,
               id_salle : id_salle
             }));
+            // this.dataSource = this.listeFichePresence;
           } else {
             // Si la réponse n'est pas un tableau, afficher un message d'erreur
             console.error("La réponse n'est pas un tableau valide:", response);
@@ -198,40 +194,60 @@ export class AppFichePresenceComponent {
 
 
   validerProf(idEdt: string): void {
-    const tokenValue = localStorage.getItem('token') || '';  // Assurer que tokenValue n'est jamais null
-    const confirmed = confirm("Voulez-vous vraiment valider ce fiche de présence ?");
-    
-    if (confirmed) {
-      this.fichePresenceService.validerProf(idEdt, tokenValue).subscribe(
-        success => {
-          alert('Validation réussie.');
-          window.location.reload();
-        },
-        error => {
-          console.log(JSON.parse(error.error).erreurs[0].messageErreur);  // Afficher les détails de l'erreur dans la console
-
-          // Si l'erreur contient des erreurs spécifiques
-          if (JSON.parse(error.error) && JSON.parse(error.error).erreurs && JSON.parse(error.error).erreurs.length > 0) {
-            this.message = JSON.parse(error.error).erreurs[0].messageErreur;
-            alert(this.message);
-          } 
-          // Gérer le cas où l'erreur HTTP est 400 (Bad Request)
-          else if (error.status === 400) {
-            alert('Erreur 400: Requête invalide. Veuillez vérifier les données envoyées.');
-          } 
-          // Gérer d'autres types d'erreurs (401, 403, etc.)
-          else if (error.status === 401) {
-            alert('Erreur 401: Non autorisé. Veuillez vous reconnecter.');
-          } else if (error.status === 403) {
-            alert('Erreur 403: Accès refusé. Vous n\'avez pas les droits pour cette action.');
-          } 
-          // Cas par défaut pour les autres erreurs
-          else {
-            alert(`Une erreur est survenue: ${error.message}`);
+    const tokenValue = localStorage.getItem('token') || ''; // Ensure tokenValue is never null
+  
+    Swal.fire({
+      title: 'Confirmer la validation',
+      text: "Voulez-vous vraiment valider ce fiche de présence ?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui',
+      cancelButtonText: 'Non'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.fichePresenceService.validerProf(idEdt, tokenValue).subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Succès',
+              text: 'Validation réussie.'
+            }).then(() => {
+              window.location.reload();
+            });
+          },
+          error: (error) => {
+            const errorResponse = JSON.parse(error.error);
+            const errorMessage = errorResponse.erreurs && errorResponse.erreurs.length > 0 
+              ? errorResponse.erreurs[0].messageErreur 
+              : `Une erreur est survenue: ${error.message}`;
+  
+            console.log(errorMessage); // Log for more details
+  
+            let alertTitle = 'Erreur';
+            let alertText = errorMessage;
+  
+            // Handle specific HTTP error codes
+            switch (error.status) {
+              case 400:
+                alertText = 'Erreur 400: Requête invalide. Veuillez vérifier les données envoyées.';
+                break;
+              case 401:
+                alertText = 'Erreur 401: Non autorisé. Veuillez vous reconnecter.';
+                break;
+              case 403:
+                alertText = 'Erreur 403: Accès refusé. Vous n\'avez pas les droits pour cette action.';
+                break;
+            }
+  
+            Swal.fire({
+              icon: 'error',
+              title: alertTitle,
+              text: alertText
+            });
           }
-        }
-      );
-    }
+        });
+      }
+    });
   }
 
 
@@ -240,32 +256,46 @@ export class AppFichePresenceComponent {
 
   validerDelegue(idEdt: string): void {
     const tokenValue = localStorage.getItem('token') || '';
-    
-    if (tokenValue && confirm("Voulez-vous vraiment valider ?")) {
-      this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
-        next: () => {
-          alert('Validation réussie.');
-          window.location.reload();
-        },
-        error: (error) => {
-          console.log(JSON.parse(error.error).erreurs[0]);  // Log pour plus de détails
   
-          // Gestion des erreurs en fonction du code HTTP
-          if (error.status === 400) {
-            alert(JSON.parse(error.error).erreurs[0].messageErreur);
-          } else if (error.status === 401) {
-            alert(JSON.parse(error.error).erreurs[0].messageErreur);
-          } else if (error.status === 403) {
-            alert(JSON.parse(error.error).erreurs[0].messageErreur);
-          } else if (error.status === 404) {
-            alert(JSON.parse(error.error).erreurs[0].messageErreur);
-          } else {
-            alert(JSON.parse(error.error).erreurs[0].messageErreur);
-          }
+    if (tokenValue) {
+      Swal.fire({
+        title: 'Confirmer la validation',
+        text: "Voulez-vous vraiment valider ?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui',
+        cancelButtonText: 'Non'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.fichePresenceService.validerDelegue(idEdt, tokenValue).subscribe({
+            next: () => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Succès',
+                text: 'Validation réussie.'
+              }).then(() => {
+                window.location.reload();
+              });
+            },
+            error: (error) => {
+              const errorMessage = JSON.parse(error.error).erreurs[0].messageErreur;
+              console.log(errorMessage);  // Log pour plus de détails
+              
+              Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: errorMessage
+              });
+            }
+          });
         }
       });
     } else {
-      alert('Token manquant ou action annulée.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Token manquant ou action annulée.'
+      });
     }
   }
   
@@ -307,31 +337,74 @@ export class AppFichePresenceComponent {
     const idEnseignant = localStorage.getItem('idEnseignant');
     const idPat = localStorage.getItem('idPat');
     
-    if(idEnseignant && idEnseignant !== '0' || idPat && idPat !== '0') {
-      const confirmAction = confirm("Êtes-vous sûr de vouloir marquer cet étudiant comme présent?");
-    
-      if (confirmAction) {
-        const tempsArriver = new Date().toLocaleTimeString('en-GB'); // Current time in HH:mm:ss format
+    if (idEnseignant && idEnseignant !== '0' || idPat && idPat !== '0') {
+      Swal.fire({
+        title: 'Êtes-vous sûr?',
+        text: "Vous voulez marquer cet étudiant comme présent?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui',
+        cancelButtonText: 'Non'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const tempsArriver = new Date().toLocaleTimeString('en-GB'); // Current time in HH:mm:ss format
   
-        this.fichePresenceService.presence(idEdt, idClasseEtudiant, tempsArriver).subscribe(
-          (response) => {
-            console.log(response);
-            alert('Présence enregistrée avec succès!');
-            var index = this.listeFichePresence.findIndex(student => student.id_classe_etudiant === idClasseEtudiant);
-            this.listeFichePresence[index].status = 'Present';
-            this.listeFichePresence[index].hourRate = response.tempsArriver;
-            
-
-          },
-          (error) => {
-            console.error('Error:', error);
-            alert('Échec de l\'enregistrement de la présence.');
-          }
-        );
-      }
-    }else{
-      alert('Vous n\'êtes pas autoriser à faire la presence manuellement');
+          this.fichePresenceService.presence(idEdt, idClasseEtudiant, tempsArriver).subscribe(
+            (response) => {
+              console.log(response);
+              Swal.fire({
+                icon: 'success',
+                title: 'Succès',
+                text: 'Présence enregistrée avec succès!',
+              });
+  
+              var index = this.listeFichePresence.findIndex(student => student.id_classe_etudiant === idClasseEtudiant);
+              this.listeFichePresence[index].status = 'Present';
+              this.listeFichePresence[index].hourRate = response.tempsArriver;
+  
+            },
+            (error) => {
+              console.error('Error:', error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Échec de l\'enregistrement de la présence.',
+              });
+            }
+          );
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Autorisation refusée',
+        text: 'Vous n\'êtes pas autorisé à faire la présence manuellement',
+      });
     }
+  }
+
+
+  checkIfPAT(): boolean {
+    const idPat = localStorage.getItem("idPat");
+    
+    if (idPat !== undefined && idPat !== "0") {
+      this.isIdPatValid = true;
+      return true;
+    }else{
+      this.isIdPatValid = false;
+      return false;
+    }
+  }
+
+
+  isDisplayFichePresence(): boolean {
+    
+    return this.isCurrentTimeWithinRange(
+      this.listeFichePresence[0]?.date,
+      this.listeFichePresence[0]?.debut,
+      this.listeFichePresence[0]?.fin,
+      this.listeFichePresence[0].id_salle
+    );
   }
 
   isCurrentTimeWithinRange(date: string, debut: string, fin: string, id_salle: number): boolean {
@@ -348,6 +421,10 @@ export class AppFichePresenceComponent {
     return true;
 
   }
+
+
+
+  
 
 
 }

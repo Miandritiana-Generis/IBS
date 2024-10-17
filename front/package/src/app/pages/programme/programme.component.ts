@@ -37,6 +37,7 @@
   import { CustomCalendarEvent } from 'src/app/modeles/CustomCalendarEvent ';
   import { Router } from '@angular/router';
 import { LoaderService } from 'src/app/services/loader.service';
+import Swal from 'sweetalert2';
 
   const colors: Record<string, EventColor> = {
     red: {
@@ -306,28 +307,53 @@ import { LoaderService } from 'src/app/services/loader.service';
     redirectToFichePresence(idEdt:number) {
       
       this.router.navigate(['/fiche-presence'], { queryParams: { id_edt: idEdt } }).then(() => {
-        window.location.reload(); // Recharger la page après la redirection
+        window.location.reload();
       });
     }
 
-    annulerCours(event:CustomCalendarEvent){
-      const confirmed = confirm("Voulez-vous annulé ce cours?");
-      if (confirmed) {
-        var idEdt=event.detail?.id!
-        this.edtService.annulerEdt(idEdt).subscribe(
-          success=>{
+    annulerCours(event: CustomCalendarEvent): void {
+      Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Voulez-vous vraiment annuler ce cours?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, annuler',
+        cancelButtonText: 'Non, garder'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const idEdt = event.detail?.id!;
+          
+          this.edtService.annulerEdt(idEdt).subscribe(
+            success => {
               const index = this.events.findIndex(objet => objet.detail?.id === idEdt);
-
+    
               if (index !== -1) {
                 const eventDetail = this.events[index].detail;
                 if (eventDetail) {
-                  eventDetail.estAnnule = true;  // Affecte la valeur si detail est non nul
+                  eventDetail.estAnnule = true;  // Mark event as canceled
                 }
               }
-            },error => {
-              this.message=error.error.erreurs[0].messageErreur
-              alert(this.message);
-          });
-      }
+    
+              // Show success message using Swal
+              Swal.fire({
+                icon: 'success',
+                title: 'Annulé!',
+                text: 'Le cours a été annulé avec succès.'
+              });
+    
+            }, error => {
+              // Show error message using Swal
+              this.message = error.error.erreurs[0].messageErreur;
+              Swal.fire({
+                icon: 'error',
+                title: 'Erreur!',
+                text: this.message
+              });
+            }
+          );
+        }
+      });
     }
   }

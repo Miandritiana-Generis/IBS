@@ -48,44 +48,46 @@
             </mat-chip>
           </mat-chip-set>
 
-          <div class="m-l-auto cursor-pointer" *ngIf="isCurrentTimeWithinRange(listeFichePresence[0]?.date, listeFichePresence[0]?.debut, listeFichePresence[0]?.fin, listeFichePresence[0].id_salle)">
-            <a
-              (click)="sendFichePresenceData()"
-              *ngIf="!isLoading"
-            >
-              <div *ngIf="retourProf === 'ValideProf = 0' || retourDelegue == 'ValideDelegue = 0'" class="bg-light-error text-error shadow-none icon-96">
-                <div class="icon-demo">
-                  <div class="icon-demo-icon">
-                    <span class="icon-tada icon-demo-size-32 icon-demo-stroke-150">
-                      <span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="48"
-                          height="48"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="icon icon-tabler icons-tabler-outline icon-tabler-face-id"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
-                          <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-                          <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-                          <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
-                          <path d="M9 10l.01 0" />
-                          <path d="M15 10l.01 0" />
-                          <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
-                        </svg>
+          <!-- <div *ngIf = "!checkIfPAT()" > -->
+            <div class="m-l-auto cursor-pointer" *ngIf="isDisplayFichePresence()">
+              <a
+                (click)="sendFichePresenceData()"
+                *ngIf="!isLoading"
+              >
+                <div *ngIf="retourProf === 'ValideProf = 0' || retourDelegue == 'ValideDelegue = 0'" class="bg-light-error text-error shadow-none icon-96">
+                  <div class="icon-demo">
+                    <div class="icon-demo-icon">
+                      <span class="icon-tada icon-demo-size-32 icon-demo-stroke-150">
+                        <span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="48"
+                            height="48"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-face-id"
+                          >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                            <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                            <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                            <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                            <path d="M9 10l.01 0" />
+                            <path d="M15 10l.01 0" />
+                            <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+                          </svg>
+                        </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </a>
-          </div>
+              </a>
+            </div>
+          <!-- </div> -->
           
         </mat-card-header>
 
@@ -109,25 +111,22 @@
         </div>
 
         <div class="table-responsive m-t-16">
+          
           <table mat-table [dataSource]="dataSource" class="w-100 table-borderless">
+        
             <!-- Nom Column -->
             <ng-container matColumnDef="nom">
               <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Nom </th>
               <td mat-cell *matCellDef="let element" style="width: 40%;">
                 <div class="d-flex align-items-center">
-                  <img
-                    [src]="element.imagePath"
-                    alt="profile pic"
-                    width="10%"
-                    class="rounded-circle"
-                  />
+                  <img [src]="element.imagePath" alt="profile pic" width="10%" class="rounded-circle" />
                   <div class="m-l-16">
                     <h6 class="mat-subtitle-1 f-s-14 f-w-700">{{ element.nom }}</h6>
                   </div>
                 </div>
               </td>
             </ng-container>
-
+        
             <!-- Prenom Column -->
             <ng-container matColumnDef="prenom">
               <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Prénom </th>
@@ -139,17 +138,19 @@
                 </div>
               </td>
             </ng-container>
-
+        
             <!-- Status Column -->
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Status </th>
+              <ng-container *ngIf="estAnnule === false">
+                <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Status </th>
+              </ng-container>
               <td mat-cell *matCellDef="let element">
-                <ng-template [ngIf]="element.status == 'Present'">
+                <ng-container *ngIf="element.status == 'Present'; else absentStatus">
                   <span class="bg-light-success text-success rounded f-w-600 p-y-6 p-x-16 f-s-14">
                     {{ element.status | titlecase }}
                   </span>
-                </ng-template>
-                <ng-template [ngIf]="element.status == 'Absent'">
+                </ng-container>
+                <ng-template #absentStatus>
                   <span
                     class="bg-light-error text-error rounded f-w-600 p-y-6 p-x-16 f-s-14 cursor-pointer"
                     (click)="presenceManuelle(listeFichePresence[0].id_edt, element.id_classe_etudiant)"
@@ -159,7 +160,7 @@
                 </ng-template>
               </td>
             </ng-container>
-
+        
             <!-- Heure d'arriver Column -->
             <ng-container matColumnDef="hArriver">
               <th mat-header-cell *matHeaderCellDef class="f-w-600 mat-subtitle-1 f-s-14"> Heure d'arriver </th>
@@ -167,39 +168,45 @@
                 {{ element.hourRate }}
               </td>
             </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        
+            <!-- Header and Row Definitions -->
+            <tr mat-header-row *matHeaderRowDef="estAnnule === true ? displayedColumnsAnnuler : displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: estAnnule === true ? displayedColumnsAnnuler : displayedColumns"></tr>
+        
           </table>
-        </div>
+        </div>      
+
       </mat-card-content>
     </mat-card>
   </div>
 
-  <div class="row mb-4" *ngIf="estAnnule == false">
-    <div class="col-6" *ngIf="retourProf == 'ValideProf = 0'">
-      <a
-        *ngIf="listeFichePresence.length > 0"
-        mat-flat-button
-        color="primary"
-        target="_blank"
-        class="d-flex justify-content-center w-100"
-        (click)="validerProf(listeFichePresence[0].id_edt)"
-      >
-        Valider Enseignant
-      </a>
-    </div>
-    <div class="col-6">
-      <a
-        *ngIf="retourDelegue == 'ValideDelegue = 0'"
-        mat-flat-button
-        color="warn"
-        target="_blank"
-        class="d-flex justify-content-center w-100"
-        (click)="validerDelegue(listeFichePresence[0].id_edt)"
-      >
-        Valider Délégué de classe
-      </a>
+  <div *ngIf="!isIdPatValid">
+    <div class="row mb-4" *ngIf="estAnnule == false">
+      <div class="col-6" *ngIf="retourProf == 'ValideProf = 0'">
+        <a
+          *ngIf="listeFichePresence.length > 0"
+          mat-flat-button
+          color="primary"
+          target="_blank"
+          class="d-flex justify-content-center w-100"
+          (click)="validerProf(listeFichePresence[0].id_edt)"
+        >
+          Valider Enseignant
+        </a>
+      </div>
+      <div class="col-6">
+        <a
+          *ngIf="retourDelegue == 'ValideDelegue = 0'"
+          mat-flat-button
+          color="warn"
+          target="_blank"
+          class="d-flex justify-content-center w-100"
+          (click)="validerDelegue(listeFichePresence[0].id_edt)"
+        >
+          Valider Délégué de classe
+        </a>
+      </div>
     </div>
   </div>
+  
 </div>
