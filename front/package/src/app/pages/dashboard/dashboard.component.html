@@ -8,24 +8,11 @@
         <div class="d-flex w-100">
           <mat-card-title>
             <div class="mb-2">Taux d'absence / Taux de présence</div>
-            <p class="mb-0 small text-muted" *ngIf="selectedClasseTaux || selectedNiveauTaux">{{ selectedClasseTaux }} / {{ selectedNiveauTaux }}
+            <p class="mb-0 small text-muted" *ngIf="selectedClasseTaux || selectedNiveauTaux">{{ selectedNiveauTaux }} / {{ selectedClasseTaux }}
               <i-tabler name="X" class="cursor-pointer" (click)="clearSelection()"></i-tabler>
             </p>
           </mat-card-title>
             <div class="m-l-auto">
-
-            <button
-              mat-flat-button
-              [matMenuTriggerFor]="classeMenu2"
-              matTooltip="Classe"
-            >
-              <i-tabler name="briefcase"></i-tabler>
-            </button>
-            <mat-menu #classeMenu2="matMenu" xPosition="before">
-              <button mat-menu-item *ngFor="let item of classeItems" (click)="onClassSelectTaux(item)">
-                <span>{{ item.classe }}</span>
-              </button>
-            </mat-menu>
 
             <button
               mat-flat-button
@@ -37,6 +24,19 @@
             <mat-menu #menuNiv="matMenu" xPosition="before">
               <button mat-menu-item *ngFor="let item of niveauItems" (click)="onNiveauSelectTaux(item)">
                 <span>{{ item.nom }}</span>
+              </button>
+            </mat-menu>
+
+            <button
+              mat-flat-button
+              [matMenuTriggerFor]="classeMenu2"
+              matTooltip="Classe"
+            >
+              <i-tabler name="briefcase"></i-tabler>
+            </button>
+            <mat-menu #classeMenu2="matMenu" xPosition="before">
+              <button mat-menu-item *ngFor="let item of filteredClasseItems" (click)="onClassSelectTaux(item)">
+                <span>{{ item.classe }}</span>
               </button>
             </mat-menu>
 

@@ -86,6 +86,7 @@ interface stats {
 export interface ClasseItem {
   id: number;
   classe: string;
+  id_niveau: number;
 }
 
 export interface NiveauItem {
@@ -182,6 +183,7 @@ export class AppDashboardComponent {
   ];
 
   classeItems: ClasseItem[] = [];
+  filteredClasseItems: any[] = [];
   niveauItems: NiveauItem[] = [];
 
   totalAbsence: number | undefined;
@@ -380,7 +382,8 @@ export class AppDashboardComponent {
       (data: any) => {
         this.classeItems = data.map((item: any) => ({
           id: item.id,
-          classe: item.classe
+          classe: item.classe,
+          id_niveau: item.id_niveau
         }));
       },
       (error) => {
@@ -520,9 +523,10 @@ export class AppDashboardComponent {
     this.getTaux();
   }
 
-  onNiveauSelectTaux(niveau: any) {
-    this.selectedNiveauTaux = niveau.nom;
-    this.idNiveauTaux = niveau.id;
+  onNiveauSelectTaux(selectedNiveau: any): void {
+    this.filteredClasseItems = this.classeItems.filter(item => item.id_niveau === selectedNiveau.id);
+    this.selectedNiveauTaux = selectedNiveau.nom;
+    this.idNiveauTaux = selectedNiveau.id;
     this.getTaux();
   }
 

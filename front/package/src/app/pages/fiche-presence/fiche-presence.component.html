@@ -180,32 +180,30 @@
     </mat-card>
   </div>
 
-  <div *ngIf="!isIdPatValid">
-    <div class="row mb-4" *ngIf="estAnnule == false">
-      <div class="col-6" *ngIf="retourProf == 'ValideProf = 0'">
-        <a
-          *ngIf="listeFichePresence.length > 0"
-          mat-flat-button
-          color="primary"
-          target="_blank"
-          class="d-flex justify-content-center w-100"
-          (click)="validerProf(listeFichePresence[0].id_edt)"
-        >
-          Valider Enseignant
-        </a>
-      </div>
-      <div class="col-6">
-        <a
-          *ngIf="retourDelegue == 'ValideDelegue = 0'"
-          mat-flat-button
-          color="warn"
-          target="_blank"
-          class="d-flex justify-content-center w-100"
-          (click)="validerDelegue(listeFichePresence[0].id_edt)"
-        >
-          Valider Délégué de classe
-        </a>
-      </div>
+  <div class="row mb-4" *ngIf="estAnnule == false">
+    <div class="col-6" *ngIf="retourProf == 'ValideProf = 0'">
+      <a
+        *ngIf="listeFichePresence.length > 0"
+        mat-flat-button
+        color="primary"
+        target="_blank"
+        class="d-flex justify-content-center w-100"
+        (click)="validerProf(listeFichePresence[0].id_edt)"
+      >
+        Valider Enseignant
+      </a>
+    </div>
+    <div class="col-6">
+      <a
+        *ngIf="retourDelegue == 'ValideDelegue = 0'"
+        mat-flat-button
+        color="warn"
+        target="_blank"
+        class="d-flex justify-content-center w-100"
+        (click)="validerDelegue(listeFichePresence[0].id_edt)"
+      >
+        Valider Délégué de classe
+      </a>
     </div>
   </div>
   
