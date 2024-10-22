@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.ibs.suiviAbsence.modele.Niveau;
 import com.ibs.suiviAbsence.modele.ViewClasseDetail;
 import com.ibs.suiviAbsence.modele.ViewListeAbsentTotalH;
@@ -91,11 +93,11 @@ public class DashService {
         }
     }
 
-    public List<ViewListeAbsentTotalH> getAbsentTotalH(String monthYear) {
+    public Page<ViewListeAbsentTotalH> getAbsentTotalH(String monthYear, Pageable pageable) {
         if (monthYear != null) {
-            return viewListeAbsentTotalHRepository.findByFilters(monthYear);
+            return viewListeAbsentTotalHRepository.findByFilters(monthYear, pageable);
         } else {
-            return viewListeAbsentTotalHRepository.findAll();  // Return all records if no monthYear is provided
+            return viewListeAbsentTotalHRepository.findAll(pageable);  // Return paginated records if no monthYear is provided
         }
     }
 }

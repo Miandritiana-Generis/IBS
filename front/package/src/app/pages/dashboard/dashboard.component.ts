@@ -31,6 +31,8 @@ import { FormsModule } from '@angular/forms';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { MaterialModule } from '../../material.module';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { Page } from 'src/app/modeles/Page';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 interface month {
   value: string;
@@ -131,6 +133,7 @@ export interface Search{
     MatInputModule,
     FormsModule,
     MaterialModule,
+    PaginationModule
   ],
 })
 export class AppDashboardComponent {
@@ -205,7 +208,12 @@ export class AppDashboardComponent {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   searchs: Search[] = [];
 
-  selectedMonthYearListAbsent: string | undefined;
+  selectedMonthYearListAbsent?: string;
+
+  page = 1;
+  itemsPerPage: number = 10;
+  totalElements = 0;
+  totalPages: number = 0;
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -375,6 +383,7 @@ export class AppDashboardComponent {
     this.selectedMonthYearListAbsent = new Date().toISOString().slice(0, 7);
     this.getNiveauList();
     this.getTaux();
+    this.loadAbsentTotalH();
   }
   // Method to fetch class list and update classeItems
   getClasseList(): void {
@@ -567,24 +576,46 @@ export class AppDashboardComponent {
     this.selectedMonthYearListAbsent = event.target.value;
     
     this.loadAbsentTotalH();
-  } 
+  }
+
+  public changerPage(event: any): void {
+    this.page = event.page - 1; // Assuming your pagination component emits 1-based page numbers
+    this.loadAbsentTotalH(); // Reload data based on the new page
+  }
+
+  // Method to get the current page data for display
+  getPaginatedData(): any[] {
+    const start = this.page * this.itemsPerPage;
+    return this.dataSource.slice(start, start + this.itemsPerPage);
+  }
+
 
   loadAbsentTotalH(): void {
-    this.dashService.getAbsentTotalH(this.selectedMonthYearListAbsent).subscribe(
-      (data: any[]) => {
-      this.dataSource = data.map(item => ({
-        nom: item.nom,
-        prenom: item.prenom,
-        photo: 'http:\\'+item.photo,
-        classe: item.classe,
-        matiere: item.matiere,
-        totalHeureAbsence: item.totalHeureAbsence
-      }));
-      this.applySearchFilter();
-      console.log(this.dataSource);
-    });
-    
+    const monthYear = this.selectedMonthYearListAbsent || '';  // Fallback to an empty string if undefined
+    this.dashService.getAbsentTotalH(monthYear, this.page).subscribe(
+      (data: Page<any>) => {
+        
+        this.totalElements= data.totalElements!,
+        this.totalPages= data.totalPages!
+        this.dataSource = data.content.map(item => ({
+          nom: item.nom,
+          prenom: item.prenom,
+          photo: 'http://' + item.photo,
+          classe: item.classe,
+          matiere: item.matiere,
+          totalHeureAbsence: item.totalHeureAbsence,
+        }));
+
+        // Optionally apply pagination to dataSource if necessary
+        this.applySearchFilter();
+        console.log(this.dataSource);
+      },
+      (error) => {
+        console.error('Error loading absent total hours:', error);
+      }
+    );
   }
+  
   
 
   
@@ -608,7 +639,4 @@ export class AppDashboardComponent {
     this.dataSource = filteredList; // Assuming you have this property to hold results
   }
   
-  
-
-
 }

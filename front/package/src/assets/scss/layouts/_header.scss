@@ -16,7 +16,23 @@ html .topbar {
   object-fit: cover;
 }
 
-
 .mat-mdc-menu-panel.mat-mdc-menu-panel {
-  box-shadow: $box-shadow !important;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.mat-mdc-menu-panel.mat-mdc-menu-panel::-webkit-scrollbar {
+  width: 5px;
+}
+
+.mat-mdc-menu-panel.mat-mdc-menu-panel::-webkit-scrollbar-track {
+  background-color: #c2e7ff;
+}
+
+.mat-mdc-menu-panel.mat-mdc-menu-panel::-webkit-scrollbar-thumb {
+  background-color: #8acdf9;
+  border-radius: 10px;
+}
+
+.mat-mdc-menu-panel.mat-mdc-menu-panel::-webkit-scrollbar-thumb:hover {
+  background-color: #8acdf9;
 }

@@ -2,9 +2,13 @@ package com.ibs.suiviAbsence.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,17 +53,22 @@ public class DashController {
         return dashService.getTauxAbsencePresence(monthYear, idClasse, idNiveau);
     }
 
-    @GetMapping("/total-heure-absence")
-    public List<ViewListeAbsentTotalH> getAbsentTotalH(
-        @RequestParam(required = false) String monthYear
-    ) {
-        // Check if monthYear is null
-        if (monthYear == null) {
-            // Get current month and year in 'YYYY-MM' format
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-            monthYear = LocalDate.now().format(formatter);
-        }
-        
-        return dashService.getAbsentTotalH(monthYear);
+@GetMapping("/total-heure-absence")
+public ResponseEntity<Page<ViewListeAbsentTotalH>> getAbsentTotalH(
+    @RequestParam(name = "monthYear", required = false) String monthYear,
+    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+    @RequestParam(value = "size", required = false, defaultValue = "10") int size
+) {
+    // Set monthYear to current month and year in 'YYYY-MM' format if null
+    if (monthYear == null) {
+        monthYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
     }
+
+    Pageable pageable = PageRequest.of(page, size);
+    Page<ViewListeAbsentTotalH> result = dashService.getAbsentTotalH(monthYear, pageable);
+
+    return ResponseEntity.ok(result);
+}
+
+    
 }

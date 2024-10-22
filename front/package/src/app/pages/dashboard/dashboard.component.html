@@ -266,6 +266,17 @@
 
           </table>
         </div>
+
+        <pagination *ngIf="totalPages != 0"
+          [totalItems]="totalElements"
+          [itemsPerPage]="totalPages"
+          [(ngModel)]="page"
+          (pageChanged)="changerPage($event)"
+          previousText="Précédent"
+          nextText="Suivant"
+          class="mt-3 mb-0"
+        ></pagination>
+
       </mat-card-content>
     </mat-card>
   </div> 

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, retry } from 'rxjs';
+import { catchError, Observable, retry } from 'rxjs';
 import { Constants } from '../util/constants';
+import { Page } from '../modeles/Page';
 
 @Injectable({
   providedIn: 'root'
@@ -68,18 +69,18 @@ export class DashService {
     }>(`${this.urlTaux}`, { params });
   }
 
-  getAbsentTotalH(monthYear?: string): Observable<any> {
-    let params = new HttpParams();
-
-    if (monthYear) {
-      params = params.set('monthYear', monthYear);
-    }
-
-    console.log(this.urlTotalHAbs, { params });
-    
-
-    return this.http.get<any>(this.urlTotalHAbs, { params });
+  getAbsentTotalH(monthYear: string, page: number): Observable<any> {
+  
+    return this.http.get<{
+      totalElements: number,
+      totalPages: number,
+      size: number,
+      content: any[]
+    }>(`${this.urlTotalHAbs}?monthYear=${monthYear}&page=${page}`)
+      .pipe(
+      );
   }
+  
   
   
 }

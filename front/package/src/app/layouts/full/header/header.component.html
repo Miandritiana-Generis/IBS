@@ -24,6 +24,7 @@
   </ng-template>
 
   </button>
+
   <mat-menu #notifMenu="matMenu" xPosition="before" class="topbar-dd cardWithShadow">
     <button class="p-3" mat-menu-item *ngFor="let stat of notification" (click)="redirifer(stat.idEdt!, stat.type!)">
       <div class="">
@@ -35,23 +36,23 @@
         <p>{{ stat.matiere }}</p>
       </div>
     </button>
-    <div class="p-x-12 m-t-12 me-5">
+
+    <div class="p-3 mt-3 d-flex">
       <a
-      (click)="actualiser($event)"
+        (click)="actualiser($event)"
         mat-flat-button
         color="primary"
-        class="w-50"
+        class="w-50 me-2"
         >Actualiser</a
       >
       <a
-      (click)="charger($event)"
+        (click)="charger($event)"
         mat-flat-button
         color="primary"
         class="w-50"
-        >Charger plus</a
+        >Charger +</a
       >
     </div>
-    
   </mat-menu>
       
   </div>
@@ -63,9 +64,9 @@
     aria-label="Notifications" class="m-l-10"
   >
     <img
-      src="/assets/images/profile/user-1.jpg"
+      src="/assets/images/profile/default-user.jpg"
       class="rounded-circle object-cover"
-      width="35"
+      width="45"
     />
   </button>
   <mat-menu #profilemenu="matMenu" xPosition="before" class="topbar-dd cardWithShadow">
