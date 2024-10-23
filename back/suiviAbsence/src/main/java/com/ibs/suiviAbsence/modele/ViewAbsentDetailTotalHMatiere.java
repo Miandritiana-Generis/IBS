@@ -10,11 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="v_liste_absent_total_h")
-public class ViewListeAbsentTotalH {
+@Table(name="v_absent_detail_total_h_par_matiere")
+public class ViewAbsentDetailTotalHMatiere {
     
-    @Column(name = "month_year")
-    private String monthYear;
+    @Column(name = "id_annee_scolaire")
+    private int idAnneeScolaire;
 
     @Id
     @Column(name = "id_etudiant")

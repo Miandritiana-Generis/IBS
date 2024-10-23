@@ -33,6 +33,7 @@ import { MaterialModule } from '../../material.module';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Page } from 'src/app/modeles/Page';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { IconPhotoQuestion } from 'angular-tabler-icons/icons';
 
 interface month {
   value: string;
@@ -208,7 +209,7 @@ export class AppDashboardComponent {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   searchs: Search[] = [];
 
-  selectedMonthYearListAbsent?: string;
+  idAnneeScolaire = 0;
 
   page = 1;
   itemsPerPage: number = 10;
@@ -380,7 +381,6 @@ export class AppDashboardComponent {
     this.getClasseList();
     this.getTotalAbsence();
     this.selectedDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
-    this.selectedMonthYearListAbsent = new Date().toISOString().slice(0, 7);
     this.getNiveauList();
     this.getTaux();
     this.loadAbsentTotalH();
@@ -568,18 +568,21 @@ export class AppDashboardComponent {
   }
 
   clearMonthYearList(): void {
-    this.selectedMonthYearListAbsent = ''; 
+    this.idAnneeScolaire = 0; 
     this.loadAbsentTotalH();
   }
 
   onMonthChangeTotalH(event: any): void {
-    this.selectedMonthYearListAbsent = event.target.value;
+    this.idAnneeScolaire = event.target.value;
     
     this.loadAbsentTotalH();
   }
 
   public changerPage(event: any): void {
-    this.page = event.page - 1; // Assuming your pagination component emits 1-based page numbers
+    console.log("clicked");
+    
+    this.page = event.page;
+    console.log(this.page);
     this.loadAbsentTotalH(); // Reload data based on the new page
   }
 
@@ -591,12 +594,12 @@ export class AppDashboardComponent {
 
 
   loadAbsentTotalH(): void {
-    const monthYear = this.selectedMonthYearListAbsent || '';  // Fallback to an empty string if undefined
-    this.dashService.getAbsentTotalH(monthYear, this.page).subscribe(
+    const idAnneeScolaire = this.idAnneeScolaire || 0;  // Fallback to an empty string if undefined
+    this.dashService.getAbsentTotalH(idAnneeScolaire, this.page).subscribe(
       (data: Page<any>) => {
         
         this.totalElements= data.totalElements!,
-        this.totalPages= data.totalPages!
+        this.totalPages= data.size!
         this.dataSource = data.content.map(item => ({
           nom: item.nom,
           prenom: item.prenom,

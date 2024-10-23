@@ -229,7 +229,7 @@ export class AppFichePresenceComponent {
             // Handle specific HTTP error codes
             switch (error.status) {
               case 400:
-                alertText = 'Erreur 400: Requête invalide. Veuillez vérifier les données envoyées.';
+                alertText = errorMessage;
                 break;
               case 401:
                 alertText = 'Erreur 401: Non autorisé. Veuillez vous reconnecter.';
@@ -407,20 +407,26 @@ export class AppFichePresenceComponent {
     );
   }
 
-  isCurrentTimeWithinRange(date: string, debut: string, fin: string, id_salle: number): boolean {
 
-    const salle = localStorage.getItem('salle');    
+  isCurrentTimeWithinRange(date: string, debut: string, fin: string, id_salle: number): boolean {
+    const salle = localStorage.getItem('salle');
     const currentDateTime = new Date();
+  
+    // Parse debut and fin times as Date objects
     const startTime = new Date(`${date}T${debut}`);
     const endTime = new Date(`${date}T${fin}`);
-
+  
+    // Subtract 15 minutes from startTime
+    startTime.setMinutes(startTime.getMinutes() - 15);
+  
+    // Check if salle matches and current time is within adjusted startTime and endTime
     if (salle !== id_salle.toString() || currentDateTime < startTime || currentDateTime > endTime) {
       return false;
     }
   
     return true;
-
   }
+  
 
 
 

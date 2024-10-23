@@ -69,14 +69,14 @@ export class DashService {
     }>(`${this.urlTaux}`, { params });
   }
 
-  getAbsentTotalH(monthYear: string, page: number): Observable<any> {
+  getAbsentTotalH(idAnneeScolaire: number, page: number): Observable<any> {
   
     return this.http.get<{
       totalElements: number,
       totalPages: number,
       size: number,
       content: any[]
-    }>(`${this.urlTotalHAbs}?monthYear=${monthYear}&page=${page}`)
+    }>(`${this.urlTotalHAbs}?idAnneeScolaire=${idAnneeScolaire}&page=${page}`)
       .pipe(
       );
   }

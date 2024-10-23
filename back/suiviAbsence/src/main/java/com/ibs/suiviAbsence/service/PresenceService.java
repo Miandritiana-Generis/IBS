@@ -166,7 +166,7 @@ public class PresenceService {
             if (currentTime.isAfter(debutPlus30Min) && currentTime.isBefore(finLocalTime)) {
                 presenceRepository.validerFichePresence(idEdt);
             } else {
-                throw new PresenceException("L'heure actuelle n'est pas entre l'heure de début ajustée et l'heure de fin.");
+                throw new PresenceException("L'heure actuelle n'est pas entre l'heure de début ajustée et l'heure de fin, donc vous ne pouvez pas encore valider la fiche de présence");
             }
         } else if (!this.estProf(tokenValue)) {
             throw new PresenceException("Vous n'êtes pas autorisé à effectuer cette action");
@@ -197,12 +197,10 @@ public class PresenceService {
     
         
         if (presenceObj.getValideProf() == 1 && this.estDelegue(tokenValue)) {
-            System.out.println("bbbbbbbb");
             presenceRepository.validerFichePresenceDelegue(idEdt);
     
             
             if (nbAbsent > 0) {
-                System.out.println("cccccccc");
                 String contenu = "Absence de " + nbAbsent + " étudiants.";
                 this.notificationService.genererNotification(idEdt, contenu, Constante.coursAnnule);
             }

@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ibs.suiviAbsence.dto.AbsentDetailsDTO;
 import com.ibs.suiviAbsence.modele.Niveau;
 import com.ibs.suiviAbsence.modele.ViewClasseDetail;
-import com.ibs.suiviAbsence.modele.ViewListeAbsentTotalH;
+import com.ibs.suiviAbsence.modele.ViewAbsentTotalH;
 import com.ibs.suiviAbsence.modele.ViewTauxAbsencePresence;
 import com.ibs.suiviAbsence.service.DashService;
 
@@ -53,22 +54,18 @@ public class DashController {
         return dashService.getTauxAbsencePresence(monthYear, idClasse, idNiveau);
     }
 
-@GetMapping("/total-heure-absence")
-public ResponseEntity<Page<ViewListeAbsentTotalH>> getAbsentTotalH(
-    @RequestParam(name = "monthYear", required = false) String monthYear,
-    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-    @RequestParam(value = "size", required = false, defaultValue = "10") int size
-) {
-    // Set monthYear to current month and year in 'YYYY-MM' format if null
-    if (monthYear == null) {
-        monthYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+    @GetMapping("/total-heure-absence")
+    public ResponseEntity<Page<AbsentDetailsDTO>> getAbsentTotalH(
+        @RequestParam(name = "idAnneeScolaire", required = false, defaultValue = "0") int idAnneeScolaire,
+        @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+        @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<AbsentDetailsDTO> result = dashService.getAbsentTotalH(idAnneeScolaire, pageable);
+
+        return ResponseEntity.ok(result);
     }
-
-    Pageable pageable = PageRequest.of(page, size);
-    Page<ViewListeAbsentTotalH> result = dashService.getAbsentTotalH(monthYear, pageable);
-
-    return ResponseEntity.ok(result);
-}
 
     
 }

@@ -28,7 +28,7 @@ export class FichePresenceService {
             return throwError(error);
         })
     );
-}
+  }
 
 
 
