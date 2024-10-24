@@ -153,6 +153,12 @@ public class DashService {
             dto.setAnneeFin(absentTotal.getAnneeFin());
             dto.setIdClasse(absentTotal.getIdClasse());
             dto.setClasse(absentTotal.getClasse());
+            dto.setIdEtudiant(absentTotal.getIdEtudiant());
+            dto.setPhoto(absentTotal.getPhoto());
+            dto.setNom(absentTotal.getNom());
+            dto.setPrenom(absentTotal.getPrenom());
+            dto.setTotalHeureAbsence(absentTotal.getTotalHeureAbsence());
+
 
             // Set absence details for this student
             List<ViewAbsentDetailTotalHMatiere> details = listDetailTotalH.stream()

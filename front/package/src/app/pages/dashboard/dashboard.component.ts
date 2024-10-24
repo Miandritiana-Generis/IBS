@@ -34,6 +34,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Page } from 'src/app/modeles/Page';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { IconPhotoQuestion } from 'angular-tabler-icons/icons';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 interface month {
   value: string;
@@ -136,6 +137,13 @@ export interface Search{
     MaterialModule,
     PaginationModule
   ],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class AppDashboardComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);
@@ -201,9 +209,10 @@ export class AppDashboardComponent {
   idNiveauTaux: number | undefined;
   monthYear: string = new Date().toISOString().slice(0, 7);
 
-  displayedColumns: string[] = ['etu', 'classe', 'matiere', 'totalH'];
+  displayedColumns: string[] = ['etu', 'classe', 'totalH'];
   dataSource: any[] = [];
   AlldataSource: any[] = [];
+  expandedElement: any | null = null;
 
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
@@ -593,33 +602,34 @@ export class AppDashboardComponent {
   }
 
 
+  toggleRow(row: any): void {
+    this.expandedElement = this.expandedElement === row ? null : row;
+  }
+
+
   loadAbsentTotalH(): void {
-    const idAnneeScolaire = this.idAnneeScolaire || 0;  // Fallback to an empty string if undefined
+    const idAnneeScolaire = this.idAnneeScolaire || 0;
     this.dashService.getAbsentTotalH(idAnneeScolaire, this.page).subscribe(
       (data: Page<any>) => {
-        
-        this.totalElements= data.totalElements!,
-        this.totalPages= data.size!
+        this.totalElements = data.totalElements!;
+        this.totalPages = data.size!;
         this.dataSource = data.content.map(item => ({
-          nom: item.nom,
-          prenom: item.prenom,
-          photo: 'http://' + item.photo,
-          classe: item.classe,
-          matiere: item.matiere,
-          totalHeureAbsence: item.totalHeureAbsence,
+          nom: item.nom || 'N/A',
+          prenom: item.prenom || 'N/A',
+          photo: item.photo ? 'http://' + item.photo : '',  // Ensure valid photo URL
+          classe: item.classe || 'N/A',
+          totalHeureAbsence: item.totalHeureAbsence || 'N/A',
+          details: item.details && item.details.length > 0 ? item.details : []  // Ensure `details` is an array
         }));
-
-        // Optionally apply pagination to dataSource if necessary
+  
         this.applySearchFilter();
-        console.log(this.dataSource);
+        console.log(data);
       },
       (error) => {
         console.error('Error loading absent total hours:', error);
       }
     );
   }
-  
-  
 
   
   applySearchFilter() {
