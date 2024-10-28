@@ -16,11 +16,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import com.ibs.suiviAbsence.dto.AbsentDetailsDTO;
+import com.ibs.suiviAbsence.modele.AnneeScolaire;
 import com.ibs.suiviAbsence.modele.Niveau;
 import com.ibs.suiviAbsence.modele.ViewAbsentDetailTotalHMatiere;
 import com.ibs.suiviAbsence.modele.ViewClasseDetail;
 import com.ibs.suiviAbsence.modele.ViewAbsentTotalH;
 import com.ibs.suiviAbsence.modele.ViewTauxAbsencePresence;
+import com.ibs.suiviAbsence.repository.AnneeScolaireRepository;
 import com.ibs.suiviAbsence.repository.NiveauRepository;
 import com.ibs.suiviAbsence.repository.TotalAbsenceRepository;
 import com.ibs.suiviAbsence.repository.ViewAbsentDetailTotalHMatiereRepository;
@@ -52,6 +54,9 @@ public class DashService {
     
     @Autowired
     private ViewAbsentDetailTotalHMatiereRepository viewAbsentDetailTotalHMatiereRepository;
+
+    @Autowired
+    private AnneeScolaireRepository anneeScolaireRepository;
     
     public List<ViewClasseDetail> findViewClasseDetails(){
         List<ViewClasseDetail> liste=viewClasseDetailRepository.findAll();
@@ -119,61 +124,14 @@ public class DashService {
             .orElse(null);  // Return null or default value if not found
     }
 
-    public Page<AbsentDetailsDTO> getAbsentTotalH(int idAnneeScolaire, Pageable pageable) {
+    public Page<ViewAbsentTotalH> getAbsentTotalH(int idAnneeScolaire, Pageable pageable) {
 
         // Get all records for total absence
-        List<ViewAbsentTotalH> listAbsentTotalH = viewAbsentTotalHRepository.findAll();
+        Page<ViewAbsentTotalH> listAbsentTotalH = viewAbsentTotalHRepository.findByIdAnneeScolaire(idAnneeScolaire, pageable);
+        return listAbsentTotalH;
+    }
 
-        final int finalIdAnneeScolaire;
-
-        // If idAnneeScolaire is 0, determine the current academic year
-        if (idAnneeScolaire == 0) {
-            idAnneeScolaire = getCurrentAnneeScolaire(listAbsentTotalH);
-            
-            // Throw exception if no current academic year is found
-            if (idAnneeScolaire == 0) {
-                throw new IllegalStateException("No current academic year found.");
-            }
-        }
-
-        finalIdAnneeScolaire = idAnneeScolaire;
-
-        // Filter data based on the current academic year
-        List<ViewAbsentTotalH> filteredTotalH = listAbsentTotalH.stream()
-            .filter(absentTotal -> absentTotal.getIdAnneeScolaire() == finalIdAnneeScolaire)
-            .collect(Collectors.toList());
-
-        List<ViewAbsentDetailTotalHMatiere> listDetailTotalH = viewAbsentDetailTotalHMatiereRepository.findAllByIdAnneeScolaire(finalIdAnneeScolaire);
-
-        // Process data into DTOs
-        List<AbsentDetailsDTO> dtos = filteredTotalH.stream().map(absentTotal -> {
-            AbsentDetailsDTO dto = new AbsentDetailsDTO();
-            dto.setIdAnneeScolaire(absentTotal.getIdAnneeScolaire());
-            dto.setAnneeDebut(absentTotal.getAnneeDebut());
-            dto.setAnneeFin(absentTotal.getAnneeFin());
-            dto.setIdClasse(absentTotal.getIdClasse());
-            dto.setClasse(absentTotal.getClasse());
-            dto.setIdEtudiant(absentTotal.getIdEtudiant());
-            dto.setPhoto(absentTotal.getPhoto());
-            dto.setNom(absentTotal.getNom());
-            dto.setPrenom(absentTotal.getPrenom());
-            dto.setTotalHeureAbsence(absentTotal.getTotalHeureAbsence());
-
-
-            // Set absence details for this student
-            List<ViewAbsentDetailTotalHMatiere> details = listDetailTotalH.stream()
-                .filter(detail -> detail.getIdEtudiant() == absentTotal.getIdEtudiant()) 
-                .collect(Collectors.toList());
-            dto.setDetails(details.toArray(new ViewAbsentDetailTotalHMatiere[0]));
-
-            return dto;
-        }).collect(Collectors.toList());
-
-        // Handle pagination
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), dtos.size());
-        Page<AbsentDetailsDTO> page = new PageImpl<>(dtos.subList(start, end), pageable, dtos.size());
-
-        return page;
+    public List<AnneeScolaire> getAnneeScolaires() {
+        return anneeScolaireRepository.findAll();
     }
 }

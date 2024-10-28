@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ibs.suiviAbsence.dto.AbsentDetailsDTO;
+import com.ibs.suiviAbsence.modele.AnneeScolaire;
 import com.ibs.suiviAbsence.modele.Niveau;
 import com.ibs.suiviAbsence.modele.ViewClasseDetail;
 import com.ibs.suiviAbsence.modele.ViewAbsentTotalH;
@@ -55,16 +56,23 @@ public class DashController {
     }
 
     @GetMapping("/total-heure-absence")
-    public ResponseEntity<Page<AbsentDetailsDTO>> getAbsentTotalH(
+    public ResponseEntity<Page<ViewAbsentTotalH>> getAbsentTotalH(
         @RequestParam(name = "idAnneeScolaire", required = false, defaultValue = "0") int idAnneeScolaire,
         @RequestParam(value = "page", required = false, defaultValue = "0") int page,
         @RequestParam(value = "size", required = false, defaultValue = "10") int size
     ) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<AbsentDetailsDTO> result = dashService.getAbsentTotalH(idAnneeScolaire, pageable);
+        Page<ViewAbsentTotalH> result = dashService.getAbsentTotalH(idAnneeScolaire, pageable);
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/liste-annee-scolaire")
+    public ResponseEntity<List<AnneeScolaire>> getAnneeScolaire()
+    {
+        List<AnneeScolaire> listeAnneeScolaire = dashService.getAnneeScolaires();
+        return ResponseEntity.ok(listeAnneeScolaire);
     }
 
     

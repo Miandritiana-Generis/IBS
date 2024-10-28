@@ -33,8 +33,8 @@ import { MaterialModule } from '../../material.module';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Page } from 'src/app/modeles/Page';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { IconPhotoQuestion } from 'angular-tabler-icons/icons';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { BrowserModule } from '@angular/platform-browser';
 
 interface month {
   value: string;
@@ -209,7 +209,14 @@ export class AppDashboardComponent {
   idNiveauTaux: number | undefined;
   monthYear: string = new Date().toISOString().slice(0, 7);
 
-  displayedColumns: string[] = ['etu', 'classe', 'totalH'];
+  columns = [
+    { key: 'photo', label: 'Photo' },
+    { key: 'prenom', label: 'Prénom' },
+    { key: 'nom', label: 'Nom' },
+    { key: 'classe', label: 'Classe' },
+    { key: 'totalHeureAbsence', label: 'Total Heure Absence' },
+  ];
+
   dataSource: any[] = [];
   AlldataSource: any[] = [];
   expandedElement: any | null = null;
@@ -224,6 +231,8 @@ export class AppDashboardComponent {
   itemsPerPage: number = 10;
   totalElements = 0;
   totalPages: number = 0;
+
+  anneeScolaires: any[] = [];
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -393,6 +402,7 @@ export class AppDashboardComponent {
     this.getNiveauList();
     this.getTaux();
     this.loadAbsentTotalH();
+    this.getAnneeScolaires();
   }
   // Method to fetch class list and update classeItems
   getClasseList(): void {
@@ -601,6 +611,7 @@ export class AppDashboardComponent {
     return this.dataSource.slice(start, start + this.itemsPerPage);
   }
 
+  displayedColumns: string[] = ['etu', 'classe', 'totalH'];
 
   toggleRow(row: any): void {
     this.expandedElement = this.expandedElement === row ? null : row;
@@ -608,7 +619,7 @@ export class AppDashboardComponent {
 
 
   loadAbsentTotalH(): void {
-    const idAnneeScolaire = this.idAnneeScolaire || 0;
+    const idAnneeScolaire = this.idAnneeScolaire || 124;
     this.dashService.getAbsentTotalH(idAnneeScolaire, this.page).subscribe(
       (data: Page<any>) => {
         this.totalElements = data.totalElements!;
@@ -619,7 +630,7 @@ export class AppDashboardComponent {
           photo: item.photo ? 'http://' + item.photo : '',  // Ensure valid photo URL
           classe: item.classe || 'N/A',
           totalHeureAbsence: item.totalHeureAbsence || 'N/A',
-          details: item.details && item.details.length > 0 ? item.details : []  // Ensure `details` is an array
+          details: item.details && item.details.length > 0 ? item.details : []  // Ensure details is an array
         }));
   
         this.applySearchFilter();
@@ -650,6 +661,24 @@ export class AppDashboardComponent {
   
     // Update the filtered data source
     this.dataSource = filteredList; // Assuming you have this property to hold results
+  }
+
+  getAnneeScolaires(): void {
+    this.dashService.getListAnneeScolaire().subscribe(
+      (data: any) => {
+        console.log(data);
+        
+        this.anneeScolaires = data;
+      },
+      (error) => {
+        console.error('Error fetching classes:', error);
+      }
+    );
+  }
+
+  onAnneScolaire(idAnneeScolaire: number) {
+    this.idAnneeScolaire = idAnneeScolaire;
+    this.loadAbsentTotalH();
   }
   
 }

@@ -14,6 +14,7 @@ export class DashService {
   urlNiveau: string = Constants.BASE_URL + '/liste-niveau';
   urlTaux: string = Constants.BASE_URL + '/taux-absence-presence';
   urlTotalHAbs: string = Constants.BASE_URL + '/total-heure-absence';
+  urlAnneeScolaires: string = Constants.BASE_URL + '/liste-annee-scolaire';
 
   constructor(private http: HttpClient) { }
 
@@ -81,6 +82,8 @@ export class DashService {
       );
   }
   
-  
+  getListAnneeScolaire() : Observable<any> {
+    return this.http.get(`${this.urlAnneeScolaires}`);
+  }
   
 }
