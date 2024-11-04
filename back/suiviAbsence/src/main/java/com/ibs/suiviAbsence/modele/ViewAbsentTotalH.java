@@ -12,6 +12,9 @@ import lombok.Setter;
 @Entity
 @Table(name="v_absent_total_h")
 public class ViewAbsentTotalH {
+
+    @Id
+    private long id;
     
     @Column(name = "id_annee_scolaire")
     private int idAnneeScolaire;
@@ -22,7 +25,6 @@ public class ViewAbsentTotalH {
     @Column(name = "annee_fin")
     private int anneeFin;
 
-    @Id
     @Column(name = "id_classe")
     private int idClasse;
 

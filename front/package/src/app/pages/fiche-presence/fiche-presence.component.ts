@@ -75,7 +75,6 @@ export class AppFichePresenceComponent {
 
   constructor(private edtService: EdtService, private http: HttpClient ,private route:ActivatedRoute, private fichePresenceService : FichePresenceService) {
    this.route.queryParamMap.subscribe(params => {
-      console.log(params.get("id_edt"));
       this.id_edt = params.get('id_edt')!;
       this.getListFichePresence(this.id_salle ,this.heure, this.date,this.id_edt);
       
@@ -96,7 +95,6 @@ export class AppFichePresenceComponent {
       id_salle = parseInt(salle || "0", 10);
 
       const personne = parseInt(localStorage.getItem("id")|| "0", 10);
-      console.log(personne);
       
       const idPat = localStorage.getItem("idPat");
 
@@ -108,9 +106,6 @@ export class AppFichePresenceComponent {
           const l= this.retour.split(";");
           this.retourProf = l[0];
           this.retourDelegue = l[1];
-
-          console.log(this.retourProf);
-          console.log(this.retourDelegue);
           
 
           if (Array.isArray(data)) {
@@ -137,7 +132,7 @@ export class AppFichePresenceComponent {
               fin : item.fin,
               debut : item.debut,
               id_personne : item.id_personne,
-              id_salle : id_salle
+              id_salle : item.id_salle
             }));
             // this.dataSource = this.listeFichePresence;
           } else {
@@ -150,17 +145,11 @@ export class AppFichePresenceComponent {
           
 
           if (this.listeFichePresence.some(item => item.id_personne === personne) || idPat) {
-            console.log("etooooooooooooooooooooo");
             
             this.dataSource = this.listeFichePresence;
             console.log("Données transformées:", this.listeFichePresence);
-            this.listeFichePresence.forEach(item => {
-              console.log(item.imagePath);
-              console.log(item.retour);
-            });
             
           }else{
-            console.log("sdfdsijl");
             this.listeFichePresence = [];
           }
           
@@ -182,7 +171,6 @@ export class AppFichePresenceComponent {
     this.edtService.sendFichePresenceDataService(dataToSend).subscribe(
       (response: any) => {
         window.location.href = 'http://127.0.0.1:5000/';
-        console.log('Data sent successfully:', response);
         this.isLoading = false;
       },
       (error: any) => {
@@ -220,8 +208,6 @@ export class AppFichePresenceComponent {
             const errorMessage = errorResponse.erreurs && errorResponse.erreurs.length > 0 
               ? errorResponse.erreurs[0].messageErreur 
               : `Une erreur est survenue: ${error.message}`;
-  
-            console.log(errorMessage); // Log for more details
   
             let alertTitle = 'Erreur';
             let alertText = errorMessage;
@@ -279,7 +265,6 @@ export class AppFichePresenceComponent {
             },
             error: (error) => {
               const errorMessage = JSON.parse(error.error).erreurs[0].messageErreur;
-              console.log(errorMessage);  // Log pour plus de détails
               
               Swal.fire({
                 icon: 'error',
@@ -314,7 +299,6 @@ export class AppFichePresenceComponent {
   //   this.fichePresenceService.estValiderProf(idEdt).subscribe(
   //     (response: any) => {
   //       this.estValideProf = response.prof;
-  //       console.log("V :",this.estValideProf);
   //     },
   //     (error) => {
   //       console.error('Erreur lors de la vérification:', error);
@@ -351,7 +335,6 @@ export class AppFichePresenceComponent {
   
           this.fichePresenceService.presence(idEdt, idClasseEtudiant, tempsArriver).subscribe(
             (response) => {
-              console.log(response);
               Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -420,7 +403,11 @@ export class AppFichePresenceComponent {
     startTime.setMinutes(startTime.getMinutes() - 15);
   
     // Check if salle matches and current time is within adjusted startTime and endTime
-    if (salle !== id_salle.toString() || currentDateTime < startTime || currentDateTime > endTime) {
+    // if (salle !== id_salle.toString() || currentDateTime < startTime || currentDateTime > endTime) {
+    //   return false;
+    // }
+
+    if (salle !== id_salle.toString()) {
       return false;
     }
   

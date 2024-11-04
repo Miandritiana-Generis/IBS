@@ -630,7 +630,6 @@ export class AppDashboardComponent {
           photo: item.photo ? 'http://' + item.photo : '',  // Ensure valid photo URL
           classe: item.classe || 'N/A',
           totalHeureAbsence: item.totalHeureAbsence || 'N/A',
-          details: item.details && item.details.length > 0 ? item.details : []  // Ensure details is an array
         }));
   
         this.applySearchFilter();
