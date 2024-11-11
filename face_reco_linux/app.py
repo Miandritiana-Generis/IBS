@@ -326,7 +326,7 @@ def handle_frame(base64_image):
                 consecutive_matches += 1
                 
                 # Check if we have reached 5 consecutive matches
-                if consecutive_matches >= 40:
+                if consecutive_matches >= 60:
 
                     # Get the current time when the face is detected
                     detection_time = get_madagascar_time()

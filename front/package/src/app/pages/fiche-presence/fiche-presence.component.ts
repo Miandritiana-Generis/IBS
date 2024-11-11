@@ -85,6 +85,7 @@ export class AppFichePresenceComponent {
 
   ngOnInit() {
     this.checkIfAnnule(parseInt(this.id_edt));
+    this.checkIfPAT();
   }
 
   getListFichePresence(id_salle: number, heure: string, date: string, idEdt : string): void {
@@ -403,13 +404,13 @@ export class AppFichePresenceComponent {
     startTime.setMinutes(startTime.getMinutes() - 15);
   
     // Check if salle matches and current time is within adjusted startTime and endTime
-    // if (salle !== id_salle.toString() || currentDateTime < startTime || currentDateTime > endTime) {
-    //   return false;
-    // }
-
-    if (salle !== id_salle.toString()) {
+    if (salle !== id_salle.toString() || currentDateTime < startTime || currentDateTime > endTime) {
       return false;
     }
+
+    // if (salle !== id_salle.toString()) {
+    //   return false;
+    // }
   
     return true;
   }

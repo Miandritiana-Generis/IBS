@@ -48,8 +48,8 @@
             </mat-chip>
           </mat-chip-set>
 
-          <!-- <div *ngIf = "!checkIfPAT()" > -->
-            <div class="m-l-auto cursor-pointer" *ngIf="isDisplayFichePresence()">
+          <div>
+            <div class="m-l-auto cursor-pointer" *ngIf="isDisplayFichePresence() && isIdPatValid === false">
               <a
                 (click)="sendFichePresenceData()"
                 *ngIf="!isLoading"
@@ -87,7 +87,7 @@
                 </div>
               </a>
             </div>
-          <!-- </div> -->
+          </div>
           
         </mat-card-header>
 

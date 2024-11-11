@@ -73,7 +73,7 @@ public class EdtService {
         else if(personne.getIdEnseignant()>0){
             Optional<Edt> optional=this.edtRepository.findById(idEdt) ;
             if(optional.isEmpty()){
-                throw new EdtException("L'employe du temps n'existe pas ");
+                throw new EdtException("L'implois du temps n'existe pas ");
             }
             Edt edt= optional.get();
             if(edt.isEstAnnule()){
@@ -84,7 +84,7 @@ public class EdtService {
             long endHeure= (difference/3600000);
 
             if(endHeure<48){
-                throw new EdtException("Ce cours ne peut plus etre annulé");
+                throw new EdtException("Ce cours ne peut plus être annulé, car l'annulation doit se faire au moins 48 heures avant le début du cours.");
             }
             edt.setEstAnnule(true);
             this.edtRepository.save(edt);
