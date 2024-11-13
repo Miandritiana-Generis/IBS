@@ -8,4 +8,5 @@ export class Personne {
     "token": string
     "idPat":number
     "idEnseignant":string
+    "idDirection":string
 }

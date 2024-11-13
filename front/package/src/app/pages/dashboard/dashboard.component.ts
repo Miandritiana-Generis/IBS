@@ -619,7 +619,7 @@ export class AppDashboardComponent {
 
 
   loadAbsentTotalH(): void {
-    const idAnneeScolaire = this.idAnneeScolaire || 124;
+    const idAnneeScolaire = this.idAnneeScolaire || 125;
     this.dashService.getAbsentTotalH(idAnneeScolaire, this.page).subscribe(
       (data: Page<any>) => {
         this.totalElements = data.totalElements!;

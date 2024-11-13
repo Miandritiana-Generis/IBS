@@ -15,6 +15,7 @@ export class AuthService {
   private tokenKey = 'token';
   private url=Constants.BASE_URL_COMMON;
   private urlInfoPersonne = Constants.BASE_URL_COMMON+'/personnes/info';
+private urlAuthoPAT = Constants.BASE_URL+'/authorisationPAT';
 
   constructor(private router: Router, private http: HttpClient, 
     private personneService:PersonneService ) { }
@@ -34,6 +35,7 @@ export class AuthService {
               localStorage.setItem('id', `${response.token.idPersonne}`);
               const token = response.token.token;
               this.getInfo(token);
+            
               
             return true;
 
@@ -49,7 +51,6 @@ export class AuthService {
   }
 
   private getInfo(token: string): void {
-
     this.personneService.getInfoUtilisateur(token).subscribe(
       data=> {
         localStorage.setItem('id', `${data.id}`);
@@ -59,6 +60,13 @@ export class AuthService {
         localStorage.setItem('contact',data.contact);
         localStorage.setItem('idPat',`${data.idPat}`);
         localStorage.setItem('idEnseignant',`${data.idEnseignant}`);
+        localStorage.setItem('idDirection',`${data.idDirection}`);
+
+       
+        if(data.idPat != 0 && data.idDirection != '0' ){
+        alert("fasdfliasdnfuasd");
+          this.authorisationPAT((data.idPat).toString(), data.idDirection);
+        }
         this.router.navigate(['/']).then(() => {
           window.location.reload(); // Recharger la page après la redirection
         });
@@ -107,6 +115,24 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
+
+  
+  private authorisationPAT(id_pat: string | null, id_direction: string | null) {
+      alert("misy tsy mety");
+      var url =`${this.urlAuthoPAT}?id_pat=${id_pat}&id_direction=${id_direction}`; 
+    console.log(url)
+      this.http.get<boolean>(url).subscribe(isAutho => {
+      // Convert boolean to string and store in localStorage
+      localStorage.setItem('isAutoriserDashPAT', isAutho.toString());
+      console.log("tokony tonga ato izy");
+      
+    }, error => {
+      // Handle the error (optional)
+      alert("misy tsy mety2");
+      console.error('Error during authentication:', error);
+    });
+  }
+  
 
 
 }

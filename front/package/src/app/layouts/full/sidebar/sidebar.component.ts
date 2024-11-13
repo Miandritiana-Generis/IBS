@@ -12,7 +12,7 @@ export class SidebarComponent implements OnInit {
   constructor(public navService: NavService) {}
 
   ngOnInit(): void {
-    if(localStorage.getItem("idPat")!= undefined && localStorage.getItem("idPat")!== "0"){
+    if(!localStorage.getItem("isAutoriserDashPAT")){
       for(let item of navItemsPAT){
         navItems.push(item);
       }

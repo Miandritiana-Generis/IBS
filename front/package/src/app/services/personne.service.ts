@@ -28,4 +28,5 @@ export class PersonneService {
       return of(result as T);
     };
   }
+
 }
