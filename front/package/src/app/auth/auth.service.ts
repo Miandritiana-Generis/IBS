@@ -64,7 +64,6 @@ private urlAuthoPAT = Constants.BASE_URL+'/authorisationPAT';
 
        
         if(data.idPat != 0 && data.idDirection != '0' ){
-        alert("fasdfliasdnfuasd");
           this.authorisationPAT((data.idPat).toString(), data.idDirection);
         }
         this.router.navigate(['/']).then(() => {
@@ -118,7 +117,6 @@ private urlAuthoPAT = Constants.BASE_URL+'/authorisationPAT';
 
   
   private authorisationPAT(id_pat: string | null, id_direction: string | null) {
-      alert("misy tsy mety");
       var url =`${this.urlAuthoPAT}?id_pat=${id_pat}&id_direction=${id_direction}`; 
     console.log(url)
       this.http.get<boolean>(url).subscribe(isAutho => {
@@ -128,7 +126,6 @@ private urlAuthoPAT = Constants.BASE_URL+'/authorisationPAT';
       
     }, error => {
       // Handle the error (optional)
-      alert("misy tsy mety2");
       console.error('Error during authentication:', error);
     });
   }
